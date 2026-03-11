@@ -1,0 +1,12 @@
+{
+  "name": "01-minimal-app",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@app-core/framework": "file:../.."
+  },
+  "scripts": {
+    "init": "app-core --nomodel",
+    "start": "node src/index.js"
+  }
+}
