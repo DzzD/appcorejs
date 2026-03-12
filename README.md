@@ -13,7 +13,6 @@ AppCore<sub>JS</sub> enforces a clear boundary between:
 
 - `src/core/`: immutable framework base classes and internal framework logic
 - `src/app/`: application-level classes used to extend, specialize, and expose framework behavior
-- `examples/`: sample applications demonstrating framework usage
 - `bin/`: CLI entry points, including the `app-core` generator (`AppCore.js`)
 
 Developers work only through the `app/` layer.  

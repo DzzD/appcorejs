@@ -104,7 +104,7 @@ async function generateCoreClass(meta, generationRoot, dryRun)
         `    constructor(connectionUid = null)\n` +
         `    {\n` +
         `        super(connectionUid);\n\n` +
-        `        this._dataBaseName = '${databaseNameRaw}';\n` +
+        `        this._databaseName = '${databaseNameRaw}';\n` +
         `        this._schema = '${schema}';\n` +
         `        this._tableName = '${tableName}';\n\n` +
         `        this._fields =\n` +

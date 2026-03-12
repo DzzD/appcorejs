@@ -6,6 +6,7 @@
  * Licensed under the MIT License
  */
 
+import util from 'node:util';
 import { DbManager } from '../../app/db/DbManager.js';
 
 
@@ -23,13 +24,34 @@ export class CoreDbObject
 
   constructor(connectionUid = "default")
   {
-    // this._databaseName = databaseName;
     this._connectionUid = connectionUid;
 
     this._tableName = null;
     this._fields = {};
     this._primaryKeys = [];
 
+  }
+
+  [util.inspect.custom](_depth, options)
+  {
+      const currentValues = [];
+      const originalValues = [];
+
+      if (this._fields)
+      {
+          for (const fieldMeta of Object.values(this._fields))
+          {
+              const attr = fieldMeta.attributeName;
+              const originalAttr = '_' + attr;
+
+              currentValues.push(util.inspect(this[attr], options));
+              originalValues.push(util.inspect(this[originalAttr], options));
+          }
+      }
+
+      return `${this._databaseName}.${this._schema}.${this._tableName} :\n`
+          + `(${currentValues.join(', ')})\n`
+          + `(${originalValues.join(', ')})`;
   }
 
   getFullTableName()
@@ -161,11 +183,11 @@ export class CoreDbObject
     if (!this.beforeSave())
     {
       this.afterSave(false);
-      return true;
+      return false;
     }
 
+    //list changed fields
     const changedFields = [];
-
     for (const fieldMeta of Object.values(this._fields))
     {
       const attributeName = fieldMeta.attributeName;
@@ -178,6 +200,7 @@ export class CoreDbObject
       }
     }
 
+    //no modification && no forcing => return success
     if (!forceInsert && changedFields.length === 0)
     {
       this.afterSave(true);
@@ -188,9 +211,9 @@ export class CoreDbObject
 
     if (!isInsert)
     {
-      if (!this._primaryKeys || this._primaryKeys.length === 0)
+      if (!this._primaryKeys || this._primaryKeys.length === 0) //No primary key
       {
-        isInsert = Object.values(this._fields).every((fm) =>
+        isInsert = Object.values(this._fields).every((fm) => //check all snapshot field are undefined/null
         {
           const original = this['_' + fm.attributeName];
           return original === null || original === undefined;
@@ -198,7 +221,7 @@ export class CoreDbObject
       }
       else
       {
-        isInsert = this._primaryKeys.some((columnName) =>
+        isInsert = this._primaryKeys.some((columnName) => //check at least one PK is null => insert
         {
           const fm = this._fields[columnName] || Object.values(this._fields).find((fieldMeta) => fieldMeta.columnName === columnName);
 
@@ -214,13 +237,14 @@ export class CoreDbObject
       }
     }
 
+    //check when hook beforeInsert or beforeUpdate returning false
     if (isInsert)
     {
       if (!this.beforeInsert())
       {
         this.afterInsert(false);
         this.afterSave(false);
-        return true;
+        return false;
       }
     }
     else
@@ -229,26 +253,58 @@ export class CoreDbObject
       {
         this.afterUpdate(false);
         this.afterSave(false);
-        return true;
+        return false;
       }
     }
 
+    //get a connector to make insert or update
     const connector = DbManager.getConnector(this._databaseName, this._connectionUid);
-
+    let insertOrUpdateResult = false;
     if (isInsert)
     {
       const { sql, params } = this.#buildInsertQuery(changedFields);
       await connector.query(sql, params);
-      this.afterInsert(true);
+      const insertedRow = await connector.next();
+
+      if (insertedRow)
+      {
+        this.fromRow(insertedRow);        
+        this.afterInsert(true);
+        insertOrUpdateResult = true;
+      }
+      else
+      {
+        this.afterInsert(false);
+      }
     }
     else
     {
       const { sql, params } = this.#buildUpdateQuery(changedFields);
       await connector.query(sql, params);
-      this.afterUpdate(true);
+
+      let updatedRow =  await connector.next();
+
+      if (updatedRow)
+      {
+        for (const field of changedFields)
+        {
+          const attributeName = field.attributeName;
+          const snapshotName = '_' + attributeName;
+          const value = updatedRow[field.columnName];
+          this[attributeName] = value;
+          this[snapshotName] = value;
+        }
+
+        this.afterUpdate(true);
+        insertOrUpdateResult = true;
+      }
+      else
+      {
+        this.afterUpdate(false);
+      }
     }
 
-    this.afterSave(true);
+    this.afterSave(insertOrUpdateResult);
 
     connector.close();
 
@@ -323,8 +379,6 @@ export class CoreDbObject
     }
     else
     {
-      // const allFields = Object.entries(this._fields);
-
       Object.entries(this._fields).forEach(([fieldKey, fieldMeta], fieldIndex) =>
       {
         const attributeName = fieldMeta.attributeName;
@@ -346,12 +400,6 @@ export class CoreDbObject
     return { whereClauses, params };
   }
 
-  /**
-   * Construit la requête INSERT (PostgreSQL, placeholders $1, $2, ...).
-   *
-   * @param {Array} changedFields
-   * @returns {{ sql: string, params: Array }}
-   */
   #buildInsertQuery(changedFields)
   {
     const columns = [];
@@ -365,27 +413,26 @@ export class CoreDbObject
       placeholders.push('$' + (index + 1));
     });
 
+    const returningColumns = Object.values(this._fields).map((fieldMeta) =>
+    {
+      return '"' + fieldMeta.columnName + '"';
+    });
+
     const sql =
         'INSERT INTO ' + this.getFullTableName() +
       ' (' + columns.join(', ') + ')' +
-      ' VALUES (' + placeholders.join(', ') + ')';
+      ' VALUES (' + placeholders.join(', ') + ')' +
+      ' RETURNING ' + returningColumns.join(', ');
 
     return { sql, params };
   }
 
-  /**
-   * Construit la requête UPDATE (PostgreSQL, placeholders $1, $2, ...).
-   *
-   * @param {Array} changedFields
-   * @returns {{ sql: string, params: Array }}
-   */
   #buildUpdateQuery(changedFields)
   {
     const { whereClauses, params: whereParams } = this.#buildWhereClauses();
 
     const setClauses = [], setParams = [];
 
-    // SET partie
     changedFields.forEach((field, index) =>
     {
       const placeholderIndex = whereParams.length + index + 1;
@@ -394,6 +441,9 @@ export class CoreDbObject
     });
 
     const params = whereParams.concat(setParams);
+    const returningClause = changedFields.length > 0
+      ? ' RETURNING ' + changedFields.map((field) => '"' + field.columnName + '"').join(', ')
+      : '';
 
     if (!this._primaryKeys || this._primaryKeys.length === 0)
     {
@@ -404,7 +454,8 @@ export class CoreDbObject
         ' WHERE ctid IN (' +
         'SELECT ctid FROM ' + this.getFullTableName() +
         ' WHERE ' + whereClause +
-        ' LIMIT 1)';
+        ' LIMIT 1)' +
+        returningClause;
 
       return { sql, params };
     }
@@ -412,9 +463,10 @@ export class CoreDbObject
     const sql =
         'UPDATE ' + this.getFullTableName() +
       ' SET ' + setClauses.join(', ') +
-      ' WHERE ' + whereClauses.join(' AND ');
+      ' WHERE ' + whereClauses.join(' AND ') +
+      returningClause;
 
-    return { sql, params};
+    return { sql, params };
   }
 
   // ===========================

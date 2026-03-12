@@ -14,6 +14,20 @@ Before using AppCoreJS, make sure you have:
 
 ## Install dependencies
 
+`package.json`
+```js
+{
+  "name": "my-app",
+  "type": "module",
+  "dependencies": {
+    "@app-core/framework": "file:../.." //set path of appcorejs folder
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
+```
+
 Once your `package.json` is ready, install the project dependencies from the project root:
 
 ```

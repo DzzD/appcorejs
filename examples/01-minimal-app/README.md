@@ -45,10 +45,42 @@ This command runs:
 core-app --nomodel
 ```
 
+This create minimal project structure.
+
+#### Usage example:
+
+`index.js`
+```js
+import { DbManager } from './app/db/DbManager.js';
+
+DbManager.addDatabase(
+{
+    host: 'localhost',
+    port: 5432,
+    user: 'appcore',
+    password: 'appcore',
+    database: 'appcore'
+});
+
+const connector = DbManager.getConnector('appcore');
+await connector.query("SELECT * FROM minimal_app.item");
+let row = await connector.next();
+while(row)
+{
+    //..do some stuff here
+    Log.info(row);
+    row = await connector.next();
+}
+
+
+```
+
 ## Run the example
 
 ```bash
 npm run start
+or
+node index.js
 ```
 
 ## Notes

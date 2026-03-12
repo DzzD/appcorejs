@@ -43,17 +43,17 @@ Your project must therefore use ES modules too:
 
 A more complete minimal example:
 
-```json
+`package.json`
+```js
 {
-    "name": "my-app",
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "postinstall": "app-core --nomodel"
-    },
-    "dependencies": {
-        "app-core": "file:../app-core"
-    }
+  "name": "my-app",
+  "type": "module",
+  "dependencies": {
+    "@app-core/framework": "file:../.."
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
 }
 ```
 

@@ -12,8 +12,7 @@ DbManager.addDatabase(
     port: 5432,
     user: 'appcore',
     password: 'appcore',
-    database: 'appcore',
-    ssl: false
+    database: 'appcore'
 });
 
 // Step 1: simple insert into Item data object.
@@ -28,10 +27,9 @@ await item.save();
 
 // Step 3: simple read of the whole Item data object.
 await item.search();
-
 while (await item.next())
 {
-    Log.info('Persisted item:', item.id, item.name);
+    Log.info(item.id, item.name);
 }
 
 
