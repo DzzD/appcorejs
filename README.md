@@ -103,7 +103,7 @@ AppCore<sub>JS</sub> provides a CLI entry point:
 
 Example usage:
 
-    npx app-core --nodb
+    npx app-core --nomodel
 
 Or through an npm script:
 

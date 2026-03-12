@@ -1,0 +1,12 @@
+{
+  "name": "02-using-model",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@app-core/framework": "file:../.."
+  },
+  "scripts": {
+    "init": "app-core --database appcore --schema minimal_app --user appcore --password appcore --prefix data",
+    "start": "node index.js"
+  }
+}

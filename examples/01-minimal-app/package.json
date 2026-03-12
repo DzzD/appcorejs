@@ -7,6 +7,6 @@
   },
   "scripts": {
     "init": "app-core --nomodel",
-    "start": "node src/index.js"
+    "start": "node index.js"
   }
 }
