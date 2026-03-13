@@ -35,7 +35,7 @@ The `init` script runs:
 app-core --dbname appcore --schema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data --model
 ```
 
-This creates the model objects using the optional `Data` prefix, so the `item` table becomes `DataItem`.
+This creates the model objects using the optional `Data` prefix, so the `item` table classe becomes `DataItem`.
 
 #### Usage example:
 
@@ -57,6 +57,8 @@ const item = new DataItem();
 item.name = "John Doe";
 item.save();
 ```
+
+See [`index.js`](./index.js) for the full code.
 
 ## Run the example
 

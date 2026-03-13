@@ -81,6 +81,8 @@ while (row)
 }
 ```
 
+See [`index.js`](./index.js) for the full code.
+
 ## Run the example
 
 ```bash
