@@ -1,5 +1,5 @@
 {
-  "name": "01-minimal-app",
+  "name": "01-using-database-basic",
   "private": true,
   "type": "module",
   "dependencies": {

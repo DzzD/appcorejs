@@ -5,3 +5,5 @@ examples/**/core/
 /package-lock.json
 /core
 /app
+/examples/01-using-database-basic/package-lock.json
+/examples/02-using-model-basic/package-lock.json
