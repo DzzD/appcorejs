@@ -32,7 +32,7 @@ npm run init
 The `init` script runs:
  
 ```bash
-app-core --database appcore --schema minimal_app --user appcore --password appcore --prefix data
+app-core --dbname appcore --schema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data --model
 ```
 
 This creates the model objects using the optional `Data` prefix, so the `item` table becomes `DataItem`.

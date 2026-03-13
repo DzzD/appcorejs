@@ -1,7 +1,6 @@
 
 
 import { DbManager } from './app/db/DbManager.js';
-import { DbConnector } from './app/db/DbConnector.js';
 import { Log } from './app/Log.js';
 import { SeriousQuizUser } from './app/db/models/SeriousQuizUser.js';
 import { SeriousQuizUserGroup } from './app/db/models/SeriousQuizUserGroup.js';
@@ -28,7 +27,7 @@ await dbConnector.query
 `);
 
 Log.info(`dbConnector.recordCount() = ${dbConnector.recordCount()}`);
-console.log(dbConnector._connectionUid);
+Log.info(dbConnector._connectionUid);
 let user = SeriousQuizUser.from(dbConnector,"u");
 let userGroup = SeriousQuizUserGroup.from(dbConnector,"ug");
 // process.exit(0);
@@ -36,18 +35,18 @@ let userGroup = SeriousQuizUserGroup.from(dbConnector,"ug");
 
 for(let result; result = await dbConnector.next();)
 {
-    // console.log(result);
+    // Log.info(result);
     
-    // console.log(user.login);
+    // Log.info(user.login);
     // Log.info(`userAccount.email = ${user.password}`);
 }
 // Log.info(`DbConnector query returned ${dbConnector.recordCount()} rows, first row: ${JSON.stringify(dbConnectorResult)}`);
-// console.log(DbManager._connections.keys());
- console.log(DbManager);
+// Log.info(DbManager._connections.keys());
+Log.info(DbManager);
 dbConnector.close();
-console.log(DbManager);
+Log.info(DbManager);
 await DbManager.removeDatabase('serious_quiz');
-// console.log(DbManager);
+// Log.info(DbManager);
 process.exit(0);
 
 let n = 0;
@@ -64,11 +63,11 @@ while(await mixe.next())
     // Log.info(`mixe..save() ok`);
 }
 // Log.info(`Ending`);
-// console.log(DbManager);
+// Log.info(DbManager);
 mixe.close();
 // DbManager.releaseConnection("111");
 // DbManager.releaseAllClients();
-// console.log(DbManager);
+// Log.info(DbManager);
 
 
 

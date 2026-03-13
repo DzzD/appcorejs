@@ -3,3 +3,5 @@ node_modules
 **/db/models/**
 examples/**/core/
 /package-lock.json
+/core
+/app

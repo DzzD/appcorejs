@@ -21,7 +21,7 @@ item.name = `Model example ${new Date().toISOString()}`;
 await item.save();
 
 
-// Step 2: simple update of the current row.
+// Step 2: simple immediate update of the current newly inserted row.
 item.name = `${item.name} (updated)`;
 await item.save();
 

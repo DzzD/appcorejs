@@ -132,10 +132,8 @@ This model keeps responsibilities clear and helps preserve a clean, understandab
 
 - [Getting Started](./docs/1-getting-started.md)
 - [Installation](./docs/2-installation.md)
-- [Configuration](./docs/3-configuration.md)
-- [Architecture](./docs/4-architecture.md)
-- [app-core](./docs/5-cli.md)
-- [Data Objects](./docs/6-data-objects.md)
+- [Architecture](./docs/3-architecture.md)
+- [CLI app-core](./docs/4-app-core.md)
 
 ## Status
 

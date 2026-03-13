@@ -4,6 +4,15 @@ This example demonstrates the smallest practical AppCore setup with a PostgreSQL
 
 It uses a simple `item` table and shows how to initialize a minimal application structure without generating model classes.
 
+Even in this minimal setup, the database layer already supports:
+
+- multiple database registrations
+- multiple schemas
+- connection management
+- complexe transaction handling
+
+This means the same architecture can scale from a very small example to more advanced applications requiring several databases, schema separation, controlled connector usage, and transactional operations.
+
 ## Prerequisites
 
 - Node.js and npm
@@ -42,10 +51,10 @@ npm run init
 This command runs:
 
 ```bash
-core-app --nomodel
+core-app 
 ```
 
-This create minimal project structure.
+This creates a minimal project structure.
 
 #### Usage example:
 
@@ -71,15 +80,17 @@ while(row)
     Log.info(row);
     row = await connector.next();
 }
-
-
 ```
 
 ## Run the example
 
 ```bash
 npm run start
+```
+
 or
+
+```bash
 node index.js
 ```
 
@@ -88,3 +99,6 @@ node index.js
 - This example is intentionally minimal.
 - It relies on the shared PostgreSQL service defined in `examples/compose.yaml`.
 - The database schema for this example contains a single `item` table.
+- The same database layer is designed to support multi-database and multi-schema applications.
+- Connector usage, connection management, and transactions are handled through the framework database layer.
+```

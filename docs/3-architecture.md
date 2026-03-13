@@ -8,7 +8,9 @@ AppCoreJS is built around a strict architectural rule:
 
 This architecture is designed to keep the framework stable, patchable, and fully extensible without ever breaking the separation between framework internals and project-specific code.
 
-## Core / App separation
+## App / Core separation
+![AppCore<sub>JS</sub> logo](../docs/images/app-core-js-archi.png)
+
 
 AppCoreJS is split into two distinct layers:
 
