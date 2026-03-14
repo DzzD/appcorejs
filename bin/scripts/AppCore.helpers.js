@@ -63,4 +63,19 @@ function toCamelCase(text)
     }).join('');
 }
 
-export { copyDirectory, toPascalCase, toCamelCase };
+function pluralizeName(value)
+{
+    if (value.endsWith('s'))
+    {
+        return value;
+    }
+
+    return `${value}s`;
+}
+
+function resolveProjectRoot()
+{
+    return process.cwd();
+}
+
+export { copyDirectory, toPascalCase, toCamelCase, pluralizeName, resolveProjectRoot };

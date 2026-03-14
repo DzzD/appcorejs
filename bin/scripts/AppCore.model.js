@@ -1,19 +1,18 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import pg from 'pg';
 
 import { Log } from '../../src/app/Log.js';
-import { toPascalCase, toCamelCase } from './AppCore.helpers.js';
-
-const { Client } = pg;
+import { toPascalCase, toCamelCase, pluralizeName, resolveProjectRoot } from './AppCore.helpers.js';
+import { withDatabase, resolveTargetSchemas, fetchSchemaTables, fetchTableColumns, fetchTablePrimaryKeys, fetchTableForeignKeys } from './AppCore.sql.js';
 
 export async function generateModel(configuration)
 {
     Log.info('[app-core] Model generation requested');
     Log.info('[app-core] Database configuration:', configuration);
 
-    const projectRoot = resolveProjectRoot();
-    configuration.projectRoot = projectRoot;
+
+    configuration.projectRoot = resolveProjectRoot();
+    
 
     if (!configuration.tables || configuration.tables.length === 0)
     {
@@ -86,6 +85,7 @@ async function generateCoreModels(configuration)
     await fs.mkdir(coreModelsRoot, { recursive: true });
 
     const tables = configuration.tables ?? [];
+    const referencingForeignKeysMap = buildReferencingForeignKeysMap(tables, configuration);
 
     for (const table of tables)
     {
@@ -93,17 +93,21 @@ async function generateCoreModels(configuration)
         const fileName = `${className}.js`;
         const filePath = path.join(coreModelsRoot, fileName);
 
-        const content = buildCoreClassContent(className, table, configuration);
-        await fs.writeFile(filePath, content.replace(/^.*\r?\n/, ''), 'utf8');
+        const tableKey = buildTableKey(table.schema, table.name);
+        const referencingForeignKeys = referencingForeignKeysMap.get(tableKey) ?? [];
+
+        const finalContent = buildCoreClassContent(className, table, configuration, referencingForeignKeys).replace(/^.*\r?\n/, '');
+        await fs.writeFile(filePath, finalContent, 'utf8');
         Log.info(`[app-core] Created Core model class: ${filePath}`);
     }
 }
 
 
-function buildCoreClassContent(className, table, configuration)
+function buildCoreClassContent(className, table, configuration, referencingForeignKeys)
 {
     const fields = table.columns ?? [];
     const foreignKeys = table.foreignKeys ?? [];
+    const incomingForeignKeys = referencingForeignKeys ?? [];
 
     const attributes = fields.map((column) => `_${toCamelCase(column.name)}`);
     const snapshots = fields.map((column) => `__${toCamelCase(column.name)}`);
@@ -112,7 +116,10 @@ function buildCoreClassContent(className, table, configuration)
     const relatedImports = foreignKeys
         .filter((foreignKey) => typeof foreignKey.relatedClassName === 'string' && foreignKey.relatedClassName.length > 0)
         .map((foreignKey) => foreignKey.relatedClassName);
-    const uniqueImports = Array.from(new Set(relatedImports));
+    const incomingImports = incomingForeignKeys
+        .filter((incomingForeignKey) => typeof incomingForeignKey.referencingClassName === 'string' && incomingForeignKey.referencingClassName.length > 0)
+        .map((incomingForeignKey) => incomingForeignKey.referencingClassName);
+    const uniqueImports = Array.from(new Set([...relatedImports, ...incomingImports]));
     const importLines = [
         "import { DbObject } from '../../../app/db/DbObject.js';",
         ...uniqueImports.map((relatedClassName) => `import { ${relatedClassName} } from '../../../app/db/models/${relatedClassName}.js';`)
@@ -180,11 +187,28 @@ ${fieldsEntries.join(',\n')}
     }`;
     });
 
+    const methodNameUsage = new Map();
+
+    function buildUniqueMethodName(baseName)
+    {
+        const usageCount = methodNameUsage.get(baseName) ?? 0;
+        const nextCount = usageCount + 1;
+        methodNameUsage.set(baseName, nextCount);
+
+        if (nextCount === 1)
+        {
+            return baseName;
+        }
+
+        return `${baseName}${nextCount}`;
+    }
+
     const foreignGetters = foreignKeys.map((foreignKey) =>
     {
         const relatedClassBase = `${configuration.normalizedPrefix}${toPascalCase(foreignKey.table)}`;
         const relatedClassName = relatedClassBase.length > 0 ? relatedClassBase : toPascalCase(foreignKey.table);
-        const methodName = `get${relatedClassName}`;
+        const baseMethodName = `get${relatedClassName}`;
+        const methodName = buildUniqueMethodName(baseMethodName);
         const attributeName = toCamelCase(foreignKey.localColumn);
         const relatedVariableName = toCamelCase(foreignKey.table);
 
@@ -201,15 +225,42 @@ ${fieldsEntries.join(',\n')}
     }`;
     });
 
-    const methodsBlock = [...getterSetterBlocks, ...foreignGetters].length > 0 ? `${[...getterSetterBlocks, ...foreignGetters].join('\n\n')}\n` : '';
+    const inverseForeignGetters = incomingForeignKeys.map((incomingForeignKey) =>
+    {
+        const pluralClassName = pluralizeName(incomingForeignKey.referencingClassName);
+        const baseMethodName = `get${pluralClassName}`;
+        const methodName = buildUniqueMethodName(baseMethodName);
+
+        const collectionVariableName = pluralizeName(toCamelCase(incomingForeignKey.referencingTable));
+        const attributeName = toCamelCase(incomingForeignKey.foreignColumn);
+
+        return `    async ${methodName}()
+    {
+        const ${collectionVariableName} = new ${incomingForeignKey.referencingClassName}(this._connectionUid);
+        const found = await ${collectionVariableName}.search('\"${incomingForeignKey.localColumn}\" = $1', [this.${attributeName}]);
+        if(!found)
+        {
+            return null;
+        }        
+        return ${collectionVariableName};
+    }`;
+    });
+
+    const methods = [...getterSetterBlocks, ...foreignGetters, ...inverseForeignGetters];
+    const methodsBlock = methods.length > 0 ? `${methods.join('\n\n')}\n` : '';
 
     const primaryKeys = table.primaryKeys ?? [];
     const primaryKeysBlock = primaryKeys.length > 0 ? `        this._primaryKeys = [${primaryKeys.map((pk) => `'${pk}'`).join(', ')}];\n\n` : '';
 
     return `
-/*
- * AUTO-GENERATED FILE - DO NOT EDIT
- * This file is managed by app-core and may be regenerated at any time.
+/**
+ * AppCoreJS Framework
+ * GENERATED PROJECT CORE MODEL
+ * AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+ * Generated from the project database schema by app-core.
+ * This file may be regenerated at any time.
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
  */
 
 ${importLines}
@@ -243,18 +294,7 @@ async function loadDatabaseMetadata(configuration)
         return [];
     }
 
-    const client = new Client(
-    {
-        host: configuration.dbhost,
-        port: configuration.dbport,
-        user: configuration.dbuser,
-        password: configuration.dbpassword,
-        database: configuration.dbname
-    });
-
-    await client.connect();
-
-    try
+    return withDatabase(configuration, async (client) =>
     {
         const schemas = await resolveTargetSchemas(client, configuration.dbschema);
         const tables = [];
@@ -314,114 +354,60 @@ async function loadDatabaseMetadata(configuration)
         }
 
         return tables;
-    }
-    finally
+    });
+}
+
+
+function buildReferencingForeignKeysMap(tables, configuration)
+{
+    const referencingForeignKeysMap = new Map();
+
+    for (const table of tables)
     {
-        await client.end();
-    }
-}
-function resolveProjectRoot()
-{
-    return process.cwd();
-}
+        const referencingClassBase = `${configuration.normalizedPrefix}${toPascalCase(table.name)}`;
+        const referencingClassName = referencingClassBase.length > 0 ? referencingClassBase : toPascalCase(table.name);
+        const foreignKeys = table.foreignKeys ?? [];
 
-
-async function resolveTargetSchemas(client, requestedSchema)
-{
-    if (!requestedSchema || requestedSchema === 'ALL')
-    {
-        const result = await client.query(
-            `SELECT DISTINCT table_schema
-             FROM information_schema.tables
-             WHERE table_type = 'BASE TABLE'
-               AND table_schema NOT IN ('pg_catalog', 'information_schema')
-             ORDER BY table_schema`);
-
-        return result.rows.map((row) => row.table_schema);
-    }
-
-    return requestedSchema.split(',').map((schema) => schema.trim()).filter((schema) => schema.length > 0);
-}
-
-
-async function fetchSchemaTables(client, schema)
-{
-    const result = await client.query(
-        `SELECT table_name
-         FROM information_schema.tables
-         WHERE table_schema = $1
-           AND table_type = 'BASE TABLE'
-         ORDER BY table_name`,
-        [schema]);
-
-    return result.rows.map((row) => row.table_name);
-}
-
-
-async function fetchTableColumns(client, schema, table)
-{
-    const result = await client.query(
-        `SELECT column_name, data_type, is_nullable, column_default
-         FROM information_schema.columns
-         WHERE table_schema = $1
-           AND table_name = $2
-         ORDER BY ordinal_position`,
-        [schema, table]);
-
-    return result.rows;
-}
-
-
-async function fetchTablePrimaryKeys(client, schema, table)
-{
-    const result = await client.query(
-        `SELECT a.attname AS column_name
-         FROM pg_index i
-         JOIN pg_class t ON t.oid = i.indrelid
-         JOIN pg_namespace n ON n.oid = t.relnamespace
-         JOIN pg_attribute a ON a.attrelid = t.oid AND a.attnum = ANY(i.indkey)
-         WHERE i.indisprimary
-           AND n.nspname = $1
-           AND t.relname = $2
-         ORDER BY a.attnum`,
-        [schema, table]);
-
-    return result.rows.map((row) => row.column_name);
-}
-
-
-async function fetchTableForeignKeys(client, schema, table)
-{
-    const result = await client.query(
-        `SELECT
-             kcu.column_name,
-             ccu.table_schema AS foreign_schema,
-             ccu.table_name AS foreign_table,
-             ccu.column_name AS foreign_column
-         FROM information_schema.table_constraints tc
-         JOIN information_schema.key_column_usage kcu
-             ON tc.constraint_name = kcu.constraint_name
-            AND tc.table_schema = kcu.table_schema
-         JOIN information_schema.constraint_column_usage ccu
-             ON ccu.constraint_name = tc.constraint_name
-            AND ccu.table_schema = tc.table_schema
-         WHERE tc.constraint_type = 'FOREIGN KEY'
-           AND tc.table_schema = $1
-           AND tc.table_name = $2
-         ORDER BY kcu.ordinal_position`,
-        [schema, table]);
-
-    const foreignKeys = {};
-
-    for (const row of result.rows)
-    {
-        foreignKeys[row.column_name] =
+        for (const foreignKey of foreignKeys)
         {
-            schema: row.foreign_schema,
-            table: row.foreign_table,
-            column: row.foreign_column
-        };
+            const targetKey = buildTableKey(foreignKey.schema, foreignKey.table);
+            if (!referencingForeignKeysMap.has(targetKey))
+            {
+                referencingForeignKeysMap.set(targetKey, []);
+            }
+
+            const entries = referencingForeignKeysMap.get(targetKey);
+            entries.push(
+            {
+                referencingSchema: table.schema,
+                referencingTable: table.name,
+                referencingClassName,
+                localColumn: foreignKey.localColumn,
+                foreignColumn: foreignKey.column
+            });
+        }
     }
 
-    return foreignKeys;
+    for (const entries of referencingForeignKeysMap.values())
+    {
+        entries.sort((left, right) =>
+        {
+            if (left.referencingClassName === right.referencingClassName)
+            {
+                return left.localColumn.localeCompare(right.localColumn);
+            }
+
+            return left.referencingClassName.localeCompare(right.referencingClassName);
+        });
+    }
+
+    return referencingForeignKeysMap;
 }
+
+
+function buildTableKey(schema, table)
+{
+    const normalizedSchema = schema ?? '';
+    return `${normalizedSchema}.${table}`;
+}
+

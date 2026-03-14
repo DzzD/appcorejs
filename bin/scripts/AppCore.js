@@ -1,6 +1,7 @@
 import { Log } from '../../src/app/Log.js';
 import { initialiseProject } from './AppCore.project.js';
 import { generateModel } from './AppCore.model.js';
+import { resolveProjectRoot } from './AppCore.helpers.js';
 
 function parseArguments(rawArgs)
 {
@@ -85,6 +86,8 @@ async function main(rawArgs)
     const args = parseArguments(rawArgs);
     Log.info('[app-core] Command invoked with arguments:', args);
 
+    await initialiseProject();
+
     if (args.model)
     {
         if (!args.dbuser || !args.dbpassword)
@@ -105,7 +108,7 @@ async function main(rawArgs)
         await generateModel({ ...args, dbschema: computedSchema, modelPrefix: computedPrefix });
     }
 
-    await initialiseProject();
+    
 }
 
 main(process.argv.slice(2));
