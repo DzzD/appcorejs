@@ -2,20 +2,20 @@
 
 import { DbManager } from './app/db/DbManager.js';
 import { Log } from './app/Log.js';
-import { SeriousQuizUser } from './app/db/models/SeriousQuizUser.js';
-import { SeriousQuizUserGroup } from './app/db/models/SeriousQuizUserGroup.js';
+// import { SeriousQuizUser } from './app/db/models/SeriousQuizUser.js';
+// import { SeriousQuizUserGroup } from './app/db/models/SeriousQuizUserGroup.js';
 
 
 DbManager.addDatabase(
 {
     host: 'localhost',
-    port: 5432,
-    database: 'serious_quiz',
-    user: 'dev',
-    password: 'devpass'
+    port: 5433,
+    database: 'appcore',
+    user: 'appcore',
+    password: 'appcore'
 });
 
-const dbConnector = DbManager.getConnector('serious_quiz');
+const dbConnector = DbManager.getConnector('appcore');
 await dbConnector.query
 (`
     SELECT
@@ -28,8 +28,8 @@ await dbConnector.query
 
 Log.info(`dbConnector.recordCount() = ${dbConnector.recordCount()}`);
 Log.info(dbConnector._connectionUid);
-let user = SeriousQuizUser.from(dbConnector,"u");
-let userGroup = SeriousQuizUserGroup.from(dbConnector,"ug");
+// let user = SeriousQuizUser.from(dbConnector,"u");
+// let userGroup = SeriousQuizUserGroup.from(dbConnector,"ug");
 // process.exit(0);
 
 
@@ -45,7 +45,7 @@ for(let result; result = await dbConnector.next();)
 Log.info(DbManager);
 dbConnector.close();
 Log.info(DbManager);
-await DbManager.removeDatabase('serious_quiz');
+await DbManager.removeDatabase('appcore');
 // Log.info(DbManager);
 process.exit(0);
 
