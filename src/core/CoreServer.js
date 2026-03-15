@@ -8,6 +8,7 @@
 
 import express from 'express';
 import path from 'node:path';
+import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { Log } from '../app/Log.js';
 
@@ -16,13 +17,39 @@ export class CoreServer
     #application;
     #httpServer;
     #staticDirectory;
+    appName;
 
     constructor()
     {
+        this.appName = "ApplicationName";
         this.#staticDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
         this.#application = express();
         this.#httpServer = null;
         this.#application.use(express.json());
+
+        this.#application.use(async (request, response, next) =>
+        {
+            try
+            {
+                const relativeFileName = request.path.replace(/^\/+/, '').replace(/\/$/, '/index.html') || 'index.html';
+                const fileName = path.join(this.#staticDirectory, relativeFileName);
+
+                const content = await this.static(fileName, request);
+
+                if (content === null)
+                {
+                    next();
+                    return;
+                }
+
+                response.type(path.extname(fileName)).send(content);
+            }
+            catch (error)
+            {
+                next(error);
+            }
+        });
+
         this.#application.use(express.static(this.#staticDirectory));
 
     }
@@ -56,6 +83,20 @@ export class CoreServer
         return this.#staticDirectory;
     }
 
+    async static(fileName, request)
+    {
+        Log.info(fileName);
+        if (!fileName.endsWith('index.html'))
+        {
+            return null;
+        }
+        
+        Log.info(fileName);
+        let content = await fs.readFile(fileName, 'utf8');
+        content = content.replaceAll("{{APP_NAME}}", this.appName);
+        return content;
+    }
+
     async stop()
     {
         return new Promise((resolve, reject) =>
@@ -73,4 +114,5 @@ export class CoreServer
             });
         });
     }    
+    
 }

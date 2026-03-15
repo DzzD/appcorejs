@@ -6,8 +6,5 @@ export class ScreenHome extends Screen
     {
         super(componentId);
     }
-
-    
-   
    
 }

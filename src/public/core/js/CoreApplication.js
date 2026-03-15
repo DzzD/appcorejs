@@ -1,7 +1,9 @@
-/*
- * NE PAS MODIFIER — Framework AppCore (DzzD)
- * Personnalisation via la classe Application (singleton).
- * Auteur : DzzD (aka Bruno Augier)
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
  */
 
 
@@ -67,11 +69,11 @@ export class CoreApplication
   }
 
   /*
-  * Point d’entrée de l’application.
+  * User application booting
   */
   static boot()
   {
-    const app = new this(); // this = classe appelante (Application du développeur)
+    const app = new this(); 
     window.app = app;
 
     const start = () => app.start();

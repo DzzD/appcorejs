@@ -1,21 +1,27 @@
-/*
- * NE PAS MODIFIER — Framework AppCore (DzzD)
- * Personnalisation via la classe Component pour tous les écrans,
- * ou via les classes ComponentXxxxx pour un composant spécifique.
- * Auteur : DzzD (aka Bruno Augier)
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
  */
 
 
 export class CoreComponent
 {
+    /*
+     * Component identifier.
+     */
     id;
-    datas;
+    
+    /*
+     * Child components.
+     */
     childs;
 
     constructor(componentId)
     {
         this.id = componentId;
-        this.datas = new Map(); 
         this.childs = new Map();
     }
 

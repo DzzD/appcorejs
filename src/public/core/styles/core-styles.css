@@ -1,7 +1,9 @@
-/*
- * NE PAS MODIFIER — Framework AppCore (DzzD)
- * Personnalisation via la les feuilles de styles enfant (styles.css, screen.css, component.css, etc...).
- * Auteur : DzzD (aka Bruno Augier)
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
  */
 
 @import url("../../app/styles/theme.css");
