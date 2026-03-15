@@ -17,9 +17,10 @@
         ".": "./src/index.js"
     },
     "scripts": {
-        "postinstall": "node ./bin/app-core.js --nomodel"        
+        "postinstall": "node ./bin/app-core.js --nomodel"
     },
     "dependencies": {
+        "express": "^5.2.1",
         "pg": "^8.11.5"
     }
 }

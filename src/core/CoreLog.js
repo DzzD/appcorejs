@@ -15,6 +15,17 @@ export class CoreLog
         warn: 2,
         error: 3
     };
+
+    static colors =
+    {
+        reset: '\x1b[0m',
+        debug: '\x1b[90m', // gray
+        info: '\x1b[36m',  // cyan
+        warn: '\x1b[33m',  // yellow
+        error: '\x1b[31m'  // red
+    };
+
+    static color = true;
     static #mode = CoreLog.modes.debug;
 
     static setMode(mode)
@@ -27,6 +38,32 @@ export class CoreLog
         CoreLog.#mode = CoreLog.modes[mode];
     }
 
+    static setColor(enabled)
+    {
+        CoreLog.color = Boolean(enabled);
+    }
+
+    static #formatArgs(level, args)
+    {
+        if (!CoreLog.color)
+        {
+            return args;
+        }
+
+        const color = CoreLog.colors[level] ?? '';
+        const reset = CoreLog.colors.reset;
+
+        return args.map((arg) =>
+        {
+            if (typeof arg === 'string')
+            {
+                return `${color}${arg}${reset}`;
+            }
+
+            return arg;
+        });
+    }
+
     static debug(...args)
     {
         if (CoreLog.#mode > CoreLog.modes.debug)
@@ -34,9 +71,8 @@ export class CoreLog
             return;
         }
 
-        console.debug(...args);
+        console.debug(...CoreLog.#formatArgs('debug', args));
     }
-
 
     static info(...args)
     {
@@ -45,9 +81,8 @@ export class CoreLog
             return;
         }
 
-        console.info(...args);
+        console.info(...CoreLog.#formatArgs('info', args));
     }
-
 
     static warn(...args)
     {
@@ -56,9 +91,8 @@ export class CoreLog
             return;
         }
 
-        console.warn(...args);
+        console.warn(...CoreLog.#formatArgs('warn', args));
     }
-
 
     static error(...args)
     {
@@ -67,6 +101,6 @@ export class CoreLog
             return;
         }
 
-        console.error(...args);
+        console.error(...CoreLog.#formatArgs('error', args));
     }
 }

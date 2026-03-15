@@ -1,0 +1,119 @@
+/*
+ * NE PAS MODIFIER — Framework AppCore (DzzD)
+ * Personnalisation via la les feuilles de styles enfant (styles.css, screen.css, component.css, etc...).
+ * Auteur : DzzD (aka Bruno Augier)
+ */
+
+@import url("../../app/styles/theme.css");
+
+*
+{
+  box-sizing: border-box;
+}
+
+html
+{
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  font-family: var(--font-family);
+  font-size: var(--font-size);
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+body
+{
+  display: grid;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 1em;
+  height: 100vh;
+  grid-template-rows: auto 1fr auto;
+  transition: opacity 1s;
+}
+
+body.fonts-loaded 
+{
+  opacity: 1;
+}
+
+
+h1, h2, h3 
+{
+  font-weight: 600;
+  margin: 0;
+  padding: 0.8em 0.5em 0.4em;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+h1 { font-size: 2em; }
+h2 { font-size: 1.5em; }
+h3 { font-size: 1.2em; }
+
+header,
+footer
+{
+  background: var(--color-surface-dark);
+  color: var(--color-text-on-primary);
+  text-align: center;
+  padding: 1.5em;
+}
+
+main
+{
+  padding: 2rem;
+  display: grid;
+}
+
+section[data-screen]
+{
+  grid-area: 1 / 1;
+  background: var(--color-surface);
+  border-radius: 1.25em;
+  padding: 2em;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+section[data-screen-active]
+{
+  display: block;
+}
+
+.hidden
+{
+  display: none;
+}
+
+button
+{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: .5em 1.4em;
+  border: 0;
+  border-radius: .25em;
+
+  font-size: 1.25em;
+  /* line-height: 100%; */
+
+  cursor: pointer;
+
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+
+  transition: .25s ease;
+}
+
+button:hover
+{
+  filter: brightness(1.1);
+}
+
+button:active
+{
+  transform: scale(.97);
+}

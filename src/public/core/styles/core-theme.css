@@ -1,0 +1,44 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('InterVariable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: block;
+}
+
+:root 
+{
+  /* === Surfaces (couleurs de fond) === */
+
+  --color-bg: #f5f5f7; 
+  /* Fond principal de l'application (body, page entière) */
+
+  --color-surface: #ffffff; 
+  /* Fond des blocs internes : cartes, panneaux, sections */
+
+  --color-surface-dark: #1f2937; 
+  /* Surface sombre pour bandeaux, header, footer, zones contrastées */
+
+  --color-primary: #2563eb; 
+  /* Couleur d’accent principale (boutons, liens, éléments actifs) */
+
+
+  /* === Texte === */
+
+  --color-text: #333333; 
+  /* Couleur du texte standard sur fond clair */
+
+  --color-text-on-dark: #ffffff; 
+  /* Couleur du texte affiché sur une surface sombre */
+
+  --color-text-on-primary: #ffffff; 
+  /* Couleur du texte affiché sur un fond primary */
+
+
+  /* === Typographie === */
+
+  --font-family: 'Inter', system-ui, sans-serif;
+  /* Police principale de l’application (stack système moderne) */
+
+  --font-size: 16px;
+  /* Taille de base du texte (peut servir de référence globale) */
+}
