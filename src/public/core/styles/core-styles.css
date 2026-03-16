@@ -100,7 +100,6 @@ button
   border-radius: .25em;
 
   font-size: 1.25em;
-  /* line-height: 100%; */
 
   cursor: pointer;
 
@@ -115,7 +114,3 @@ button:hover
   filter: brightness(1.1);
 }
 
-button:active
-{
-  transform: scale(.97);
-}

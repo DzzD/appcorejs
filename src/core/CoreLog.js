@@ -28,7 +28,7 @@ export class CoreLog
     static color = true;
     static #mode = CoreLog.modes.debug;
 
-    static setMode(mode)
+    static set mode(mode)
     {
         if (!Object.prototype.hasOwnProperty.call(CoreLog.modes, mode))
         {

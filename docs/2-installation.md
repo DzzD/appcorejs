@@ -62,13 +62,13 @@ A more complete minimal example:
 Once AppCoreJS is installed, generate the application model with:
 
 ```bash
-npx app-core --database appcore --schema minimal_app --user appcore --password appcore
+npx app-core --model --dbname appcore --dbschema minimal_app --dbuser appcore --dbpassword appcore
 ```
 
-To only initialize the framework structure without generating a model:
+To only initialize the framework structure without generating a model structure :
 
 ```bash
-npx app-core --nomodel
+npx app-core 
 ```
 
 ## Notes

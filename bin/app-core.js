@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
+ */
+
+
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { spawn } from 'node:child_process';

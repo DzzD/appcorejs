@@ -1,6 +1,6 @@
 {
-    "name": "Application Factice N°1",
-    "short_name": "AppFactice1",
+    "name": "{{APP_NAME}}",
+    "short_name": "{{APP__SHORT_NAME}}",
     "description": "Progressive web application for Application Factice N°1.",
     "start_url": "./index.html",
     "scope": "./",

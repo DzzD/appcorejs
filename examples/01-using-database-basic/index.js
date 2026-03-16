@@ -15,7 +15,7 @@ import { Log } from './app/Log.js';
 
 
 // Step 1: set the log level to display informational messages during the workflow.
-Log.setMode('info');
+Log.mode = 'info';
 
 // Step 2: register the shared PostgreSQL configuration.
 DbManager.addDatabase(

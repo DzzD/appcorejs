@@ -1,10 +1,18 @@
 @import url("../../core/styles/core-theme.css");
 
+/**
+ * AppCoreJS Framework
+ * APP LAYER
+ * INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
+ */
 
+/*
+ * Use this file to override the global color theme.
+ */
 
-:root 
+:root
 {
-  /* --color-bg: #f5f5f7; */
+    /* --color-bg: #f5f5f7; */
 }
-
-

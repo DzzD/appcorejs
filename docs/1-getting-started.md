@@ -44,7 +44,7 @@ Once dependencies are installed, generate your application model from a database
 npx app-core --database appcore --schema minimal_app --user appcore --password appcore
 ```
 
-This command generates the model files required by the framework from the selected schema.
+This command generates the model files required by the framework from the selected database & schema.
 
 ## Typical project layout
 
@@ -53,13 +53,18 @@ A typical AppCoreJS project is based on:
 ```text
 app/
 core/
+public/
+  app/
+  core/
+  index.js
 index.js
 ```
 
-Depending on the project, additional files and directories may be present.
+The exact structure may vary depending on the use case.
 
 ## What to read next
 
-You can also look at the available examples to see how an AppCoreJS project is structured in practice.
+To see how an AppCoreJS project is structured in practice, you can explore the available examples.
 
-- [Examples](../exemples/README.md)
+- [Examples](../examples/README.md)
+- Or continue with the detailed [Installation](./2-installation.md) guide.

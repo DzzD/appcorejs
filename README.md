@@ -1,4 +1,6 @@
-![AppCore<sub>JS</sub> logo](./docs/images/logo-app-core-js.png)
+![AppCore<sub>JS</sub> logo](./docs/images/app-core-js.logo-big.png)
+
+
 
 # AppCore<sub>JS</sub> Framework
 

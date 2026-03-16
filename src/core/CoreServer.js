@@ -18,10 +18,12 @@ export class CoreServer
     #httpServer;
     #staticDirectory;
     appName;
+    appShortName;
 
     constructor()
     {
-        this.appName = "ApplicationName";
+        this.appName = "Application Name";
+        this.appShortName = "app-short-name";
         this.#staticDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
         this.#application = express();
         this.#httpServer = null;
@@ -85,16 +87,25 @@ export class CoreServer
 
     async static(fileName, request)
     {
-        Log.info(fileName);
-        if (!fileName.endsWith('index.html'))
+        Log.info(request.path);
+        if (fileName.endsWith('index.html'))
         {
-            return null;
+            let content = await fs.readFile(fileName, 'utf8');
+            content = content.replaceAll("{{APP_NAME}}", this.appName);
+            return content;
         }
+
         
-        Log.info(fileName);
-        let content = await fs.readFile(fileName, 'utf8');
-        content = content.replaceAll("{{APP_NAME}}", this.appName);
-        return content;
+        if (fileName.endsWith('manifest.json'))
+        {
+            let content = await fs.readFile(fileName, 'utf8');
+            content = content.replaceAll("{{APP_NAME}}", this.appName)
+                             .replaceAll("{{APP__SHORT_NAME}}", this.appShortName);
+            return content;
+        }
+
+        return null;
+        
     }
 
     async stop()

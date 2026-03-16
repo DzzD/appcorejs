@@ -1,3 +1,11 @@
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
+ */
+
 import { Log } from '../../src/app/Log.js';
 import { initialiseProject } from './AppCore.project.js';
 import { generateModel } from './AppCore.model.js';

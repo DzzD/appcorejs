@@ -1,5 +1,13 @@
 @import url("../../core/styles/core-styles.css");
 
+/**
+ * AppCoreJS Framework
+ * APP LAYER
+ * INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
+ */
+
 /*
- * Surcharger ici les styles principaux
+ * Use this file to override global styles.
  */
