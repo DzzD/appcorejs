@@ -100,7 +100,7 @@ export class CoreServer
         {
             let content = await fs.readFile(fileName, 'utf8');
             content = content.replaceAll("{{APP_NAME}}", this.appName)
-                             .replaceAll("{{APP__SHORT_NAME}}", this.appShortName);
+                             .replaceAll("{{APP_SHORT_NAME}}", this.appShortName);
             return content;
         }
 

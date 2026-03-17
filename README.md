@@ -1,4 +1,4 @@
-![AppCore<sub>JS</sub> logo](./docs/images/app-core-js.logo-big.png)
+![AppCore<sub>JS</sub> logo](./docs/images/app-core-logo-1024.png)
 
 
 

@@ -32,8 +32,8 @@ npm install ../app-core
 
 ## Minimal package.json
 
-AppCoreJS is distributed as an ES module package.  
-Your project must therefore use ES modules too:
+AppCoreJS is distributed as an ES module package.
+To use it, your project must enable ES modules, for example by setting:
 
 ```json
 {

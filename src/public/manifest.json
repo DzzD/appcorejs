@@ -1,7 +1,7 @@
 {
     "name": "{{APP_NAME}}",
-    "short_name": "{{APP__SHORT_NAME}}",
-    "description": "Progressive web application for Application Factice N°1.",
+    "short_name": "{{APP_SHORT_NAME}}",
+    "description": "{{APP_NAME}} - Progressive web application.",
     "start_url": "./index.html",
     "scope": "./",
     "display": "standalone",
@@ -12,14 +12,12 @@
         {
             "src": "./assets/icons/icon-192.png",
             "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "type": "image/png"
         },
         {
             "src": "./assets/icons/icon-512.png",
             "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "any maskable"
+            "type": "image/png"
         }
     ]
 }

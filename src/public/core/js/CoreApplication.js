@@ -11,23 +11,61 @@ globalThis.$ = globalThis.id = (id) => { return document.getElementById(id) };
 globalThis.select = (selector) => { return document.querySelector(selector) };
 globalThis.selectAll = (selector, parent = document) => { return [...parent.querySelectorAll(selector)] };
 
+globalThis.extractTemplate = (htmlElement) =>
+    {
+        const clone = htmlElement.cloneNode(true);
+        const childComponents = getClosestChildComponentElements(clone);
+
+        for (const child of childComponents)
+        {
+            const componentId = child.getAttribute('data-appcore-id');
+            child.replaceWith(document.createTextNode(`{{${componentId}}}`));
+        }
+
+        return clone.outerHTML;
+    }    
+
+globalThis.getClosestChildComponentElements = (rootElement) =>
+    {
+        const result = [];
+        const all = rootElement.querySelectorAll('[data-appcore-id]');
+
+        for (const element of all)
+        {
+            const parentComponent = element.parentElement?.closest('[data-appcore-id]');
+
+            if (parentComponent === rootElement)
+            {
+                result.push(element);
+            }
+        }
+
+        return result;
+    }
+
+
 export class CoreApplication
 {
-  datas;
   components;
   _screenCurrentId;
   _screenPreviousId;
 
   start()
   {
-    this.datas = new Map();
     this.components = new Map();
+    console.log(extractTemplate(document.body));
   }
 
 
   async open(componentId, args = null)
   {
-    const component = await this.getComponent(componentId);
+    let component = this.components.get(componentId);
+    if (!component) 
+    {
+      component = await app.loadComponent(componentId);
+      this.components.set(componentId, component);
+      // component.load();
+    }
     component.show(args);
   }
 
@@ -37,35 +75,45 @@ export class CoreApplication
     component.hide();   
   }
 
-  async getComponent(componentId)
+  async click()
   {
-    let component = this.components.get(componentId);
-    if (component) return component;
+    alert(event.target);
+  }
 
-    console.log(`loadClass(${componentId})`, this._componentIdToClassFile(componentId));
+  parseComponentId(componentId)
+  {
+      const [path, uid] = componentId.split('::');
+      const parts = path.split('.');
+      const rawClassName = parts.pop();
+      const filePath = parts.join('/');
 
-    const cls = await this._loadClass(this._componentIdToClassFile(componentId));
-    console.log(cls);
+      const className = rawClassName
+          .split('-')
+          .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+          .join('');
 
-    component = new cls(componentId);
-    this.components.set(componentId, component);
+      return {
+          filePath,
+          className,
+          uid
+      };
+  }
 
+  async loadComponent(componentId)
+  {
+    const { filePath, className, uid } = this.parseComponentId(componentId);
+    const cls = await this._loadClass(filePath, className);
+    const component = new cls(componentId);
+    component.load();
     return component;
   }
 
-  _componentIdToClassFile(componentId)
+  async _loadClass(filePath, className)
   {
-      const segments = componentId.split('.');
+    const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
+    const module = await import(moduleUrl.href);
 
-      return `/${segments.map((segment, index) => index === segments.length - 1 ? segment.split('-').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join('') : segment).join('/')}.js`;
-  }
-
-  async _loadClass(classFile)
-  {
-    const module = await import(classFile);
-    console.log("import",classFile);
-    console.log("import",classFile.split('/').pop().replace(/\.[^.]+$/, ''));
-    return module.default || module[classFile.split('/').pop().replace(/\.[^.]+$/, '')];
+    return module.default || module[className];
   }
 
   /*

@@ -28,9 +28,7 @@ export class CoreComponent
     show()
     {
         console.log(`show(${this.id})`);
-        id(this.id).classList.remove('hidden');
     }
-
 
     hide()
     {
@@ -38,4 +36,42 @@ export class CoreComponent
         id(this.id).classList.add('hidden');
     }
 
+    getHtmlElement()
+    {
+        const buildSelector = (component) =>
+        {
+            const selector = `[data-appcore-id="${component.id}"]`;
+
+            return component.parent
+                ? `${buildSelector(component.parent)} ${selector}`
+                : selector;
+        };
+
+        return document.querySelector(buildSelector(this));
+    }
+
+
+
+
+    /*
+     * Returns the full component representation.
+     */
+    getContent()
+    {
+        return {
+            type: 'html',
+            data: `<div id="${this.id}">${this.getInnerContent().data}</div>`
+        };
+    }
+
+    /*
+     * Returns only the inner component content.
+     */
+    getInnerContent()
+    {
+        return {
+            type: 'html',
+            data: `${this.constructor.name} content`
+        };
+    }
 }

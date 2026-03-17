@@ -13,40 +13,33 @@
   font-display: block;
 }
 
-:root 
+
+:root
 {
-  /* === Surfaces (couleurs de fond) === */
+   
+    --color-bg: #f4f8fc;
+    --color-text : #555555;
 
-  --color-bg: #f5f5f7; 
-  /* Fond principal de l'application (body, page entière) */
+    --main-background : url("../../assets/images/background.jpg") center / cover no-repeat;
 
-  --color-surface: #ffffff; 
-  /* Fond des blocs internes : cartes, panneaux, sections */
+    --header-background : radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 40%),
+                          linear-gradient(180deg, #33466b 0%, #253552 45%, #1d273c 100%);
 
-  --color-surface-dark: #1f2937; 
-  /* Surface sombre pour bandeaux, header, footer, zones contrastées */
+    --header-color: #ffffff;
+    
+    --background-menu : #f8f8fe;
 
-  --color-primary: #2563eb; 
-  /* Couleur d’accent principale (boutons, liens, éléments actifs) */
-
-
-  /* === Texte === */
-
-  --color-text: #333333; 
-  /* Couleur du texte standard sur fond clair */
-
-  --color-text-on-dark: #ffffff; 
-  /* Couleur du texte affiché sur une surface sombre */
-
-  --color-text-on-primary: #ffffff; 
-  /* Couleur du texte affiché sur un fond primary */
+    --background-screen: rgba(255,255,255,0.5);
 
 
-  /* === Typographie === */
 
-  --font-family: 'Inter', system-ui, sans-serif;
-  /* Police principale de l’application (stack système moderne) */
+    /* Status colors */
+    --color-success: #16a34a;
+    --color-warning: #f2a100;
+    --color-danger: #dc2626;
 
-  --font-size: 16px;
-  /* Taille de base du texte (peut servir de référence globale) */
+
+    /* === Typographie === */
+    --font-family: 'Inter', system-ui, sans-serif;
+    --font-size: 16px;
 }
