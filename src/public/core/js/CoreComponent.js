@@ -9,34 +9,44 @@
 
 export class CoreComponent
 {
-    /*
-     * Component identifier.
-     */
+    parent;
     id;
-    
-    /*
-     * Child components.
-     */
+    template;
     childs;
 
-    constructor(componentId)
+    constructor(componentId, parent = null)
     {
+        this.parent = parent;
         this.id = componentId;
+        this.template = null;
         this.childs = new Map();
+    }
+
+    loaded()
+    {
+        this.template = this.extractTemplate();
+        const self = this;
+        this.node.action = function(action, ...args){self.action(action, ...args)};
+    }
+
+    action(action, ...args)
+    {
+        Log.info(action);
+        Log.info(args[0]);
+        this.hide();
     }
 
     show()
     {
-        console.log(`show(${this.id})`);
+        this.node.classList.remove('hidden');
     }
 
     hide()
     {
-        console.log(`hide(${this.id})`);
-        id(this.id).classList.add('hidden');
+        this.node.classList.add('hidden');
     }
 
-    getHtmlElement()
+    get node()
     {
         const buildSelector = (component) =>
         {
@@ -50,28 +60,113 @@ export class CoreComponent
         return document.querySelector(buildSelector(this));
     }
 
-
-
-
-    /*
-     * Returns the full component representation.
-     */
-    getContent()
+    get idParts()
     {
+        const [path, uid] = this.id.split('::');
+        const parts = path.split('.');
+        const rawClassName = parts.pop();
+        const filePath = parts.join('/');
+
+        const className = rawClassName
+            .split('-')
+            .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+            .join('');
+
         return {
-            type: 'html',
-            data: `<div id="${this.id}">${this.getInnerContent().data}</div>`
+            filePath,
+            className,
+            uid
         };
     }
 
-    /*
-     * Returns only the inner component content.
-     */
-    getInnerContent()
+    async initChildComponents()
     {
-        return {
-            type: 'html',
-            data: `${this.constructor.name} content`
-        };
+        const childElements = this.#getClosestChildComponentElements(this.node);
+
+        for (const childElement of childElements)
+        {
+            const componentId = childElement.getAttribute('data-appcore-id');
+            const component = await this.loadComponent(componentId);
+
+            if(!component)
+            {
+                Log.info(`Ignoring ${componentId}.`);
+                continue;
+            }
+
+            component.parent = this;
+            this.childs.set(component.id, component);
+
+            component.loaded();
+            await component.initChildComponents();
+        }
+    }    
+
+    async loadComponent(componentId)
+    {
+        const { filePath, className} = this.idParts;
+        const cls = await this._loadClass(filePath, className);
+
+        if(!cls)
+        {
+            Log.info(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            return  new CoreComponent(componentId, this);
+        }
+
+        const component = new cls(componentId, this);
+        component.loaded();
+
+        return component;
     }
+
+    async _loadClass(filePath, className)
+    {
+        
+        const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
+        Log.info(`Loading file : ${moduleUrl.href}`);
+        try
+        {            
+            const module = await import(moduleUrl.href);
+            Log.info(`Component file loaded : ${moduleUrl.href}`);
+            return module.default || module[className];
+        }
+        catch(error)
+        {
+            Log.error(`Component file not found or invalid: ${moduleUrl.href}`);
+            return null;
+        }        
+    }    
+
+    extractTemplate()
+    {
+        const clone = this.node.cloneNode(true);
+        const childComponents = this.#getClosestChildComponentElements(clone);
+
+        for (const child of childComponents)
+        {
+            const componentId = child.getAttribute('data-appcore-id');
+            child.replaceWith(document.createTextNode(`{{${componentId}}}`));
+        }
+
+        return clone.outerHTML;
+    }    
+    
+    #getClosestChildComponentElements(rootElement)
+    {
+        const result = [];
+        const all = rootElement.querySelectorAll('[data-appcore-id]');
+
+        for (const element of all)
+        {
+            const parentComponent = element.parentElement?.closest('[data-appcore-id]');
+
+            if (parentComponent === rootElement)
+            {
+                result.push(element);
+            }
+        }
+
+        return result;
+    }
+
 }

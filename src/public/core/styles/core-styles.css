@@ -111,7 +111,7 @@ main
 section[data-screen-container]
 {
     display: grid;
-    transform: translateX(-50%);
+    /* transform: translateX(-50%); */
 }
 
 section[data-screen]
