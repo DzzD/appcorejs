@@ -20,20 +20,56 @@ Log.mode = "debug";
 
 export class CoreApplication extends Component
 {
-  components;
-  _screenCurrentId;
-  _screenPreviousId;
+  loadedStyles;
+
+  constructor(componentId, parent = null)
+  {
+      super(componentId, parent);
+      // this.stylesheets.push("core/styles/application.css");
+      this.loadedStyles = new Set();
+  }
 
   async start()
   {
+    await this.initChilds();
     
-    // Log.error("errreur");
-    this.components = new Map();
-    this.id = "app.js.application";
-    console.log(this.node);
-    console.log(this.extractTemplate());
-    await this.initChildComponents();
-    
+  }
+
+  async _loadStyle(stylesheet)
+  {
+      const styleUrl = new URL(stylesheet, document.baseURI);
+      const href = styleUrl.href;
+
+      Log.info(`Loading style file : ${href}`);
+
+      if (this.loadedStyles.has(href))
+      {
+          return true;
+      }
+
+      const existingLink = document.querySelector(`link[data-appcore-style="${href}"]`);
+
+      if (existingLink)
+      {
+          this.loadedStyles.add(href);
+          return true;
+      }
+
+      await new Promise((resolve, reject) =>
+      {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = href;
+          link.setAttribute("data-appcore-style", href);
+
+          link.onload = resolve;
+          link.onerror = reject;
+
+          document.head.appendChild(link);
+      });
+
+      this.loadedStyles.add(href);
+      return true;
   }
 
   /*
@@ -41,18 +77,18 @@ export class CoreApplication extends Component
   */
   static boot()
   {
-    const app = new this(); 
-    window.app = app;
+      const app = new this("app.js.application");
+      window.app = app;
 
-    if (document.readyState === 'loading')
-      document.addEventListener('DOMContentLoaded', app.start);
-    else
-      app.start();
+      if (document.readyState === 'loading')
+        document.addEventListener('DOMContentLoaded', () => app.start());
+      else
+        app.start();
 
-    document.fonts.ready.then(() =>
-    {
-      document.body.classList.add('fonts-loaded');
-    });
+      document.fonts.ready.then(() =>
+      {
+        document.body.classList.add('fonts-loaded');
+      });
   }
 }
 

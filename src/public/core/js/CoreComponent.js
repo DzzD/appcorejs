@@ -20,20 +20,24 @@ export class CoreComponent
         this.id = componentId;
         this.template = null;
         this.childs = new Map();
+        
     }
 
     loaded()
     {
         this.template = this.extractTemplate();
         const self = this;
-        this.node.action = function(action, ...args){self.action(action, ...args)};
+        this.node.action = function(action, args){self.action(action, args)};
+        app._loadStyle("core/styles/core-component.css");
     }
 
-    action(action, ...args)
+    action(action, args)
     {
         Log.info(action);
-        Log.info(args[0]);
-        this.hide();
+        Log.info(args);
+        Log.info(args);
+        Log.info(this.node);
+        // this.hide();
     }
 
     show()
@@ -60,9 +64,32 @@ export class CoreComponent
         return document.querySelector(buildSelector(this));
     }
 
-    get idParts()
+    getChild(id, deep = true)
     {
-        const [path, uid] = this.id.split('::');
+        for (const child of this.childs.values())
+        {
+            if (child.id === id)
+            {
+                return child;
+            }
+
+            if (deep)
+            {
+                const found = child.getChild(id, true);
+
+                if (found)
+                {
+                    return found;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    explodeId(componentId)
+    {
+        const [path, uid] = componentId.split('::');
         const parts = path.split('.');
         const rawClassName = parts.pop();
         const filePath = parts.join('/');
@@ -79,13 +106,15 @@ export class CoreComponent
         };
     }
 
-    async initChildComponents()
+    async initChilds()
     {
         const childElements = this.#getClosestChildComponentElements(this.node);
+        
 
         for (const childElement of childElements)
         {
             const componentId = childElement.getAttribute('data-appcore-id');
+            
             const component = await this.loadComponent(componentId);
 
             if(!component)
@@ -98,13 +127,13 @@ export class CoreComponent
             this.childs.set(component.id, component);
 
             component.loaded();
-            await component.initChildComponents();
+            await component.initChilds();
         }
     }    
 
     async loadComponent(componentId)
     {
-        const { filePath, className} = this.idParts;
+        const { filePath, className} = this.explodeId(componentId);
         const cls = await this._loadClass(filePath, className);
 
         if(!cls)
@@ -119,15 +148,15 @@ export class CoreComponent
         return component;
     }
 
+    
     async _loadClass(filePath, className)
     {
         
         const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
-        Log.info(`Loading file : ${moduleUrl.href}`);
+        Log.info(`Loading class file : ${moduleUrl.href}`);
         try
         {            
-            const module = await import(moduleUrl.href);
-            Log.info(`Component file loaded : ${moduleUrl.href}`);
+            const module = await import(moduleUrl.href);//TODO: à déplacer dans app comme style avec loadJavascrypt ou loadModule //eviter multi-chargement
             return module.default || module[className];
         }
         catch(error)
