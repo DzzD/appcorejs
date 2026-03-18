@@ -9,6 +9,7 @@
 
 export class CoreComponent
 {
+    isLoaded;
     parent;
     id;
     template;
@@ -16,38 +17,48 @@ export class CoreComponent
 
     constructor(componentId, parent = null)
     {
+        this.isLoaded = false;
         this.parent = parent;
         this.id = componentId;
         this.template = null;
-        this.childs = new Map();
-        
-    }
-
-    loaded()
-    {
-        this.template = this.extractTemplate();
-        const self = this;
-        this.node.action = function(action, args){self.action(action, args)};
-        app._loadStyle("core/styles/core-component.css");
+        this.childs = new Map();  
+        Loader.loadStyle("core/styles/core-component.css");      
     }
 
     action(action, args)
     {
         Log.info(action);
-        Log.info(args);
-        Log.info(args);
-        Log.info(this.node);
-        // this.hide();
     }
 
-    show()
+    open(args)
+    {
+    }
+
+    show(args)
     {
         this.node.classList.remove('hidden');
     }
 
-    hide()
+    hide(args)
     {
         this.node.classList.add('hidden');
+    }
+
+    close(args)
+    {
+
+    }
+
+    loaded()
+    {
+        if (this.isLoaded)
+        {
+            return;
+        }
+        
+        this.node.appcore = this;
+        // this.node.action = (action, args) => this.action(action, args);
+        this.isLoaded = true;
     }
 
     get node()
@@ -134,7 +145,7 @@ export class CoreComponent
     async loadComponent(componentId)
     {
         const { filePath, className} = this.explodeId(componentId);
-        const cls = await this._loadClass(filePath, className);
+        const cls = await Loader.loadClass(filePath, className);
 
         if(!cls)
         {
@@ -148,37 +159,20 @@ export class CoreComponent
         return component;
     }
 
-    
-    async _loadClass(filePath, className)
-    {
-        
-        const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
-        Log.info(`Loading class file : ${moduleUrl.href}`);
-        try
-        {            
-            const module = await import(moduleUrl.href);//TODO: à déplacer dans app comme style avec loadJavascrypt ou loadModule //eviter multi-chargement
-            return module.default || module[className];
-        }
-        catch(error)
-        {
-            Log.error(`Component file not found or invalid: ${moduleUrl.href}`);
-            return null;
-        }        
-    }    
 
-    extractTemplate()
-    {
-        const clone = this.node.cloneNode(true);
-        const childComponents = this.#getClosestChildComponentElements(clone);
+    // extractTemplate()
+    // {
+    //     const clone = this.node.cloneNode(true);
+    //     const childComponents = this.#getClosestChildComponentElements(clone);
 
-        for (const child of childComponents)
-        {
-            const componentId = child.getAttribute('data-appcore-id');
-            child.replaceWith(document.createTextNode(`{{${componentId}}}`));
-        }
+    //     for (const child of childComponents)
+    //     {
+    //         const componentId = child.getAttribute('data-appcore-id');
+    //         child.replaceWith(document.createTextNode(`{{${componentId}}}`));
+    //     }
 
-        return clone.outerHTML;
-    }    
+    //     return clone.outerHTML;
+    // }    
     
     #getClosestChildComponentElements(rootElement)
     {

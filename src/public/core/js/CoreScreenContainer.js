@@ -9,11 +9,19 @@
 import { Component } from "../../app/js/Component.js";
 
 
-export class CoreScreen extends Component
+export class CoreScreenContainer extends Component
 {
     constructor(componentId, parent = null)
     {
         super(componentId, parent);
-        Loader.loadStyle("core/styles/core-screen.css");  
+        Loader.loadStyle("core/styles/core-screen-container.css");  
     }
+
+    openScreen(componentId)
+    {
+        Log.info("opening componentId" + componentId );
+        const popup = document.getElementById("popup");
+        popup.show();
+    }
+
 }

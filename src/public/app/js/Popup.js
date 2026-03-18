@@ -6,13 +6,9 @@
  * Licensed under the MIT License
  */
 
-import { Screen } from "./Screen.js";
+import { CorePopup } from "../../core/js/CorePopup.js";
 
-export class ScreenHome2 extends Screen
+export class Popup extends CorePopup
 {
-    constructor(componentId)
-    {
-        super(componentId);
-    }
-   
+
 }

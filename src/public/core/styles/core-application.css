@@ -1,0 +1,128 @@
+body
+{
+    display: grid;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    min-height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    transition: opacity 1s;
+    background : var(--main-background);
+}
+
+body.fonts-loaded
+{
+    opacity: 1;
+}
+
+h1,h2,h3
+{
+    font-weight: 400;
+    margin: 0;
+    padding: 0.8em 0.5em 0.4em;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.25rem; }
+
+
+header
+{
+    color: #0175cd;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 75%);
+    box-shadow: 0px 9px 12px rgba(50,50,50,0.5);
+    display: grid;
+    grid-template-rows: auto auto;
+}
+
+header h1
+{
+    margin: 0;
+    padding: 0 0.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    letter-spacing: 0.03em;
+    text-shadow: 0px 0px 11px rgb(255 255 255);
+}
+
+header h1 .logo
+{
+    grid-column: 1;
+    max-height: 120px;
+    display: block;
+    margin-right: 1rem;
+}
+
+header h1 .title
+{
+    grid-column: 2;
+    justify-self: center;
+    text-align: center;
+}
+
+header .menu
+{
+    grid-row: 2;
+    padding: 0 1.5rem 1rem 1.5rem;
+}
+
+footer
+{
+    padding: 0 1rem;
+    color: #aacfff;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 75%);
+    box-shadow: 0px -9px 12px rgb(231 231 255 / 50%);
+}
+
+footer p 
+{
+    padding: 0rem 0;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    letter-spacing: 0.03em;
+    text-shadow: 0 1px 5px rgb(113 113 113 / 98%);
+}
+
+header .menu
+{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1rem;
+    background: rgba(255,255,255,0.5);
+}
+
+header .menu button
+{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+
+    font-size: 1rem;
+    letter-spacing: 0.03em;
+    padding: 1rem 1.4rem;
+    border: 0;
+    background: #ff5500;
+    color: #ffffff;
+    min-width: 150px;
+    transition: background-color .33s ease;
+}
+
+header .menu button:hover
+{
+    background: color-mix(in srgb, #ff5500 85%, white);
+}
+
+main
+{
+    padding: 1rem;
+    display: grid;
+}
+

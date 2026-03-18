@@ -1,0 +1,8 @@
+
+
+section[data-appcore-id*="app.js.screen-container::"], 
+section[data-appcore-id$="app.js.screen-container"]
+{
+    display: grid;
+    /* transform: translateX(-50%);  */
+}

@@ -1,0 +1,5 @@
+<!-- error.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <circle cx="12" cy="12" r="9" fill="currentColor"/>
+  <path d="M9 9L15 15M15 9L9 15" stroke="white" stroke-width="2.2" stroke-linecap="black"/>
+</svg>

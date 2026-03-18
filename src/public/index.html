@@ -14,33 +14,35 @@
   </head>
   <body data-appcore-id="app.js.application">
 
-    <header data-appcore-id="app.js.header" onclick="action('show','hide')">
-      <h1>{{APP_NAME}}</h1>
-      <div data-appcore-id="app.js.app-menu" class="menu">
-        <button onClick="app.open('app.js.screen-home::screen-home-bla')">Screen 1</button>
-        <button onClick="app.open('app.js.screen-home2')">Screen 2</button>
-        <button onClick="app.click()">Screen 3</button>
+    <header>
+      <h1>
+          <img class="logo" src="./assets/icons/icon-512.png" alt="">
+          <span class="title">{{APP_NAME}}</span>
+      </h1> 
+      <div class="menu">
+        <button onClick="appcore('app.js.screen-container').openScreen('app.js.screen-home::screen-home-bla')">Home</button>
+        <button onClick="appcore('app.js.popup::popup-info').open();">Screen 2</button>
+        <button onClick="app.action()">Screen 3</button>
       </div>
     </header>
 
-    <main data-appcore-id="app.js.main">
+    <main>
 
-      <section data-appcore-id="app.js.screen-container"  data-screen-container>
+      <section data-appcore-id="app.js.screen-container::optional-uid">
 
 
-        <section data-appcore-id="app.js.screen-home::screen-home-bla"  data-screen >
+        <section data-appcore-id="app.js.screen-home::screen-home-1"  data-screen >
           <h2>Ecran exemple 1</h2>
           <h3>Titre paragraphe 1</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
           <button>mon boutton</button>
         </section>
       
-        <section data-appcore-id="app.js.screen-home2" data-screen >
+        <section data-appcore-id="app.js.screen-home::screen-home-2" data-screen >
           <h2>Ecran exemple 2</h2>
           <h3>Titre paragraphe 1</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
           <button>mon boutton</button>
-        </section>
         </section>
       
         <section data-appcore-id="app.js.screen-home2::inst2" data-screen >
@@ -51,15 +53,32 @@
           <div class="result">
             <span>champ 1</span><span>champ2</span>
           </div>
-          <button onclick="parentElement.action('Search')">mon boutton</button>
+          <button onclick="parentElement.appcore.action('search')">mon boutton</button>
         </section>
 
 
       </section>
 
+      <div data-appcore-id="app.js.popup::popup-info" class="hidden" data-type="warning">
+          <div class="popup-header">
+               <div class="popup-title">
+                  <span class="popup-icon"></span>
+                  <h2>Titre popup</h2>
+              </div>
+              <button type="button" onclick="appcore('app.js.popup::popup-info').hide()">✕</button>
+          </div>
+          <div class="popup-body">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor
+          </div>
+          <div class="popup-footer">
+              <button type="button" class="popup-ok">OK</button>
+          </div>
+      </div>
+    
+
     </main>
-    <footer data-appcore-id="app.js.footer">
-      <p>© SeriousQuiz 2026</p>
+    <footer>
+      <p>© AppCoreJS - 2026 (DzzD)</p>      
     </footer>
   </body>
 </html>

@@ -1,0 +1,28 @@
+
+
+section[data-screen]
+{
+    grid-area: 1 / 1;
+    
+    color: var(--color-text);
+    /* border: 1px solid var(--color-border); */
+    border-radius: 1.25rem;
+    padding: 2em;
+    /* box-shadow: var(--shadow-medium, 0 10px 25px rgba(0, 0, 0, 0.08));*/
+    /* background : var(--main-background)  */
+}
+
+
+
+section[data-screen]
+{
+    display: block;
+    /* background : var(--background-screen); */
+    background: linear-gradient(146deg, #ffffff2e, #ffffff61);
+}
+
+
+section[data-screen-active]
+{
+    display: block;
+}

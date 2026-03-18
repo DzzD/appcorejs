@@ -10,4 +10,5 @@ import { CoreLog } from '../../core/js/CoreLog.js';
 
 export class Log extends CoreLog
 {
+    
 }

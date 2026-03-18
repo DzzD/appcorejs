@@ -16,30 +16,17 @@
 
 :root
 {
-   
-    --color-bg: #f4f8fc;
-    --color-text : #555555;
+  /* global */
+  --color-bg: #f4f8fc;
+  --color-text : #555555;
+  --font-family: 'Inter', system-ui, sans-serif;
+  --font-size: 16px;
 
-    --main-background : url("../../assets/images/background.jpg") center / cover no-repeat;
+  /* Status colors */
+  --color-success: #16a34a;
+  --color-warning: #f2a100;
+  --color-danger: #dc2626;
 
-    --header-background : radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 40%),
-                          linear-gradient(180deg, #33466b 0%, #253552 45%, #1d273c 100%);
-
-    --header-color: #ffffff;
-    
-    --background-menu : #f8f8fe;
-
-    --background-screen: rgba(255,255,255,0.5);
-
-
-
-    /* Status colors */
-    --color-success: #16a34a;
-    --color-warning: #f2a100;
-    --color-danger: #dc2626;
-
-
-    /* === Typographie === */
-    --font-family: 'Inter', system-ui, sans-serif;
-    --font-size: 16px;
+  --main-background : url("../../assets/images/background.jpg") center / cover no-repeat;
+ 
 }

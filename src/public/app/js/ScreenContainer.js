@@ -6,13 +6,9 @@
  * Licensed under the MIT License
  */
 
-import { Screen } from "./Screen.js";
+import { CoreScreenContainer } from "../../core/js/CoreScreenContainer.js";
 
-export class ScreenHome2 extends Screen
+export class ScreenContainer extends CoreScreenContainer
 {
-    constructor(componentId)
-    {
-        super(componentId);
-    }
-   
+
 }

@@ -1,0 +1,163 @@
+div[data-appcore-id*="app.js.popup::"],
+div[data-appcore-id$="app.js.popup"]
+{
+    position: fixed;
+    z-index: 100;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 320px;
+    max-width: min(90vw, 720px);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #555555;
+    background: #ffffff;
+    border: 1px solid #0175cd;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.75rem 4rem rgb(0 0 0 / 49%);
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header,
+div[data-appcore-id$="app.js.popup"] > .popup-header
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    background: linear-gradient(
+178deg, #0175d6, #9ab7e9);
+    border-bottom: 1px solid rgb(255 255 255 / 20%);
+    cursor: default;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-title,
+div[data-appcore-id$="app.js.popup"] > .popup-header .popup-title
+{
+    display: flex;
+    align-items: center;
+    /* gap: 0.6rem; */
+    min-width: 0;
+    flex: 1 1 auto;
+    /* line-height: 200%; */
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-icon,
+div[data-appcore-id$="app.js.popup"] > .popup-header .popup-icon
+{
+    flex: 0 0 auto;
+    display: block;
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: contain;
+}
+
+
+div[data-appcore-id*="app.js.popup::"][data-type="info"] > .popup-header .popup-icon,
+div[data-appcore-id$="app.js.popup"][data-type="info"] > .popup-header .popup-icon
+{
+    color: #ffffff;
+}
+
+div[data-appcore-id*="app.js.popup::"][data-type="warning"] > .popup-header .popup-icon,
+div[data-appcore-id$="app.js.popup"][data-type="warning"] > .popup-header .popup-icon
+{
+    color: var(--color-warning);
+}
+
+div[data-appcore-id*="app.js.popup::"][data-type="error"] > .popup-header .popup-icon,
+div[data-appcore-id$="app.js.popup"][data-type="error"] > .popup-header .popup-icon
+{
+    color: var(--color-danger);
+}
+
+div[data-appcore-id*="app.js.popup::"][data-type="success"] > .popup-header .popup-icon,
+div[data-appcore-id$="app.js.popup"][data-type="success"] > .popup-header .popup-icon
+{
+    color: var(--color-success);
+}
+
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-title h2,
+div[data-appcore-id$="app.js.popup"] > .popup-header .popup-title h2
+{
+    margin: 0;
+    padding: 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 400;
+    /* line-height: 1.5rem; */
+    display: flex;
+    /* align-content: center; */
+    /* justify-content: space-between; */
+    align-items: center;
+    vertical-align: middle;
+    user-select: none;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header button,
+div[data-appcore-id$="app.js.popup"] > .popup-header button
+{
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+    color: #ffffff;
+    background: #ff5500;
+    border: 0;
+    border-radius: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .33s ease;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-header button:hover,
+div[data-appcore-id$="app.js.popup"] > .popup-header button:hover
+{
+    background: color-mix(in srgb, #ff5500 85%, white);
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-body,
+div[data-appcore-id$="app.js.popup"] > .popup-body
+{
+    flex: 1 1 auto;
+    padding: 1rem;
+    overflow: auto;
+    background: #ffffff;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-footer,
+div[data-appcore-id$="app.js.popup"] > .popup-footer
+{
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 0 1rem 1rem 1rem;
+    background: #ffffff;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-footer .popup-ok,
+div[data-appcore-id$="app.js.popup"] > .popup-footer .popup-ok
+{
+    min-width: 6rem;
+    height: 2.25rem;
+    padding: 0 1rem;
+    color: #ffffff;
+    background: #0175cd;
+    border: 0;
+    border-radius: 0.35rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+div[data-appcore-id*="app.js.popup::"] > .popup-footer .popup-ok:hover,
+div[data-appcore-id$="app.js.popup"] > .popup-footer .popup-ok:hover
+{
+    filter: brightness(1.08);
+}
