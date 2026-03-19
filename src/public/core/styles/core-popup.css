@@ -1,5 +1,4 @@
-div[data-appcore-id*="app.js.popup::"],
-div[data-appcore-id$="app.js.popup"]
+div[data-appcore-class~="app.js.popup"]
 {
     position: fixed;
     z-index: 100;
@@ -12,15 +11,23 @@ div[data-appcore-id$="app.js.popup"]
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    color: #555555;
-    background: #ffffff;
+    color: var(--color-text);
+    /* background: color-mix(in srgb, var(--color-bg) 70%, transparent); */
     border: 1px solid #0175cd;
     border-radius: 0.5rem;
     box-shadow: 0 0.75rem 4rem rgb(0 0 0 / 49%);
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-header,
-div[data-appcore-id$="app.js.popup"] > .popup-header
+div[data-appcore-class~="app.js.popup"] .popup-modal-overlay
+{
+    position: fixed;
+    z-index: -1;
+    inset: 0;
+    background-color: color-mix(in srgb, var(--color-bg) 25%, transparent);;
+}
+
+
+div[data-appcore-class~="app.js.popup"] > .popup-header
 {
     display: flex;
     align-items: center;
@@ -28,25 +35,21 @@ div[data-appcore-id$="app.js.popup"] > .popup-header
     gap: 1rem;
     padding: 0.75rem 1rem;
     color: #ffffff;
-    background: linear-gradient(
-178deg, #0175d6, #9ab7e9);
+    background: linear-gradient(178deg, #0175d6, #9ab7e9);
     border-bottom: 1px solid rgb(255 255 255 / 20%);
     cursor: default;
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-title,
-div[data-appcore-id$="app.js.popup"] > .popup-header .popup-title
+
+div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title
 {
     display: flex;
     align-items: center;
-    /* gap: 0.6rem; */
     min-width: 0;
     flex: 1 1 auto;
-    /* line-height: 200%; */
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-icon,
-div[data-appcore-id$="app.js.popup"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.popup"] > .popup-header .popup-icon
 {
     flex: 0 0 auto;
     display: block;
@@ -55,52 +58,43 @@ div[data-appcore-id$="app.js.popup"] > .popup-header .popup-icon
     object-fit: contain;
 }
 
-
-div[data-appcore-id*="app.js.popup::"][data-type="info"] > .popup-header .popup-icon,
-div[data-appcore-id$="app.js.popup"][data-type="info"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.popup"][data-type="info"] > .popup-header .popup-icon
 {
     color: #ffffff;
 }
 
-div[data-appcore-id*="app.js.popup::"][data-type="warning"] > .popup-header .popup-icon,
-div[data-appcore-id$="app.js.popup"][data-type="warning"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.popup"][data-type="warning"] > .popup-header .popup-icon
 {
     color: var(--color-warning);
 }
 
-div[data-appcore-id*="app.js.popup::"][data-type="error"] > .popup-header .popup-icon,
-div[data-appcore-id$="app.js.popup"][data-type="error"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.popup"][data-type="error"] > .popup-header .popup-icon
 {
     color: var(--color-danger);
 }
 
-div[data-appcore-id*="app.js.popup::"][data-type="success"] > .popup-header .popup-icon,
-div[data-appcore-id$="app.js.popup"][data-type="success"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.popup"][data-type="success"] > .popup-header .popup-icon
 {
     color: var(--color-success);
 }
 
-
-div[data-appcore-id*="app.js.popup::"] > .popup-header .popup-title h2,
-div[data-appcore-id$="app.js.popup"] > .popup-header .popup-title h2
+div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title :is(h1, h2, h3)
 {
     margin: 0;
     padding: 0 1rem;
-    font-size: 1.25rem;
-    font-weight: 400;
-    /* line-height: 1.5rem; */
+    color: #ffffff;
+    /* font-size: 1.25rem; */
+    /* font-weight: 400; */
     display: flex;
-    /* align-content: center; */
-    /* justify-content: space-between; */
     align-items: center;
     vertical-align: middle;
     user-select: none;
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-header button,
-div[data-appcore-id$="app.js.popup"] > .popup-header button
+div[data-appcore-class~="app.js.popup"] > .popup-header button
 {
     flex: 0 0 auto;
+    min-width:auto;
     width: 2rem;
     height: 2rem;
     margin: 0;
@@ -116,33 +110,29 @@ div[data-appcore-id$="app.js.popup"] > .popup-header button
     transition: background-color .33s ease;
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-header button:hover,
-div[data-appcore-id$="app.js.popup"] > .popup-header button:hover
+div[data-appcore-class~="app.js.popup"] > .popup-header button:hover
 {
     background: color-mix(in srgb, #ff5500 85%, white);
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-body,
-div[data-appcore-id$="app.js.popup"] > .popup-body
+div[data-appcore-class~="app.js.popup"] > .popup-body
 {
     flex: 1 1 auto;
     padding: 1rem;
     overflow: auto;
-    background: #ffffff;
+    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-footer,
-div[data-appcore-id$="app.js.popup"] > .popup-footer
+div[data-appcore-class~="app.js.popup"] > .popup-footer
 {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 0 1rem 1rem 1rem;
-    background: #ffffff;
+    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-footer .popup-ok,
-div[data-appcore-id$="app.js.popup"] > .popup-footer .popup-ok
+div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok
 {
     min-width: 6rem;
     height: 2.25rem;
@@ -152,12 +142,11 @@ div[data-appcore-id$="app.js.popup"] > .popup-footer .popup-ok
     border: 0;
     border-radius: 0.35rem;
     font-size: 0.95rem;
-    font-weight: 600;
+    /* font-weight: 600; */
     cursor: pointer;
 }
 
-div[data-appcore-id*="app.js.popup::"] > .popup-footer .popup-ok:hover,
-div[data-appcore-id$="app.js.popup"] > .popup-footer .popup-ok:hover
+div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok:hover
 {
     filter: brightness(1.08);
 }

@@ -28,11 +28,28 @@ export class CorePopup extends Component
         const header = this.node.querySelector(".popup-header");
         header.addEventListener("pointerdown", this.#onDragStart);
 
-        const button = this.node.querySelector(".popup-header button");
-        button.addEventListener("pointerdown", (event) =>
+        const buttonCross = this.node.querySelector(".popup-header button");
+        buttonCross.addEventListener("pointerdown", (event) =>
         {
             event.stopPropagation();
         });
+
+        buttonCross.addEventListener("click", (event) =>
+        {
+            this.hide();
+        });
+
+        const buttonOk = this.node.querySelector(".popup-footer button");
+        buttonOk.addEventListener("pointerdown", (event) =>
+        {
+            event.stopPropagation();
+        });
+        
+        buttonOk.addEventListener("click", (event) =>
+        {
+            this.hide();
+        });
+
 
         
     }

@@ -36,12 +36,17 @@ export class CoreComponent
 
     show(args)
     {
+        this.node.classList.add('invisible');
+        this.node.classList.remove('visible');
         this.node.classList.remove('hidden');
+        setTimeout(() => {this.node.classList.add('visible');this.node.classList.remove('invisible')}, 50);
     }
 
     hide(args)
     {
-        this.node.classList.add('hidden');
+        this.node.classList.add('invisible');
+        this.node.classList.remove('visible');
+        setTimeout(() => {this.node.classList.add('visible');this.node.classList.add('hidden')}, 500);
     }
 
     close(args)

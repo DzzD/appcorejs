@@ -1,28 +1,47 @@
 
 
-section[data-screen]
+/* section[data-appcore-class~="app.js.screen"]
 {
+    display: block;  
     grid-area: 1 / 1;
-    
-    color: var(--color-text);
-    /* border: 1px solid var(--color-border); */
+    padding: 2rem;
     border-radius: 1.25rem;
-    padding: 2em;
-    /* box-shadow: var(--shadow-medium, 0 10px 25px rgba(0, 0, 0, 0.08));*/
-    /* background : var(--main-background)  */
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 75%, transparent), color-mix(in srgb, var(--color-bg) 25%, transparent));
+} */
+
+
+
+[data-appcore-class~="app.js.screen"]
+{
+    min-height: 100%;
+    display: grid;
+    grid-area: 1 / 1;
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 75%, transparent), color-mix(in srgb, var(--color-bg) 25%, transparent));
+    /* padding: 2rem; */
+    border-radius: 1.25rem;
 }
 
-
-
-section[data-screen]
+[data-appcore-class~="app.js.screen"] > .screen-content
 {
-    display: block;
-    /* background : var(--background-screen); */
-    background: linear-gradient(146deg, #ffffff2e, #ffffff61);
+    min-height: 0;
+    overflow: auto;
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 1.75rem 1.75rem 0 1.75rem;
+    grid-template-rows: auto minmax(0, 1fr) auto;
 }
 
-
-section[data-screen-active]
+[data-appcore-class~="app.js.screen"] > .screen-footer
 {
-    display: block;
+    position: sticky;
+    bottom: 0;
+    padding: 1rem;
+    /* background: white; */
+    /* border-top: 1px solid #d7dce3; */
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
 }

@@ -7,3 +7,6 @@ examples/**/core/
 /app
 /examples/01-using-database-basic/package-lock.json
 /examples/02-using-model-basic/package-lock.json
+/docs/images/app-core-js.logo-big.png
+/docs/images/logo-app-core-js-square.png
+/docs/images/logo-app-core-js-square.psd

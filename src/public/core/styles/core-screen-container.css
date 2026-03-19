@@ -1,8 +1,10 @@
 
 
-section[data-appcore-id*="app.js.screen-container::"], 
-section[data-appcore-id$="app.js.screen-container"]
+section[data-appcore-class~="app.js.screen-container"]
 {
     display: grid;
+    grid-area: 1 / 1;
+    padding: 1rem 1rem;
+    /* overflow-y: scroll; */
     /* transform: translateX(-50%);  */
 }

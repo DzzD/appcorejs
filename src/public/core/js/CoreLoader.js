@@ -39,7 +39,7 @@ export class CoreLoader
         }
     }
 
-    static async loadStyle(filePath)
+    static async loadStyle(filePath, callback = null)
     {
         const styleUrl = new URL(filePath, document.baseURI);
         const href = styleUrl.href;
@@ -75,6 +75,12 @@ export class CoreLoader
         });
 
         this.loadedStyles.add(href);
+
+        if (typeof callback === "function")
+        {
+            await callback();
+        }
+
         return true;
     }
 }

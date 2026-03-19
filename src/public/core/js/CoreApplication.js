@@ -39,6 +39,7 @@ export class CoreApplication extends Component
   async start()
   {
     await this.initChilds();
+    this.show();
   }
 
   /*

@@ -1,0 +1,6 @@
+@import url("./core-leaflet-map.css");
+
+div[data-appcore-class~="ext.examples.map.leaflet-map"]
+{
+    /* your overriding styles */
+}

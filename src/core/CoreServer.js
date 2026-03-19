@@ -22,8 +22,8 @@ export class CoreServer
 
     constructor()
     {
-        this.appName = "Application Name";
-        this.appShortName = "app-short-name";
+        this.appName = "Your Application Name";
+        this.appShortName = "your-app-short-name";
         this.#staticDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../public');
         this.#application = express();
         this.#httpServer = null;
