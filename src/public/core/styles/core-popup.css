@@ -93,6 +93,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title :is(h1, h2,
 
 div[data-appcore-class~="app.js.popup"] > .popup-header button
 {
+    display: flex;
     flex: 0 0 auto;
     min-width:auto;
     width: 2rem;
@@ -103,11 +104,13 @@ div[data-appcore-class~="app.js.popup"] > .popup-header button
     background: #ff5500;
     border: 0;
     border-radius: 0.35rem;
-    font-size: 0.75rem;
+    font-size: 1rem;
     font-weight: bold;
-    line-height: 1;
+    /* line-height: 1; */
     cursor: pointer;
     transition: background-color .33s ease;
+    align-items: center;
+    justify-content: center;
 }
 
 div[data-appcore-class~="app.js.popup"] > .popup-header button:hover
@@ -135,13 +138,13 @@ div[data-appcore-class~="app.js.popup"] > .popup-footer
 div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok
 {
     min-width: 6rem;
-    height: 2.25rem;
+    height: 2.5rem;
     padding: 0 1rem;
     color: #ffffff;
     background: #0175cd;
     border: 0;
     border-radius: 0.35rem;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     /* font-weight: 600; */
     cursor: pointer;
 }

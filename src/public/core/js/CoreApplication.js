@@ -36,8 +36,9 @@ export class CoreApplication extends Component
       Loader.loadStyle("core/styles/core-application.css");      
   }
 
-  async start()
+  async loaded()
   {
+    super.loaded();
     await this.initChilds();
     this.show();
   }
@@ -50,15 +51,15 @@ export class CoreApplication extends Component
       const app = new this("app.js.application");
       window.app = app;
 
-      if (document.readyState === 'loading')
-        document.addEventListener('DOMContentLoaded', () => app.start());
-      else
-        app.start();
+      // if (document.readyState === 'loading')
+      //   document.addEventListener('DOMContentLoaded', () => app.loaded());
+      // else
+        app.loaded();
 
-      document.fonts.ready.then(() =>
-      {
-        document.body.classList.add('fonts-loaded');
-      });
+      // document.fonts.ready.then(() =>
+      // {
+      //   document.body.classList.add('fonts-loaded');
+      // });
   }
 }
 

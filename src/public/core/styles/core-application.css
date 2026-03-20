@@ -1,21 +1,25 @@
 body
 {
-    display: grid;
     opacity: 0;
     margin: 0;
     padding: 0;
-    font-size: 1em;
-    height: 100vh;
-    grid-template-rows: auto minmax(0, 1fr) auto;
+    /* font-size: 1em; */
+    /* height: 100%; */
     transition: opacity 1s;
     background : var(--main-background);
 }
 
-body.fonts-loaded
+body .application
 {
-    opacity: 1;
+    max-width: 1980px;
+    box-shadow: 0px 9px 12px rgba(50,50,50,0.5);
+    margin: auto;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    background-color: rgb(255 255 255 / 20%);
 }
-
 
 
 header
@@ -55,9 +59,54 @@ header h1 .title
 
 header .menu
 {
-    grid-row: 2;
-    padding: 0 1.5rem 1rem 1.5rem;
+    /* grid-row: 2; */
+    /* padding: 0 1.5rem 1rem 1.5rem; */
 }
+
+
+header .menu
+{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.5rem;
+    /* padding: 1rem 1rem; */
+    background: rgb(255 255 255 / 21%);
+    border-top: 1px #cbcbcb solid;
+}
+
+header .menu button
+{
+    display: flex;
+    justify-content:center;
+    font-size: 1.5rem;
+    letter-spacing: 0.03em;
+    padding: 1rem 1.4rem;
+    border: 0;
+    border-radius: 0;
+    background: #0175cd;
+    color: #d6e3f7;
+    min-width: 200px;
+    transition: background-color .33s ease;
+    font-family: "Antonio", sans-serif;
+    height: 3.5rem;
+    /* font-weight: 200; */
+    align-items: center;
+}
+
+header .menu button:hover
+{
+    background: color-mix(in srgb, #ff5500 85%, white);
+}
+
+main
+{
+    padding: 1rem;
+    display: grid;
+    overflow-y: hidden;
+    min-height: 0;
+}
+
 
 footer
 {
@@ -77,41 +126,34 @@ footer p
     /* text-shadow: 0 1px 5px rgb(113 113 113 / 98%); */
 }
 
-header .menu
+
+
+/* compact */
+@media (max-width: 1024px), (max-height: 960px)
 {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1rem;
-    background: rgba(255,255,255,0.5);
+   
+    header h1
+    {
+        padding: 0;
+    }
+
+    header h1 .logo
+    {
+        max-height: 64px;
+    }
+
+    header .menu button
+    {
+        font-size: 1.25rem;
+        padding: 0.75rem 1rem;
+        min-width: 150px;
+        height: 2.5rem;
+    }    
+
 }
 
-header .menu button
+/* mobile */
+@media (max-width: 768px)
 {
-    display: flex;
-    align-items: center;
-    justify-content:center;
-
-    font-size: 1rem;
-    letter-spacing: 0.03em;
-    padding: 1rem 1.4rem;
-    border: 0;
-    background: #ff5500;
-    color: #ffffff;
-    min-width: 150px;
-    transition: background-color .33s ease;
-}
-
-header .menu button:hover
-{
-    background: color-mix(in srgb, #ff5500 85%, white);
-}
-
-main
-{
-    padding: 1rem;
-    display: grid;
-    overflow-y: auto;
-    min-height: 0;
+    
 }

@@ -14,10 +14,10 @@ export class Application extends CoreApplication
   /*
   * Called once after boot(), when everything loaded 
   */
-  start()
-  {
-    super.start();
-  }
+  // start()
+  // {
+  //   super.start();
+  // }
 
 
 }

@@ -142,7 +142,7 @@ export class CoreComponent
             component.parent = this;
             this.childs.set(component.id, component);
 
-            component.loaded();
+            // component.loaded();
             await component.initChilds();
         }
     }    

@@ -18,25 +18,31 @@ export class CoreLoader
         const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
         const href = moduleUrl.href;
 
+        const loadModule = () =>
+        {
+            return new Promise((resolve, reject) =>
+            {
+                import(href)
+                    .then(resolve)
+                    .catch((error) =>
+                    {
+                        Log.error(`Class file not found or invalid: ${href}`);
+                        reject(error);
+                    });
+            });
+        };
+
         if (this.loadedScripts.has(href))
         {
-            const module = await import(href);
+            const module = await loadModule();
             return module.default || module[className] || null;
         }
 
         Log.info(`Loading class file : ${href}`);
 
-        try
-        {
-            const module = await import(href);
-            this.loadedScripts.add(href);
-            return module.default || module[className] || null;
-        }
-        catch
-        {
-            Log.error(`Class file not found or invalid: ${href}`);
-            return null;
-        }
+        const module = await loadModule();
+        this.loadedScripts.add(href);
+        return module.default || module[className] || null;
     }
 
     static async loadStyle(filePath, callback = null)

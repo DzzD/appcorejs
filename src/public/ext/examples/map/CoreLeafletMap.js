@@ -16,7 +16,14 @@ export class CoreLeafletMap extends Component
 
     async loaded()
     {
+        
+        if (this.isLoaded)
+        {
+            return;
+        }
+        
         super.loaded();
+
 
         await this.#loadLeaflet();
 
