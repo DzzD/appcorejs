@@ -62,6 +62,18 @@ AppCore<sub>JS</sub> follows an architectural approach that has evolved since 20
     src/app/
       User-extensible façade classes and project-specific overrides
 
+    src/public/
+      Public frontend files
+
+    src/public/app/
+      Application frontend files
+
+    src/public/core/
+      Core frontend files
+
+    src/public/ext/
+      External frontend components
+
     bin/
       CLI entry points and framework scripts
 
