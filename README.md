@@ -14,7 +14,11 @@ Its architecture is based on two strict principles:
 AppCore<sub>JS</sub> enforces a clear boundary between:
 
 - `src/core/`: immutable framework base classes and internal framework logic
-- `src/app/`: application-level classes used to extend, specialize, and expose framework behavior
+- `src/app/`: application-level classes for extending, specializing, and exposing framework behavior
+- `src/public/`: public frontend assets and files
+- `src/public/app/`: application-specific frontend files
+- `src/public/core/`: core frontend files
+- `src/public/ext/`: external frontend components
 - `bin/`: CLI entry points, including the `app-core` generator (`AppCore.js`)
 
 Developers work only through the `app/` layer.  
