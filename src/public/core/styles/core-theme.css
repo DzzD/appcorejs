@@ -9,7 +9,7 @@
 @font-face 
 {
   font-family: 'Inter';
-  src: url('InterVariable.woff2') format('woff2');
+  src: url('../../assets/fonts/InterVariable.woff2') format('woff2');
   font-weight: 100 900;
   font-display: block;
 }
@@ -17,7 +17,7 @@
 @font-face
 {
     font-family: "Antonio";
-    src: url("Antonio-VariableFont_wght.ttf") format("truetype");
+    src: url("../../assets/fonts/Antonio-VariableFont_wght.ttf") format("truetype");
     font-weight: 100 700;
     font-style: normal;
 }

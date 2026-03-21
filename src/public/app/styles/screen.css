@@ -6,8 +6,4 @@
  * Licensed under the MIT License
  */
 
-import { CoreServer } from '../core/CoreServer.js';
-
-export class Server extends CoreServer
-{
-}
+@import url("../../core/styles/core-screen.css");

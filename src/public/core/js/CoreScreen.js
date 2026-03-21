@@ -14,6 +14,6 @@ export class CoreScreen extends Component
     constructor(componentId, parent = null)
     {
         super(componentId, parent);
-        Loader.loadStyle("core/styles/core-screen.css");  
+        Loader.loadStyle("app/styles/screen.css");  
     }
 }

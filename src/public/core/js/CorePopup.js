@@ -18,7 +18,7 @@ export class CorePopup extends Component
     constructor(componentId, parent = null)
     {
         super(componentId, parent);
-        Loader.loadStyle("core/styles/core-popup.css");
+        Loader.loadStyle("app/styles/popup.css");
     }
 
     loaded()
@@ -29,15 +29,25 @@ export class CorePopup extends Component
         header.addEventListener("pointerdown", this.#onDragStart);
 
         const buttonCross = this.node.querySelector(".popup-header button");
-        buttonCross.addEventListener("pointerdown", (event) =>
+        if(buttonCross)
         {
-            event.stopPropagation();
-        });
+            buttonCross.addEventListener("pointerdown", (event) =>
+            {
+                event.stopPropagation();
+            });
 
-        buttonCross.addEventListener("click", (event) =>
+            buttonCross.addEventListener("click", (event) =>
+            {
+                this.hide();
+            });
+        }
+
+        const overlay = this.node.querySelector(".popup-modal-overlay");
+        overlay.addEventListener("click", (event) =>
         {
             this.hide();
         });
+
 
         const buttonOk = this.node.querySelector(".popup-footer button");
         buttonOk.addEventListener("pointerdown", (event) =>
@@ -50,6 +60,8 @@ export class CorePopup extends Component
             this.hide();
         });
 
+        this.#loadIcon(this.node.dataset.type).then(content => {this.node.querySelector(".popup-icon").innerHTML = content});
+
 
         
     }
@@ -57,7 +69,6 @@ export class CorePopup extends Component
     async open(args)
     {
         
-        this.node.querySelector(".popup-icon").innerHTML = await this.#loadIcon(this.node.dataset.type);
         this.show(args);
     }
 
@@ -78,7 +89,7 @@ export class CorePopup extends Component
 
     hide(args)
     {
-        Log.info(`hidding ${this.id}`);
+        Log.debug(`hidding ${this.id}`);
         super.hide(args);
         window.removeEventListener("resize", this.#onResize);
     }

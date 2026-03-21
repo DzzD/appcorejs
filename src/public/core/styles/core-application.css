@@ -1,6 +1,6 @@
 body
 {
-    opacity: 0;
+    /* opacity: 0; */
     margin: 0;
     padding: 0;
     /* font-size: 1em; */
@@ -11,11 +11,13 @@ body
 
 body .application
 {
+    opacity: 0;
     max-width: 1980px;
     box-shadow: 0px 9px 12px rgba(50,50,50,0.5);
     margin: auto;
     width: 100vw;
     height: 100vh;
+    overflow: hidden;
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     background-color: rgb(255 255 255 / 20%);
@@ -77,34 +79,32 @@ header .menu
 
 header .menu button
 {
-    display: flex;
-    justify-content:center;
-    font-size: 1.5rem;
-    letter-spacing: 0.03em;
-    padding: 1rem 1.4rem;
-    border: 0;
+    /* display: flex; */
+    /* justify-content:center; */
+    /* font-size: 1.5rem; */
+    /* letter-spacing: 0.03em; */
+    /* padding: 1rem 1.4rem; */
+    /* border: 0; */
     border-radius: 0;
-    background: #0175cd;
-    color: #d6e3f7;
+    /* background: #0175cd; */
+    /* color: #d6e3f7; */
     min-width: 200px;
-    transition: background-color .33s ease;
-    font-family: "Antonio", sans-serif;
+    /* transition: background-color .33s ease; */
+    /* font-family: "Antonio", sans-serif; */
     height: 3.5rem;
-    /* font-weight: 200; */
-    align-items: center;
+    font-weight: 200;
+    /* align-items: center; */
 }
 
-header .menu button:hover
-{
-    background: color-mix(in srgb, #ff5500 85%, white);
-}
 
 main
 {
-    padding: 1rem;
+    /* padding: 1rem; */
     display: grid;
-    overflow-y: hidden;
+    overflow: hidden;
     min-height: 0;
+    height: 100%;
+    background-color: #ffffffab;
 }
 
 

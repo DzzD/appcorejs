@@ -22,36 +22,50 @@ export class CoreComponent
         this.id = componentId;
         this.template = null;
         this.childs = new Map();  
-        Loader.loadStyle("core/styles/core-component.css");      
+        Loader.loadStyle("app/styles/component.css");      
     }
 
     action(action, args)
     {
-        Log.info(action);
+        Log.debug(action);
     }
 
     open(args)
     {
     }
 
+    _show(node, args)
+    {
+        if(!node) { Log.debug("Unexisting node"); return; }
+
+        node.classList.add('invisible');
+        node.classList.remove('visible');
+        node.classList.remove('hidden');
+        setTimeout(() => {node.classList.add('visible');node.classList.remove('invisible')}, 50);        
+    }
+
     show(args)
     {
-        this.node.classList.add('invisible');
-        this.node.classList.remove('visible');
-        this.node.classList.remove('hidden');
-        setTimeout(() => {this.node.classList.add('visible');this.node.classList.remove('invisible')}, 50);
+        this._show(this.node);
+        
+    }
+
+    _hide(node, args)
+    {
+        if(!node) { Log.debug("Unexisting node"); return; }
+
+        node.classList.add('invisible');
+        node.classList.remove('visible');
+        setTimeout(() => {node.classList.add('hidden')}, 500);
     }
 
     hide(args)
     {
-        this.node.classList.add('invisible');
-        this.node.classList.remove('visible');
-        setTimeout(() => {this.node.classList.add('visible');this.node.classList.add('hidden')}, 500);
+        this._hide(this.node);
     }
 
     close(args)
     {
-
     }
 
     loaded()
@@ -133,11 +147,11 @@ export class CoreComponent
             
             const component = await this.loadComponent(componentId);
 
-            if(!component)
-            {
-                Log.info(`Ignoring ${componentId}.`);
-                continue;
-            }
+            // if(!component)
+            // {
+            //     Log.debug(`Ignoring ${componentId}.`);
+            //     continue;
+            // }
 
             component.parent = this;
             this.childs.set(component.id, component);
@@ -154,7 +168,7 @@ export class CoreComponent
 
         if(!cls)
         {
-            Log.info(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            Log.debug(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
             return  new CoreComponent(componentId, this);
         }
 

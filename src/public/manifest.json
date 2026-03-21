@@ -1,6 +1,6 @@
 {
-    "name": "{{APP_NAME}}",
-    "short_name": "{{APP_SHORT_NAME}}",
+    "name": "{{APPCORE_APP_NAME}}",
+    "short_name": "{{APPCORE_APP_SHORT_NAME}}",
     "description": "{{APP_NAME}} - Progressive web application.",
     "start_url": "./index.html",
     "scope": "./",

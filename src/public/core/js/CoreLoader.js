@@ -38,7 +38,7 @@ export class CoreLoader
             return module.default || module[className] || null;
         }
 
-        Log.info(`Loading class file : ${href}`);
+        Log.debug(`Loading class file : ${href}`);
 
         const module = await loadModule();
         this.loadedScripts.add(href);
@@ -63,7 +63,7 @@ export class CoreLoader
             return true;
         }
 
-        Log.info(`Loading style file : ${href}`);
+        Log.debug(`Loading style file : ${href}`);
 
         await new Promise((resolve, reject) =>
         {

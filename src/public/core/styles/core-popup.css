@@ -13,9 +13,12 @@ div[data-appcore-class~="app.js.popup"]
     overflow: hidden;
     color: var(--color-text);
     /* background: color-mix(in srgb, var(--color-bg) 70%, transparent); */
-    border: 1px solid #0175cd;
+    /* border: 1px solid #0175cd; */
     border-radius: 0.5rem;
-    box-shadow: 0 0.75rem 4rem rgb(0 0 0 / 49%);
+    /* box-shadow: 0 0.75rem 4rem rgb(0 0 0 / 49%); */
+    transition: opacity 0.2s ease;
+    border-radius: 0.75rem;
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
 }
 
 div[data-appcore-class~="app.js.popup"] .popup-modal-overlay
@@ -23,7 +26,13 @@ div[data-appcore-class~="app.js.popup"] .popup-modal-overlay
     position: fixed;
     z-index: -1;
     inset: 0;
-    background-color: color-mix(in srgb, var(--color-bg) 25%, transparent);;
+    backdrop-filter: blur(1px);
+    transition: backdrop-filter 3s ease;
+    background-color: color-mix(in srgb, var(--color-bg) 25%, transparent);
+    /* background-color: rgba(20, 24, 31, 0.45); */
+    /* opacity: 1; */
+    background-color: rgba(20, 24, 31, 0.45);
+    /* display: none; */
 }
 
 
@@ -34,10 +43,11 @@ div[data-appcore-class~="app.js.popup"] > .popup-header
     justify-content: space-between;
     gap: 1rem;
     padding: 0.75rem 1rem;
-    color: #ffffff;
-    background: linear-gradient(178deg, #0175d6, #9ab7e9);
+    color: #0175cd;
+    /* background: linear-gradient(178deg, #0175d6, #9ab7e9); */
     border-bottom: 1px solid rgb(255 255 255 / 20%);
     cursor: default;
+    background-color: #ffffff;
 }
 
 
@@ -89,29 +99,9 @@ div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title :is(h1, h2,
     align-items: center;
     vertical-align: middle;
     user-select: none;
+    color: #0175cd;
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-header button
-{
-    display: flex;
-    flex: 0 0 auto;
-    min-width:auto;
-    width: 2rem;
-    height: 2rem;
-    margin: 0;
-    padding: 0;
-    color: #ffffff;
-    background: #ff5500;
-    border: 0;
-    border-radius: 0.35rem;
-    font-size: 1rem;
-    font-weight: bold;
-    /* line-height: 1; */
-    cursor: pointer;
-    transition: background-color .33s ease;
-    align-items: center;
-    justify-content: center;
-}
 
 div[data-appcore-class~="app.js.popup"] > .popup-header button:hover
 {
@@ -123,7 +113,8 @@ div[data-appcore-class~="app.js.popup"] > .popup-body
     flex: 1 1 auto;
     padding: 1rem;
     overflow: auto;
-    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+    /* background: color-mix(in srgb, var(--color-bg) 90%, transparent); */
+    background-color: #ffffff;
 }
 
 div[data-appcore-class~="app.js.popup"] > .popup-footer
@@ -132,7 +123,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-footer
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 0 1rem 1rem 1rem;
-    background: color-mix(in srgb, var(--color-bg) 90%, transparent);
+    background-color: #ffffff;
 }
 
 div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok
@@ -140,16 +131,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok
     min-width: 6rem;
     height: 2.5rem;
     padding: 0 1rem;
-    color: #ffffff;
-    background: #0175cd;
     border: 0;
     border-radius: 0.35rem;
     font-size: 1.1rem;
-    /* font-weight: 600; */
-    cursor: pointer;
-}
-
-div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok:hover
-{
-    filter: brightness(1.08);
 }
