@@ -13,7 +13,11 @@ export class CoreScreen extends Component
 {
     constructor(componentId, parent = null)
     {
-        super(componentId, parent);
-        Loader.loadStyle("app/styles/screen.css");  
+        super(componentId, parent);        
+    }
+
+    async onLoad()
+    {
+        await Loader.loadStyle("app/styles/screen.css");  
     }
 }

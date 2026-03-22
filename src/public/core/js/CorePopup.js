@@ -18,65 +18,59 @@ export class CorePopup extends Component
     constructor(componentId, parent = null)
     {
         super(componentId, parent);
-        Loader.loadStyle("app/styles/popup.css");
+        
     }
 
-    loaded()
+    async onLoad()
     {
-        super.loaded();
+        await Loader.loadStyle("app/styles/popup.css");
+        this.node.querySelector(".popup-icon").innerHTML = await Loader.loadFile(`./assets/icons/${this.node.dataset.type}.svg`);
 
         const header = this.node.querySelector(".popup-header");
         header.addEventListener("pointerdown", this.#onDragStart);
 
         const buttonCross = this.node.querySelector(".popup-header button");
-        if(buttonCross)
+        buttonCross?.addEventListener("pointerdown", (event) =>
         {
-            buttonCross.addEventListener("pointerdown", (event) =>
-            {
-                event.stopPropagation();
-            });
+            event.stopPropagation();
+        });
 
-            buttonCross.addEventListener("click", (event) =>
-            {
-                this.hide();
-            });
-        }
+        buttonCross?.addEventListener("click", (event) =>
+        {
+            this.hide();
+        });
+        
 
         const overlay = this.node.querySelector(".popup-modal-overlay");
-        overlay.addEventListener("click", (event) =>
+        overlay?.addEventListener("click", (event) =>
         {
             this.hide();
         });
 
 
         const buttonOk = this.node.querySelector(".popup-footer button");
-        buttonOk.addEventListener("pointerdown", (event) =>
+        buttonOk?.addEventListener("pointerdown", (event) =>
         {
             event.stopPropagation();
         });
         
-        buttonOk.addEventListener("click", (event) =>
+        buttonOk?.addEventListener("click", (event) =>
         {
             this.hide();
         });
-
-        this.#loadIcon(this.node.dataset.type).then(content => {this.node.querySelector(".popup-icon").innerHTML = content});
-
-
-        
     }
 
     async open(args)
     {
         
-        this.show(args);
+        await this.show(args);
     }
 
-    show(args)
+    async show(args)
     {
-        super.show(args);
-        const rect = this.node.getBoundingClientRect();
+        await super.show(args);
 
+        const rect = this.node.getBoundingClientRect();
         this.node.style.left = `${rect.left}px`;
         this.node.style.top = `${rect.top}px`;
         this.node.style.width = `${rect.width}px`;
@@ -87,19 +81,12 @@ export class CorePopup extends Component
         window.addEventListener("resize", this.#onResize);
     }
 
-    hide(args)
+    async hide(args)
     {
-        Log.debug(`hidding ${this.id}`);
-        super.hide(args);
+        await super.hide(args);
         window.removeEventListener("resize", this.#onResize);
     }
 
-    async #loadIcon(iconName)
-    {
-        const response = await fetch(`./assets/icons/${iconName}.svg`);
-        const svgText = await response.text();
-        return svgText;
-    }
 
     #onDragStart = (event) =>
     {

@@ -11,15 +11,7 @@ import { CoreApplication } from "../../core/js/CoreApplication.js";
 export class Application extends CoreApplication
 {
   
-  /*
-  * Called once after boot(), when everything loaded 
-  */
-  // loaded()
-  // {
-  //   super.start();
-  // }
-
 
 }
 
-Application.boot();
+await Application.boot();

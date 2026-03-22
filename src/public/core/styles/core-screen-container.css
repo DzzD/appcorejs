@@ -2,21 +2,15 @@
 
 section[data-appcore-class~="app.js.screen-container"]
 {
-    /* display: grid; */
     position: relative;
     height: 100%;
     min-height: 0;
     overflow: hidden;
-    /* border: 1px #f00 solid; */
-    /* grid-area: 1 / 1; */
-    /* padding: 1rem 1rem; */
-    /* overflow: visible; */
-    /* transform: translateX(-50%); */
 }
 
 section[data-appcore-class~="app.js.screen-container"] .screen-slider
 {
     display: flex;
     height: 100%;
-    transform: translateX(-100%);
+    /* transform: translateX(-100%); */
 }

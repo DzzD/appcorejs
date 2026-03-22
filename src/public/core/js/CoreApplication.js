@@ -28,29 +28,26 @@ export class CoreApplication extends Component
   constructor(componentId, parent = null)
   {
       super(componentId, parent);
-      Loader.loadStyle("app/styles/application.css");      
+           
   }
 
-  async loaded()
+  async onLoad()
   {
-    super.loaded();
-    await this.initChilds();
-    this.node.querySelector(".application").style.removeProperty("display");
-    this._hide(this.node.querySelector(".application-loader"));
-    this._show(this.node.querySelector(".application"));
+    await Loader.loadStyle("app/styles/application.css"); 
+    this.find(".application")?.style.removeProperty("display");
+    this._hide(this.find(".application-loader"));
+    this._show(this.find(".application"));
     Log.info("AppCoreJS - Application ready!");
-
-    // this.show();
   }
 
   /*
   * User application booting
   */
-  static boot()
+  static async boot()
   {
-      const app = new this("app.js.application");
-      window.app = app;
-      app.loaded();
+    //   const app = new this("app.js.application");
+      window.app = new this("app.js.application");
+      await app.load();
   }
 }
 

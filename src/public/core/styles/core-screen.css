@@ -17,8 +17,8 @@
     /* max-height: 100%; */
     /* display: grid; */
     padding: 1.5rem;
-    grid-area: 1 / 1;
-    grid-template-rows: minmax(0, 1fr) auto;
+    /* grid-area: 1 / 1; */
+    /* grid-template-rows: minmax(0, 1fr) auto; */
     /* background: linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 75%, transparent), color-mix(in srgb, var(--color-bg) 25%, transparent)); */
     /* padding: 2rem; */
     /* border-radius: 1.25rem; */
@@ -54,8 +54,6 @@
     position: sticky;
     bottom: 0;
     padding: 1rem;
-    /* background: white; */
-    /* border-top: 1px solid #d7dce3; */
     display: flex;
     justify-content: flex-end;
     align-items: center;

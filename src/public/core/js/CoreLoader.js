@@ -13,6 +13,37 @@ export class CoreLoader
     static loadedScripts = new Set();
     static loadedStyles = new Set();
 
+    static async loadFile(uri, type = "text")
+    {
+        const response = await fetch(uri);
+
+        if (!response.ok)
+        {
+            throw new Error(`Unable to load file: ${uri}`);
+        }
+
+        switch (type)
+        {
+            case "text":
+                return await response.text();
+
+            case "json":
+                return await response.json();
+
+            case "blob":
+                return await response.blob();
+
+            case "arrayBuffer":
+                return await response.arrayBuffer();
+
+            case "formData":
+                return await response.formData();
+
+            default:
+                throw new Error(`Unsupported type: ${type}`);
+        }
+    } 
+
     static async loadClass(filePath, className)
     {
         const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
@@ -45,7 +76,7 @@ export class CoreLoader
         return module.default || module[className] || null;
     }
 
-    static async loadStyle(filePath, callback = null)
+    static async loadStyle(filePath)
     {
         const styleUrl = new URL(filePath, document.baseURI);
         const href = styleUrl.href;
@@ -60,17 +91,17 @@ export class CoreLoader
         if (existingLink)
         {
             this.loadedStyles.add(href);
-            return true;
+            return existingLink;
         }
 
         Log.debug(`Loading style file : ${href}`);
 
-        await new Promise((resolve, reject) =>
+        const link = await new Promise((resolve, reject) =>
         {
             const link = document.createElement("link");
             link.rel = "stylesheet";
             link.href = href;
-            link.onload = resolve;
+            link.onload = () => resolve(link);
             link.onerror = (event) =>
             {
                 Log.error(`Style file not found or invalid: ${href}`);
@@ -82,11 +113,48 @@ export class CoreLoader
 
         this.loadedStyles.add(href);
 
-        if (typeof callback === "function")
+        return link;
+    }
+
+    static async loadScript(filePath)
+    {
+        const scriptUrl = new URL(filePath, document.baseURI);
+        const src = scriptUrl.href;
+
+        if (this.loadedScripts.has(src))
         {
-            await callback();
+            return true;
         }
 
-        return true;
-    }
+        const existingScript = document.querySelector(`script[src="${src}"]`);
+
+        if (existingScript)
+        {
+            this.loadedScripts.add(src);
+            return  existingScript;
+        }
+
+        Log.debug(`Loading script file : ${src}`);
+
+        const script = await new Promise((resolve, reject) =>
+        {
+            const script = document.createElement("script");
+            script.src = src;
+            script.async = false;
+
+            script.onload = () => resolve(script);
+
+            script.onerror = (event) =>
+            {
+                Log.error(`Script file not found or invalid: ${src}`);
+                reject(event);
+            };
+
+            document.head.appendChild(script);
+        });
+
+        this.loadedScripts.add(src);
+
+        return script;
+    }    
 }

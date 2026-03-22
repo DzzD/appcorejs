@@ -1,8 +1,0 @@
-div[data-appcore-class~="ext.examples.google-map"]
-{
-    display: block;
-    min-height: 320px;
-    border: 1px solid #d0d7e2;
-    border-radius: 0.5rem;
-    overflow: hidden;
-}

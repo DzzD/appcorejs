@@ -9,6 +9,7 @@
 
 export class CoreComponent
 {
+    #resizeObserver = null;
     isLoaded;
     parent;
     id;
@@ -22,63 +23,75 @@ export class CoreComponent
         this.id = componentId;
         this.template = null;
         this.childs = new Map();  
-        Loader.loadStyle("app/styles/component.css");      
+             
     }
 
-    action(action, args)
+
+    async onLoad()
+    {
+        await Loader.loadStyle("app/styles/component.css"); 
+        
+    }    
+
+    onUnload()
+    {
+        
+    }    
+
+    onResize()
+    {
+        
+    }    
+
+    async action(action, args)
     {
         Log.debug(action);
     }
 
-    open(args)
+    async open(args)
     {
     }
 
-    _show(node, args)
+    async _show(node, args)
     {
-        if(!node) { Log.debug("Unexisting node"); return; }
-
+        if(!node) { Log.debug("Missing node"); return; }
         node.classList.add('invisible');
         node.classList.remove('visible');
         node.classList.remove('hidden');
         setTimeout(() => {node.classList.add('visible');node.classList.remove('invisible')}, 50);        
     }
 
-    show(args)
+    async show(args)
     {
         this._show(this.node);
-        
     }
 
-    _hide(node, args)
+    async _hide(node, args)
     {
-        if(!node) { Log.debug("Unexisting node"); return; }
-
+        if(!node) { Log.debug("Missing node"); return; }
         node.classList.add('invisible');
         node.classList.remove('visible');
         setTimeout(() => {node.classList.add('hidden')}, 500);
     }
 
-    hide(args)
+    async hide(args)
     {
         this._hide(this.node);
     }
 
-    close(args)
+    async close(args)
     {
     }
 
-    loaded()
+    find(selector)
     {
-        if (this.isLoaded)
-        {
-            return;
-        }
-        
-        this.node.appcore = this;
-        // this.node.action = (action, args) => this.action(action, args);
-        this.isLoaded = true;
+        return this.node.querySelector(selector);
     }
+
+    findAll(selector)
+    {
+        return [...this.node.querySelectorAll(selector)];
+    }    
 
     get node()
     {
@@ -117,6 +130,87 @@ export class CoreComponent
         return null;
     }
 
+    async load()
+    {
+        if (this.isLoaded)
+        {
+            return;
+        }
+
+        const childElements = this.#getClosestChildComponentElements(this.node);
+        
+        for (const childElement of childElements)
+        {
+            const componentId = childElement.getAttribute('data-appcore-id');
+            const component = await this.loadComponent(componentId);
+            component.parent = this;
+            this.childs.set(component.id, component);
+            await component.load();            
+        }
+        this.node.appcore = this;
+        this.#resizeObserver = new ResizeObserver(() =>
+        {
+            this.onResize();
+        });
+        this.#resizeObserver.observe(this.node);
+        await this.onLoad();
+        this.isLoaded = true;
+    }    
+
+
+    unload()
+    {
+        if (!this.isLoaded)
+        {
+            return;
+        }
+
+        for (const child of this.childs.values())
+        {
+            child.unload();
+        }
+        this.childs.clear();
+
+        this.onUnload();
+
+        this.#resizeObserver?.disconnect();
+        this.#resizeObserver = null;
+
+        this.isLoaded = false;
+    }    
+
+    async loadComponent(componentId)
+    {
+        const { filePath, className} = this.explodeId(componentId);
+        const cls = await Loader.loadClass(filePath, className);
+
+        if(!cls)
+        {
+            Log.debug(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            return  new CoreComponent(componentId, this);
+        }
+
+        const component = new cls(componentId, this);
+        return component;
+    }
+
+
+    // extractTemplate()
+    // {
+    //     const clone = this.node.cloneNode(true);
+    //     const childComponents = this.#getClosestChildComponentElements(clone);
+
+    //     for (const child of childComponents)
+    //     {
+    //         const componentId = child.getAttribute('data-appcore-id');
+    //         child.replaceWith(document.createTextNode(`{{${componentId}}}`));
+    //     }
+
+    //     return clone.outerHTML;
+    // }    
+
+    
+
     explodeId(componentId)
     {
         const [path, uid] = componentId.split('::');
@@ -135,63 +229,6 @@ export class CoreComponent
             uid
         };
     }
-
-    async initChilds()
-    {
-        const childElements = this.#getClosestChildComponentElements(this.node);
-        
-
-        for (const childElement of childElements)
-        {
-            const componentId = childElement.getAttribute('data-appcore-id');
-            
-            const component = await this.loadComponent(componentId);
-
-            // if(!component)
-            // {
-            //     Log.debug(`Ignoring ${componentId}.`);
-            //     continue;
-            // }
-
-            component.parent = this;
-            this.childs.set(component.id, component);
-
-            // component.loaded();
-            await component.initChilds();
-        }
-    }    
-
-    async loadComponent(componentId)
-    {
-        const { filePath, className} = this.explodeId(componentId);
-        const cls = await Loader.loadClass(filePath, className);
-
-        if(!cls)
-        {
-            Log.debug(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
-            return  new CoreComponent(componentId, this);
-        }
-
-        const component = new cls(componentId, this);
-        component.loaded();
-
-        return component;
-    }
-
-
-    // extractTemplate()
-    // {
-    //     const clone = this.node.cloneNode(true);
-    //     const childComponents = this.#getClosestChildComponentElements(clone);
-
-    //     for (const child of childComponents)
-    //     {
-    //         const componentId = child.getAttribute('data-appcore-id');
-    //         child.replaceWith(document.createTextNode(`{{${componentId}}}`));
-    //     }
-
-    //     return clone.outerHTML;
-    // }    
     
     #getClosestChildComponentElements(rootElement)
     {
