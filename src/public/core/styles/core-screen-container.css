@@ -1,6 +1,6 @@
 
 
-section[data-appcore-class~="app.js.screen-container"]
+[data-appcore-class~="app.js.screen-container"]
 {
     position: relative;
     height: 100%;
@@ -8,7 +8,7 @@ section[data-appcore-class~="app.js.screen-container"]
     overflow: hidden;
 }
 
-section[data-appcore-class~="app.js.screen-container"] .screen-slider
+[data-appcore-class~="app.js.screen-container"] .screen-slider
 {
     display: flex;
     height: 100%;

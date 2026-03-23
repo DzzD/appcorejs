@@ -68,13 +68,19 @@ header .menu
 
 header .menu
 {
-    display: flex;
-    justify-content: flex-start;
+    /* display: flex; */
+    display: inline-grid;
+    width: 100%;
+    /* grid-template-columns: auto; */
+    grid-auto-columns: max-content;
+    grid-auto-flow: column;
+    /* justify-content: flex-start; */
     align-items: center;
     gap: 0.5rem;
     /* padding: 1rem 1rem; */
     background: rgb(255 255 255 / 21%);
     border-top: 1px #cbcbcb solid;
+    justify-self: start;
 }
 
 header .menu button

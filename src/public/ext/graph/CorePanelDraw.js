@@ -61,16 +61,7 @@ export class CorePanelDraw extends Component
 
     clear()
     {
-        if (!this.#canvas || !this.#context)
-        {
-            return;
-        }
-
         this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
-    }
-
-    #bindEvents()
-    {
     }
 
     #handlePointerDown = (event) =>
