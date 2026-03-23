@@ -1,0 +1,28 @@
+[data-appcore-class~="ext.graph.panel-draw"]
+{
+    position: relative;
+    box-sizing: border-box;
+    isolation: isolate;
+    display: block;
+    /* width: 100%;  */
+    /* height: 100%;  */
+    /* width:400px; */
+    width:400px;
+    height:300px;
+    /* min-height: 250px; */
+    overflow: hidden;
+    touch-action: none;
+    cursor: crosshair;
+    /* background: #ffffff; */
+    /* border: 1px solid #d0d7e2; */
+    border-radius: 0.5rem;
+    box-shadow: inset 0 0 0 1px #d0d7e2;
+    overflow: hidden;
+}
+
+[data-appcore-class~="ext.graph.panel-draw"] canvas[data-panel-draw-canvas]
+{
+    display: block;
+    width: 100%;
+    height: 100%;
+}

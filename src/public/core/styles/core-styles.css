@@ -45,8 +45,6 @@ html
 {
     display: grid;
     gap: 1rem;
-    /* align-items: center; */
-    /* justify-items: center; */
 }
 
 [data-cols="2"]
@@ -224,13 +222,25 @@ sup
 /* mobile */
 @media (max-width: 768px)
 {
+    
+    [data-cols="2"]
+    {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+
+    [data-cols="3"]
+    {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    [data-cols="4"]
+    {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
     button
     {
-        /* min-width: 5rem; */
-        /* height: 2rem; */
         padding: 0 0.5rem;
-        /* border-radius: 0.15rem; */
-        /* font-size: 1rem; */
     }
 
     h1,h2,h3

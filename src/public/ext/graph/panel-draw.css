@@ -1,0 +1,6 @@
+@import url("./core-panel-draw.css");
+
+[data-appcore-class~="ext.graph.panel-draw"]
+{
+    /* your overriding styles */
+}

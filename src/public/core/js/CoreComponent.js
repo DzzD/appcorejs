@@ -186,7 +186,7 @@ export class CoreComponent
 
         if(!cls)
         {
-            Log.debug(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            Log.warning(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
             return  new CoreComponent(componentId, this);
         }
 

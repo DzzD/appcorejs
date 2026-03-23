@@ -26,9 +26,10 @@
             <span class="title">{{APPCORE_APP_NAME}}</span>
         </h1> 
         <div class="menu">
-          <button onClick="appcore('app.js.screen-container').openScreen('app.js.screen-home::screen-home-bla')">⌂ Home</button>
-          <button onClick="appcore('app.js.popup::popup-info').open();">Screen 2</button>
-          <button onClick="app.action()">Screen 3</button>
+          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-1'">⌂ Home</button>
+          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
+          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
+          <button onClick="appcore('app.js.popup::popup-info').open();">Popup</button>
         </div>
       </header>
 
@@ -50,15 +51,25 @@
                   <h3>What can you do next?</h3>
                   <p>Start by exploring the generated files to understand the project structure, then replace this welcome screen with your own content and begin building your application step by step.</p>
                   <br>
-                </div>
+                <!-- <div>
+
+                </div> -->
                 <div data-cols="2">
                   <div
-                      data-appcore-id="ext.examples.map.leaflet.leaflet-map"
-                      data-appcore-class="ext.examples.map.leaflet.leaflet-map"
+                      data-appcore-id="ext.map.google.google-map"
+                      data-appcore-class="ext.map.google.google-map"
+                      data-apikey = "AIzaSyApe-vISIN8UPFQxEUY-S_E_QOOA4Rohxs"
                       data-lat="48.8566"
                       data-lng="2.3522"
                       data-zoom="10">
                   </div>
+                  <!-- <div
+                      data-appcore-id="ext.map.leaflet.leaflet-map"
+                      data-appcore-class="ext.map.leaflet.leaflet-map"
+                      data-lat="48.8566"
+                      data-lng="2.3522"
+                      data-zoom="10">
+                  </div> -->
                   <div>
                     <h2>Explore components.</h2>
                     <p>AppCore<sub>js</sub> provides a range of components that you can use in your application.</p>
@@ -66,6 +77,7 @@
                     <p>A dedicated area in the <code>ext/</code> folder lets you use additional components or share your own.</p>
                     <p>All components, whether built-in or external, can be customized for each application.</p>
                     <p>On the left is an example of the Leaflet map component.</p>                
+                  </div>
                   </div>
                 </div>
                 
@@ -75,25 +87,39 @@
               </div>
             </section>
           
-            <section data-appcore-id="app.js.screen-home::screen-home-2" data-appcore-class="app.js.screen" >
+            <section data-appcore-id="app.js.screen-home::screen-home-2" data-appcore-class="app.js.screen" class="hidden" >
               <div class="screen-content">
-                <h2>Ecran exemple 2<h3>Titre paragraphe 1</h3></h2>
-                <h3>Titre paragraphe 1</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-                <button>mon boutton</button>   
+                <div>
+                  <h2>Ecran exemple 2</h2>
+                  <br>
+                  <h3>Titre paragraphe 1</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
+                  <div
+                      data-appcore-id="ext.graph.panel-draw"
+                      data-appcore-class="ext.graph.panel-draw">
+                  </div>                
+                </div>
+                <div class="screen-footer">
+                  <button type="button">Next &#8250;</button>
+                </div>   
               </div>     
             </section>
           
             <section data-appcore-id="app.js.screen-home2::inst2" data-appcore-class="app.js.screen"  class="hidden">
               <div class="screen-content">
-                <h2>Ecran exemple 3</h2>
-                <h3>Titre paragraphe 1</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-                <input type="text" value="<rechercher>"/>
-                <div class="result">
-                  <span>champ 1</span><span>champ2</span>
+                <div>
+                  <h2>Ecran exemple 3</h2>
+                  <br>
+                  <h3>Titre paragraphe 1</h3>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
+                  <input type="text" value="<rechercher>"/>
+                  <div class="result">
+                    <span>champ 1</span><span>champ2</span>
+                  </div>
                 </div>
-                <button onclick="parentElement.appcore.action('search')">mon boutton</button>     
+                <div class="screen-footer">
+                  <button type="button">Next &#8250;</button>
+                </div>    
               </div>     
             </section>
 

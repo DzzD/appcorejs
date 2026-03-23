@@ -1,0 +1,20 @@
+[data-appcore-class~="ext.map.leaflet.leaflet-map"]
+{
+    position: relative;
+    isolation: isolate;
+    height: 100%;
+    min-height: 250px;
+}
+
+[data-appcore-class~="ext.map.leaflet.leaflet-map"] .leaflet-container
+{
+    z-index: 0;
+    aspect-ratio: 16 / 9 ;
+}
+
+[data-appcore-class~="ext.map.leaflet.leaflet-map"] .leaflet-pane,
+[data-appcore-class~="ext.map.leaflet.leaflet-map"] .leaflet-top,
+[data-appcore-class~="ext.map.leaflet.leaflet-map"] .leaflet-bottom
+{
+    z-index: 1;
+}

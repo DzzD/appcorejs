@@ -10,7 +10,6 @@ import { CoreApplication } from "../../core/js/CoreApplication.js";
 
 export class Application extends CoreApplication
 {
-  
 
 }
 

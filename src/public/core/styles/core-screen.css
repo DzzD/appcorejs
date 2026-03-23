@@ -39,6 +39,8 @@
     /* position: relative; */
     /* overflow-y: auto; */
     display: grid;
+    /* grid-auto-rows: max-content; */
+    grid-template-rows: auto;
     min-height: 100%;
     border-radius: 1rem;
     padding: 1rem;
@@ -56,6 +58,7 @@
     padding: 1rem;
     display: flex;
     justify-content: flex-end;
-    align-items: center;
+    /* align-items: center; */
     gap: 1rem;
+    align-self: end;
 }

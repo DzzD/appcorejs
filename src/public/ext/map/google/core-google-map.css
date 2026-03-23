@@ -1,4 +1,4 @@
-div[data-appcore-class~="ext.examples.google.google-map"]
+[data-appcore-class~="ext.map.google.google-map"]
 {
     display: block;
     min-height: 250px;
