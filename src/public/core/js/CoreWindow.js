@@ -9,9 +9,9 @@
 import { Component } from "../../app/js/Component.js";
 
 
-export class CorePopup extends Component
+export class CoreWindow extends Component
 {
-    #dragPointerId = null;
+    // #dragPointerId = null;
     #dragOffsetX = 0;
     #dragOffsetY = 0;
 
@@ -23,32 +23,30 @@ export class CorePopup extends Component
 
     async onLoad()
     {
-        await Loader.loadStyle("app/styles/popup.css");
-        this.node.querySelector(".popup-icon").innerHTML = await Loader.loadFile(`./assets/icons/${this.node.dataset.type}.svg`);
+        await Loader.loadStyle("app/styles/window.css");
+        this.node.querySelector(".window-icon").innerHTML = await Loader.loadFile(`./assets/icons/${this.node.dataset.type}.svg`);
 
-        const header = this.node.querySelector(".popup-header");
+        const header = this.find(".window-header");
         header.addEventListener("pointerdown", this.#onDragStart);
 
-        const buttonCross = this.node.querySelector(".popup-header button");
-        buttonCross?.addEventListener("pointerdown", (event) =>
+        const buttonClose = this.node.querySelector(".window-header button");
+        buttonClose?.addEventListener("pointerdown", (event) =>
         {
             event.stopPropagation();
         });
 
-        buttonCross?.addEventListener("click", (event) =>
+        buttonClose?.addEventListener("click", (event) =>
         {
-            this.hide();
+            this.cancel();
         });
         
-
-        const overlay = this.node.querySelector(".popup-modal-overlay");
-        overlay?.addEventListener("click", (event) =>
+        const modalOverlay = this.node.querySelector(".window-modal-overlay");
+        modalOverlay?.addEventListener("click", (event) =>
         {
-            this.hide();
+            this.cancel();
         });
 
-
-        const buttonOk = this.node.querySelector(".popup-footer button");
+        const buttonOk = this.node.querySelector(".window-footer button");
         buttonOk?.addEventListener("pointerdown", (event) =>
         {
             event.stopPropagation();
@@ -56,7 +54,7 @@ export class CorePopup extends Component
         
         buttonOk?.addEventListener("click", (event) =>
         {
-            this.hide();
+            this.validate();
         });
     }
 
@@ -64,6 +62,17 @@ export class CorePopup extends Component
     {
         
         await this.show(args);
+    }
+
+    cancel()
+    {
+        this.hide();
+    }
+
+
+    validate()
+    {
+        this.hide();
     }
 
     async show(args)
@@ -97,7 +106,6 @@ export class CorePopup extends Component
         this.node.style.width = `${rect.width}px`;
         this.node.style.transform = "none";
 
-        this.#dragPointerId = event.pointerId;
         this.#dragOffsetX = event.clientX - rect.left;
         this.#dragOffsetY = event.clientY - rect.top;
 
@@ -119,8 +127,6 @@ export class CorePopup extends Component
 
     #onDragEnd = (event) =>
     {
-        this.#dragPointerId = null;
-
         const header = event.currentTarget;
         header.removeEventListener("pointermove", this.#onDragMove);
         header.removeEventListener("pointerup", this.#onDragEnd);

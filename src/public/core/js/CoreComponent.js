@@ -43,15 +43,6 @@ export class CoreComponent
         
     }    
 
-    async action(action, args)
-    {
-        Log.debug(action);
-    }
-
-    async open(args)
-    {
-    }
-
     async _show(node, args)
     {
         if(!node) { Log.debug("Missing node"); return; }

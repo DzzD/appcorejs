@@ -6,9 +6,9 @@
  * Licensed under the MIT License
  */
 
-import { CorePopup } from "../../core/js/CorePopup.js";
+import { CoreWindow } from "../../core/js/CoreWindow.js";
 
-export class Popup extends CorePopup
+export class Window extends CoreWindow
 {
 
 }

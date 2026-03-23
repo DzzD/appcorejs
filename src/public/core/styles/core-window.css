@@ -1,4 +1,4 @@
-div[data-appcore-class~="app.js.popup"]
+div[data-appcore-class~="app.js.window"]
 {
     position: fixed;
     z-index: 100;
@@ -21,7 +21,7 @@ div[data-appcore-class~="app.js.popup"]
     box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
 }
 
-div[data-appcore-class~="app.js.popup"] .popup-modal-overlay
+div[data-appcore-class~="app.js.window"] .window-modal-overlay
 {
     position: fixed;
     z-index: -1;
@@ -36,11 +36,11 @@ div[data-appcore-class~="app.js.popup"] .popup-modal-overlay
 }
 
 
-div[data-appcore-class~="app.js.popup"] > .popup-header
+div[data-appcore-class~="app.js.window"] > .window-header
 {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between; */
     gap: 1rem;
     padding: 0.75rem 1rem;
     color: #0175cd;
@@ -51,7 +51,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-header
 }
 
 
-div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title
+div[data-appcore-class~="app.js.window"] > .window-header .window-title
 {
     display: flex;
     align-items: center;
@@ -59,7 +59,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title
     flex: 1 1 auto;
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.window"] > .window-header .window-icon
 {
     flex: 0 0 auto;
     display: block;
@@ -68,27 +68,45 @@ div[data-appcore-class~="app.js.popup"] > .popup-header .popup-icon
     object-fit: contain;
 }
 
-div[data-appcore-class~="app.js.popup"][data-type="info"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.window"][data-type="info"] > .window-header .window-icon
 {
     color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.popup"][data-type="warning"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.window"][data-type="warning"] > .window-header .window-icon
 {
     color: var(--color-warning);
 }
 
-div[data-appcore-class~="app.js.popup"][data-type="error"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.window"][data-type="error"] > .window-header .window-icon
 {
     color: var(--color-danger);
 }
 
-div[data-appcore-class~="app.js.popup"][data-type="success"] > .popup-header .popup-icon
+div[data-appcore-class~="app.js.window"][data-type="success"] > .window-header .window-icon
 {
     color: var(--color-success);
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title :is(h1, h2, h3)
+
+.window-close
+{
+    /* display: inline-flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    min-width: auto;
+    min-height: auto;
+    /* line-height: 1; */
+    /* vertical-align: sub; */
+    height: 2rem;
+    width: 2rem;
+    /* font-family: var(--font-family); */
+    font-family: Arial;
+    padding: 0;
+}
+
+
+div[data-appcore-class~="app.js.window"] > .window-header .window-title :is(h1, h2, h3)
 {
     margin: 0;
     padding: 0 1rem;
@@ -103,12 +121,12 @@ div[data-appcore-class~="app.js.popup"] > .popup-header .popup-title :is(h1, h2,
 }
 
 
-div[data-appcore-class~="app.js.popup"] > .popup-header button:hover
+div[data-appcore-class~="app.js.window"] > .window-header button:hover
 {
-    background: color-mix(in srgb, #ff5500 85%, white);
+    /* background: color-mix(in srgb, #ff5500 85%, white); */
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-body
+div[data-appcore-class~="app.js.window"] > .window-body
 {
     flex: 1 1 auto;
     padding: 1rem;
@@ -117,7 +135,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-body
     background-color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-footer
+div[data-appcore-class~="app.js.window"] > .window-footer
 {
     display: flex;
     justify-content: flex-end;
@@ -126,7 +144,7 @@ div[data-appcore-class~="app.js.popup"] > .popup-footer
     background-color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.popup"] > .popup-footer .popup-ok
+div[data-appcore-class~="app.js.window"] > .window-footer .window-confirm
 {
     min-width: 6rem;
     height: 2.5rem;

@@ -29,7 +29,7 @@
           <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-1'">⌂ Home</button>
           <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
           <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
-          <button onClick="appcore('app.js.popup::popup-info').open();">Popup</button>
+          <button onClick="appcore('app.js.window::window-info').open();">Window</button>
         </div>
       </header>
 
@@ -126,19 +126,20 @@
           </secton>
         </section>
 
-        <div data-appcore-id="app.js.popup::popup-info" data-appcore-class="app.js.popup" class="hidden" data-type="warning">
-            <div class="popup-modal-overlay"></div>
-            <div class="popup-header">
-                <div class="popup-title">
-                    <span class="popup-icon"></span>
-                    <h3>Titre popup</h3>
+        <div data-appcore-id="app.js.window::window-info" data-appcore-class="app.js.window" class="hidden" data-type="warning">
+            <div class="window-modal-overlay"></div>
+            <div class="window-header">
+                <div class="window-title">
+                    <span class="window-icon"></span>
+                    <h3>Titre window</h3>
                 </div>
+                <button type="button" class="window-close" aria-label="Close"><span>×</span></button>
             </div>
-            <div class="popup-body">
+            <div class="window-body">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor
             </div>
-            <div class="popup-footer">
-                <button type="button" class="popup-ok">OK</button>
+            <div class="window-footer">
+                <button type="button" class="window-confirm">OK</button>
             </div>
         </div>
       
