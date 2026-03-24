@@ -1,4 +1,4 @@
-div[data-appcore-class~="app.js.window"]
+[data-appcore-class~="app.js.window"]
 {
     position: fixed;
     z-index: 100;
@@ -21,7 +21,7 @@ div[data-appcore-class~="app.js.window"]
     box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
 }
 
-div[data-appcore-class~="app.js.window"] .window-modal-overlay
+[data-appcore-class~="app.js.window"] .window-modal-overlay
 {
     position: fixed;
     z-index: -1;
@@ -36,7 +36,7 @@ div[data-appcore-class~="app.js.window"] .window-modal-overlay
 }
 
 
-div[data-appcore-class~="app.js.window"] > .window-header
+[data-appcore-class~="app.js.window"] > .window-header
 {
     display: flex;
     align-items: center;
@@ -51,7 +51,7 @@ div[data-appcore-class~="app.js.window"] > .window-header
 }
 
 
-div[data-appcore-class~="app.js.window"] > .window-header .window-title
+[data-appcore-class~="app.js.window"] > .window-header .window-title
 {
     display: flex;
     align-items: center;
@@ -59,7 +59,7 @@ div[data-appcore-class~="app.js.window"] > .window-header .window-title
     flex: 1 1 auto;
 }
 
-div[data-appcore-class~="app.js.window"] > .window-header .window-icon
+[data-appcore-class~="app.js.window"] > .window-header .window-icon
 {
     flex: 0 0 auto;
     display: block;
@@ -68,22 +68,22 @@ div[data-appcore-class~="app.js.window"] > .window-header .window-icon
     object-fit: contain;
 }
 
-div[data-appcore-class~="app.js.window"][data-type="info"] > .window-header .window-icon
+[data-appcore-class~="app.js.window"][data-type="info"] > .window-header .window-icon
 {
     color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.window"][data-type="warning"] > .window-header .window-icon
+[data-appcore-class~="app.js.window"][data-type="warning"] > .window-header .window-icon
 {
     color: var(--color-warning);
 }
 
-div[data-appcore-class~="app.js.window"][data-type="error"] > .window-header .window-icon
+[data-appcore-class~="app.js.window"][data-type="error"] > .window-header .window-icon
 {
     color: var(--color-danger);
 }
 
-div[data-appcore-class~="app.js.window"][data-type="success"] > .window-header .window-icon
+[data-appcore-class~="app.js.window"][data-type="success"] > .window-header .window-icon
 {
     color: var(--color-success);
 }
@@ -106,7 +106,7 @@ div[data-appcore-class~="app.js.window"][data-type="success"] > .window-header .
 }
 
 
-div[data-appcore-class~="app.js.window"] > .window-header .window-title :is(h1, h2, h3)
+[data-appcore-class~="app.js.window"] > .window-header .window-title :is(h1, h2, h3)
 {
     margin: 0;
     padding: 0 1rem;
@@ -120,13 +120,7 @@ div[data-appcore-class~="app.js.window"] > .window-header .window-title :is(h1, 
     color: #0175cd;
 }
 
-
-div[data-appcore-class~="app.js.window"] > .window-header button:hover
-{
-    /* background: color-mix(in srgb, #ff5500 85%, white); */
-}
-
-div[data-appcore-class~="app.js.window"] > .window-body
+[data-appcore-class~="app.js.window"] > .window-body
 {
     flex: 1 1 auto;
     padding: 1rem;
@@ -135,7 +129,7 @@ div[data-appcore-class~="app.js.window"] > .window-body
     background-color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.window"] > .window-footer
+[data-appcore-class~="app.js.window"] > .window-footer
 {
     display: flex;
     justify-content: flex-end;
@@ -144,7 +138,7 @@ div[data-appcore-class~="app.js.window"] > .window-footer
     background-color: #ffffff;
 }
 
-div[data-appcore-class~="app.js.window"] > .window-footer .window-confirm
+[data-appcore-class~="app.js.window"] > .window-footer .window-confirm
 {
     min-width: 6rem;
     height: 2.5rem;

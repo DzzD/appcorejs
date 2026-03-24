@@ -1,6 +1,6 @@
 @import url("./core-google-map.css");
 
-div[data-appcore-class~="ext.examples.google.google-map"]
+[data-appcore-class~="ext.map.google.google-map"]
 {
    /* your overriding styles */
 }

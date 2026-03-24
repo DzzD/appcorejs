@@ -11,7 +11,17 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreScreenContainer extends Component
 {
+    static appcoreClass = "app.js.screen-container";
+
     #activeComponentId;
+
+    static TransitionMode =
+    {
+        DEFAULT: "default",
+        SLIDE_X: "slide-x"
+    };
+
+    #transitionMode = CoreScreenContainer.TransitionMode.DEFAULT;
 
     constructor(componentId, parent = null)
     {
@@ -24,7 +34,7 @@ export class CoreScreenContainer extends Component
         await Loader.loadStyle("app/styles/screen-container.css");
         this.active = this.childs.keys().next()?.value;
         // let translateX = 0;
-        // for (const element of this.node.querySelectorAll('[data-appcore-class~="app.js.screen"]'))
+        // for (const element of this.node.findAll('[data-appcore-class~="app.js.screen"]'))
         // {
         //     Log.info(element);
         //     element.style.transform=`translateX(${translateX}%)`;
@@ -35,13 +45,17 @@ export class CoreScreenContainer extends Component
 
     set active(componentId)
     {
-        // Log.info(componentId);
+        if(this.#activeComponentId == componentId)
+        {
+            return
+        }        
         this.#activeComponentId = componentId;
+        
         for (const [id, component] of this.childs)
         {
             if(id == componentId)
             {
-                component.show();
+                component.show().then(() => {Log.info("opened")});
             }          
             else
             {
@@ -54,5 +68,17 @@ export class CoreScreenContainer extends Component
     {
         return this.#activeComponentId;
     }
+
+    set transitionMode(value)
+    {
+        if (!Object.values(CoreScreenContainer.TransitionMode).includes(value))
+        {
+            Log.warn(`Invalid transition mode: ${value}`);
+            return;
+        }
+
+        this.#transitionMode = value;
+    }
+
 
 }

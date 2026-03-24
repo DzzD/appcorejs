@@ -9,6 +9,8 @@
 
 export class CoreComponent
 {
+    static appcoreClass = "app.js.component";
+
     #resizeObserver = null;
     isLoaded;
     parent;
@@ -31,6 +33,7 @@ export class CoreComponent
     {
         await Loader.loadStyle("app/styles/component.css"); 
         
+        
     }    
 
     onUnload()
@@ -46,10 +49,14 @@ export class CoreComponent
     async _show(node, args)
     {
         if(!node) { Log.debug("Missing node"); return; }
+        if(node.hiddingInterval) { clearTimeout(node.hiddingInterval); node.hiddingInterval = null};
         node.classList.add('invisible');
         node.classList.remove('visible');
         node.classList.remove('hidden');
-        setTimeout(() => {node.classList.add('visible');node.classList.remove('invisible')}, 50);        
+        if(!node.showingInterval)
+        {
+            node.showingInterval = setTimeout(() => {node.showingInterval = null;node.classList.add('visible');node.classList.remove('invisible')}, 50);        
+        }
     }
 
     async show(args)
@@ -60,9 +67,14 @@ export class CoreComponent
     async _hide(node, args)
     {
         if(!node) { Log.debug("Missing node"); return; }
+        if(node.showingInterval) { clearTimeout(node.showingInterval); node.showingInterval = null};
         node.classList.add('invisible');
         node.classList.remove('visible');
-        setTimeout(() => {node.classList.add('hidden')}, 500);
+        
+        if(!node.hiddingInterval)
+        {
+            node.hiddingInterval = setTimeout(() => {node.hiddingInterval = null;node.classList.add('hidden')}, 500);
+        }
     }
 
     async hide(args)
@@ -139,6 +151,7 @@ export class CoreComponent
             await component.load();            
         }
         this.node.appcore = this;
+        this.node.dataset.appcoreClass = this.appcoreClasses;
         this.#resizeObserver = new ResizeObserver(() =>
         {
             this.onResize();
@@ -237,6 +250,29 @@ export class CoreComponent
         }
 
         return result;
+    }
+
+    get appcoreClasses()
+    {
+        const classes = [];
+
+        for (
+            let currentClass = this.constructor;
+            currentClass && currentClass !== Function.prototype;
+            currentClass = Object.getPrototypeOf(currentClass)
+        )
+        {
+            const appcoreClass = Object.hasOwn(currentClass, "appcoreClass")
+                ? currentClass.appcoreClass
+                : null;
+
+            if (appcoreClass)
+            {
+                classes.push(appcoreClass);
+            }
+        }
+
+        return classes.reverse().join(" ");
     }
 
 }

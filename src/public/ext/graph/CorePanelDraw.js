@@ -2,8 +2,11 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CorePanelDraw extends Component
 {
+    static appcoreClass = "ext.graph.panel-draw";
     #canvas = null;
     #context = null;
+    #bufferCanvas = null;
+    #bufferContext = null;
     #isDrawing = false;
     #lastX = 0;
     #lastY = 0;
@@ -22,12 +25,17 @@ export class CorePanelDraw extends Component
         if (!this.#canvas)
         {
             this.#canvas = document.createElement("canvas");
+            this.#canvas.dataset.panelDrawCanvas = "";
             this.node.appendChild(this.#canvas);
         }
 
         this.#context = this.#canvas.getContext("2d");
+        this.#bufferCanvas = document.createElement("canvas");
+        this.#bufferContext = this.#bufferCanvas.getContext("2d");
 
-        
+        this.#initBuffer();
+        this.#applyDrawStyle();
+
         this.#canvas.addEventListener("pointerdown", this.#handlePointerDown);
         this.#canvas.addEventListener("pointermove", this.#handlePointerMove);
         this.#canvas.addEventListener("pointerup", this.#handlePointerUp);
@@ -38,7 +46,7 @@ export class CorePanelDraw extends Component
     }
 
     onResize()
-    { 
+    {
         this.#resizeCanvas();
     }
 
@@ -57,11 +65,19 @@ export class CorePanelDraw extends Component
 
         this.#canvas = null;
         this.#context = null;
+        this.#bufferCanvas = null;
+        this.#bufferContext = null;
     }
 
     clear()
     {
-        this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
+        if (!this.#bufferContext)
+        {
+            return;
+        }
+
+        this.#bufferContext.clearRect(0, 0, this.#bufferCanvas.width, this.#bufferCanvas.height);
+        this.#render();
     }
 
     #handlePointerDown = (event) =>
@@ -84,13 +100,15 @@ export class CorePanelDraw extends Component
 
         const position = this.#getPointerPosition(event);
 
-        this.#context.beginPath();
-        this.#context.moveTo(this.#lastX, this.#lastY);
-        this.#context.lineTo(position.x, position.y);
-        this.#context.stroke();
+        this.#bufferContext.beginPath();
+        this.#bufferContext.moveTo(this.#lastX, this.#lastY);
+        this.#bufferContext.lineTo(position.x, position.y);
+        this.#bufferContext.stroke();
 
         this.#lastX = position.x;
         this.#lastY = position.y;
+
+        this.#render();
     };
 
     #handlePointerUp = (event) =>
@@ -103,12 +121,39 @@ export class CorePanelDraw extends Component
         }
     };
 
+    #initBuffer()
+    {
+        this.#bufferCanvas.width = Math.max(
+            1,
+            Math.floor(Number(this.node.dataset.panelDrawWidth ?? this.#canvas.dataset.panelDrawWidth ?? 1024))
+        );
+
+        this.#bufferCanvas.height = Math.max(
+            1,
+            Math.floor(Number(this.node.dataset.panelDrawHeight ?? this.#canvas.dataset.panelDrawHeight ?? 768))
+        );
+    }
+
+    #applyDrawStyle()
+    {
+        this.#bufferContext.lineCap = "round";
+        this.#bufferContext.lineJoin = "round";
+        this.#bufferContext.strokeStyle = "#111111";
+        this.#bufferContext.lineWidth = 2;
+    }
+
     #getPointerPosition(event)
     {
         const rect = this.#canvas.getBoundingClientRect();
+
+        if (rect.width <= 0 || rect.height <= 0)
+        {
+            return { x: 0, y: 0 };
+        }
+
         return {
-            x: (event.clientX - rect.left),
-            y: (event.clientY - rect.top)
+            x: (event.clientX - rect.left) * this.#bufferCanvas.width / rect.width,
+            y: (event.clientY - rect.top) * this.#bufferCanvas.height / rect.height
         };
     }
 
@@ -118,32 +163,42 @@ export class CorePanelDraw extends Component
         {
             return;
         }
+
         const rect = this.node.getBoundingClientRect();
-        const width = Math.max(1, Math.floor(rect.width)) ;
-        const height = Math.max(1, Math.floor(rect.height)) ;
+        const width = Math.floor(rect.width);
+        const height = Math.floor(rect.height);
 
-        let tempCanvas = null;
-
-        if (this.#canvas.width > 0 && this.#canvas.height > 0)
+        if (width <= 0 || height <= 0)
         {
-            tempCanvas = document.createElement("canvas");
-            tempCanvas.width = this.#canvas.width;
-            tempCanvas.height = this.#canvas.height;
-            tempCanvas.getContext("2d").drawImage(this.#canvas, 0, 0);
+            return;
         }
 
-        this.#canvas.width = width;
-        this.#canvas.height = height;
-
-        this.#context = this.#canvas.getContext("2d");
-        this.#context.lineCap = "round";
-        this.#context.lineJoin = "round";
-        this.#context.strokeStyle = "#111111";
-        this.#context.lineWidth = 2;
-
-        if (tempCanvas)
+        if (this.#canvas.width !== width)
         {
-            this.#context.drawImage(tempCanvas, 0, 0, width, height);
+            this.#canvas.width = width;
         }
+
+        if (this.#canvas.height !== height)
+        {
+            this.#canvas.height = height;
+        }
+
+        this.#render();
+    }
+
+    #render()
+    {
+        this.#context.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
+        this.#context.drawImage(
+            this.#bufferCanvas,
+            0,
+            0,
+            this.#bufferCanvas.width,
+            this.#bufferCanvas.height,
+            0,
+            0,
+            this.#canvas.width,
+            this.#canvas.height
+        );
     }
 }

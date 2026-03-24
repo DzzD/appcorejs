@@ -2,6 +2,7 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CoreLeafletMap extends Component
 {
+    static appcoreClass = "ext.map.leaflet.leaflet-map";
     #map = null;
     #marker = null;
 

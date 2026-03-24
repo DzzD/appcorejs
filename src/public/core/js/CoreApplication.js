@@ -24,6 +24,7 @@ Log.mode = "debug";
 
 export class CoreApplication extends Component
 {
+  static appcoreClass = "app.js.application";
 
   constructor(componentId, parent = null)
   {

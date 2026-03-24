@@ -11,6 +11,8 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreWindow extends Component
 {
+    static appcoreClass = "app.js.window";
+    
     // #dragPointerId = null;
     #dragOffsetX = 0;
     #dragOffsetY = 0;

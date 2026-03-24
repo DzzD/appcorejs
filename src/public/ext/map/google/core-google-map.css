@@ -1,8 +1,9 @@
 [data-appcore-class~="ext.map.google.google-map"]
 {
     display: block;
-    min-height: 250px;
-    height: 100%;
+    min-height: 300px;
+    width: 100%;
+    aspect-ratio: 21/9;
     isolation: isolate;
     overflow: hidden;
 }
