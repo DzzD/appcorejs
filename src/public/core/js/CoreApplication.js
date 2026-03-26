@@ -12,10 +12,14 @@ import { Log } from '../../app/js/Log.js';
 
 globalThis.appcore = (componentId) =>
 {
+  
     const element = document.querySelector(`[data-appcore-id="${componentId}"]`)
         || document.querySelector(`[data-appcore-id$="::${componentId}"]`)
+        || document.querySelector(`[data-appcore-id$="${componentId}"]`)
         || document.querySelector(`[data-appcore-id^="${componentId}::"]`);
 
+    // Log.info(`appcore(${componentId}) = ${element}`);
+    // Log.info(element);
     return element?.appcore || null;
 };
 globalThis.Loader = Loader;
@@ -34,6 +38,7 @@ export class CoreApplication extends Component
 
   async onLoad()
   {
+    super.onLoad();
     await Loader.loadStyle("app/styles/application.css"); 
     this.find(".application")?.style.removeProperty("display");
     this._hide(this.find(".application-loader"));

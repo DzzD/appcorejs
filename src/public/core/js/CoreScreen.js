@@ -20,6 +20,7 @@ export class CoreScreen extends Component
 
     async onLoad()
     {
+        super.onLoad();
         await Loader.loadStyle("app/styles/screen.css");  
     }
 }

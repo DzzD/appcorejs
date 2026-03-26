@@ -26,19 +26,22 @@
             <span class="title">{{APPCORE_APP_NAME}}</span>
         </h1> 
         <div class="menu">
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-1'">⌂ Home</button>
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
+          <button onClick="appcore('::optional-uid').active='::screen-home-1'">⌂ Home</button>
+          <button onClick="appcore('app.js.component-stack::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
+          <button onClick="appcore('app.js.component-stack::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
           <button onClick="appcore('app.js.window::window-info').open();">Window</button>
         </div>
       </header>
 
       <main>
 
-        <section data-appcore-id="app.js.screen-container::optional-uid" data-appcore-class="app.js.screen-container">
-          <secton class="screen-slider">
+        <section data-appcore-id="app.js.component-stack::optional-uid" 
+                 data-transition-mode="scale+slide-x+fade"
+                 data-transition-duration="1000"
+                 data-transition-min-scale="0.8">
+          <!--<secton class="screen-slider">-->
 
-            <section data-appcore-id="app.js.screen-home::screen-home-1"  data-appcore-class="app.js.screen" >
+            <section data-appcore-id="app.js.screen-home::screen-home-1" >
               <div class="screen-content">
                 
                 
@@ -58,21 +61,20 @@
 
                 </div> -->
                 <div data-cols="2">
-                    <div
+                    <!-- <div
                         data-appcore-id="ext.map.google.google-map"
                         data-appcore-class="ext.map.google.google-map"
                         data-apikey = "AIzaSyApe-vISIN8UPFQxEUY-S_E_QOOA4Rohxs"
                         data-lat="48.8566"
                         data-lng="2.3522"
                         data-zoom="10">
-                    </div>
-                    <!-- <div
+                    </div> -->
+                    <div
                         data-appcore-id="ext.map.leaflet.leaflet-map"
-                        data-appcore-class="ext.map.leaflet.leaflet-map"
                         data-lat="48.8566"
                         data-lng="2.3522"
                         data-zoom="10">
-                    </div> -->
+                    </div>
                     <div>
                       <h2>Explore components.</h2>
                       <p>AppCore<sub>js</sub> provides a range of components that you can use in your application.</p>
@@ -126,7 +128,7 @@
               </div>     
             </section>
 
-          </secton>
+          <!--</secton>-->
         </section>
 
         <div data-appcore-id="app.js.window::window-info" data-appcore-class="app.js.window" class="hidden" data-type="warning">

@@ -1,0 +1,17 @@
+
+
+[data-appcore-class~="app.js.component-stack"]
+{
+    position: relative;
+    transition: transform 0.5s ease;
+    /* height: 100%; */
+    /* min-height: 0; */
+    /* overflow: hidden; */
+}
+
+[data-appcore-class~="app.js.component-stack"] .screen-slider
+{
+    /* display: flex; */
+    /* height: 100%; */
+    /* transform: translateX(-100%); */
+}

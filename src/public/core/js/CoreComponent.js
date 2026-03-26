@@ -101,12 +101,10 @@ export class CoreComponent
         const buildSelector = (component) =>
         {
             const selector = `[data-appcore-id="${component.id}"]`;
-
             return component.parent
                 ? `${buildSelector(component.parent)} ${selector}`
                 : selector;
         };
-
         return document.querySelector(buildSelector(this));
     }
 

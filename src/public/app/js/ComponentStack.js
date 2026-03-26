@@ -6,4 +6,9 @@
  * Licensed under the MIT License
  */
 
-@import url("../../core/styles/core-screen-container.css");
+import { CoreComponentStack } from "../../core/js/CoreComponentStack.js";
+
+export class ComponentStack extends CoreComponentStack
+{
+
+}
