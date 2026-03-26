@@ -26,126 +26,30 @@
             <span class="title">{{APPCORE_APP_NAME}}</span>
         </h1> 
         <div class="menu">
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-1'">⌂ Home</button>
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
-          <button onClick="appcore('app.js.screen-container::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
-          <button onClick="appcore('app.js.window::window-info').open();">Window</button>
+          <!-- You may add a menu here -->
         </div>
       </header>
-
       <main>
 
-        <section data-appcore-id="app.js.screen-container::optional-uid" data-appcore-class="app.js.screen-container">
+        <!-- Switchable container may contain multiple component -->
+        <section data-appcore-id="app.js.screen-container::optional-uid">
           <secton class="screen-slider">
-
-            <section data-appcore-id="app.js.screen-home::screen-home-1"  data-appcore-class="app.js.screen" >
-              <div class="screen-content">
-                
-                
+          <!-- -->
+            <section data-appcore-id="app.js.screen-home::screen-home-1">
+              <div class="screen-content"> 
                 <div>
-                  
-                  <h2>Congratulations!</h2>
+                <h2>Congratulations!</h2>
                   <br>
-                  <h3>Your application is up and running.</h3>
-                  <p>Your new project has been successfully generated and is now ready for customization. This screen is only a starting point to confirm that everything is working correctly.</p>
-                  <p>You can personalize the application by changing the logo, updating the background, and adjusting the main theme colors to match your visual identity.</p>
-                  <p>You can also add new screens, create reusable components, and progressively integrate your own content and business logic as your project evolves.</p>
-                  <br>
-                  <h3>What can you do next?</h3>
-                  <p>Start by exploring the generated files to understand the project structure, then replace this welcome screen with your own content and begin building your application step by step.</p>
-                  <br>
-                <!-- <div>
-
-                </div> -->
-                <div data-cols="2">
-                    <div
-                        data-appcore-id="ext.map.google.google-map"
-                        data-appcore-class="ext.map.google.google-map"
-                        data-apikey = "AIzaSyApe-vISIN8UPFQxEUY-S_E_QOOA4Rohxs"
-                        data-lat="48.8566"
-                        data-lng="2.3522"
-                        data-zoom="10">
-                    </div>
-                    <!-- <div
-                        data-appcore-id="ext.map.leaflet.leaflet-map"
-                        data-appcore-class="ext.map.leaflet.leaflet-map"
-                        data-lat="48.8566"
-                        data-lng="2.3522"
-                        data-zoom="10">
-                    </div> -->
-                    <div>
-                      <h2>Explore components.</h2>
-                      <p>AppCore<sub>js</sub> provides a range of components that you can use in your application.</p>
-                      <p>The main components are built into the framework.</p>
-                      <p>A dedicated area in the <code>ext/</code> folder lets you use additional components or share your own.</p>
-                      <p>All components, whether built-in or external, can be customized for each application.</p>
-                      <p>On the left is an example of the Leaflet map component.</p>                
-                    </div>
-                  </div>
-
-                </div>
-                
-                <div class="screen-footer">
-                  <button type="button">Next &#8250;</button>
+                  <h3>Your application is up and running, ready to be built upon.</h3>
+                  <p>
+                      Visit the <a href="intro.html">introduction page</a> to explore some of the framework's features.
+                      You will find a sample menu, multiple screens, and examples of reusable components.
+                  </p>
                 </div>
               </div>
             </section>
-          
-            <section data-appcore-id="app.js.screen-home::screen-home-2" data-appcore-class="app.js.screen" class="hidden" >
-              <div class="screen-content">
-                <div>
-                  <h2>Ecran exemple 2</h2>
-                  <br>
-                  <h3>Titre paragraphe 1</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-                  <div data-appcore-id="ext.graph.panel-draw"
-                       data-appcore-class="ext.graph.panel-draw">
-                  </div>                
-                </div>
-                <div class="screen-footer">
-                  <button type="button">Next &#8250;</button>
-                </div>   
-              </div>     
-            </section>
-          
-            <section data-appcore-id="app.js.screen-home2::inst2" data-appcore-class="app.js.screen"  class="hidden">
-              <div class="screen-content">
-                <div>
-                  <h2>Ecran exemple 3</h2>
-                  <br>
-                  <h3>Titre paragraphe 1</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-                  <input type="text" value="<rechercher>"/>
-                  <div class="result">
-                    <span>champ 1</span><span>champ2</span>
-                  </div>
-                </div>
-                <div class="screen-footer">
-                  <button type="button">Next &#8250;</button>
-                </div>    
-              </div>     
-            </section>
-
           </secton>
         </section>
-
-        <div data-appcore-id="app.js.window::window-info" data-appcore-class="app.js.window" class="hidden" data-type="warning">
-            <div class="window-modal-overlay"></div>
-            <div class="window-header">
-                <div class="window-title">
-                    <span class="window-icon"></span>
-                    <h3>Titre window</h3>
-                </div>
-                <button type="button" class="window-close" aria-label="Close"><span>×</span></button>
-            </div>
-            <div class="window-body">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor
-            </div>
-            <div class="window-footer">
-                <button type="button" class="window-confirm">OK</button>
-            </div>
-        </div>
-      
 
       </main>
       <footer>
