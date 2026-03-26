@@ -112,6 +112,10 @@ Example using a packaged archive:
 
     npm install file:./libs/app-corejs-1.0.0.tgz
 
+Example using the GitHub repository:
+
+    npm install git+https://github.com/DzzD/appcorejs.git
+
 ## Usage
 
 AppCore<sub>JS</sub> provides a CLI entry point:
@@ -160,4 +164,3 @@ AppCore is currently intended for private usage, experimentation, and controlled
 ## Author
 
 Bruno Augier (aka DzzD)
-

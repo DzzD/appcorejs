@@ -6,16 +6,24 @@
  * Licensed under the MIT License
  */
 
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
 import { Log } from '../../src/app/Log.js';
 import { initialiseProject } from './AppCore.project.js';
 import { generateModel } from './AppCore.model.js';
 import { resolveProjectRoot } from './AppCore.helpers.js';
+import { synchroniseFrontend } from './AppCore.front.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function parseArguments(rawArgs)
 {
     const args =
     {
         model: false,
+        front: false,
         dbuser: null,
         dbpassword: null,
         dbport: 5432,
@@ -84,6 +92,12 @@ function parseArguments(rawArgs)
             args.modelPrefix = '';
             continue;
         }
+
+        if (current === '--front')
+        {
+            args.front = true;
+            continue;
+        }
     }
 
     return args;
@@ -94,7 +108,15 @@ async function main(rawArgs)
     const args = parseArguments(rawArgs);
     Log.info('[app-core] Command invoked with arguments:', args);
 
+    const frameworkRoot = path.resolve(__dirname, '..', '..');
+    const projectRoot = resolveProjectRoot();
+
     await initialiseProject();
+
+    if (args.front)
+    {
+        await synchroniseFrontend(frameworkRoot, projectRoot);
+    }
 
     if (args.model)
     {

@@ -9,7 +9,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-async function copyDirectory(sourceDir, destinationDir)
+async function copyDirectory(sourceDir, destinationDir, override = false, insideCore = false)
 {
     await fs.mkdir(destinationDir, { recursive: true });
 
@@ -19,11 +19,28 @@ async function copyDirectory(sourceDir, destinationDir)
     {
         const sourcePath = path.join(sourceDir, entry.name);
         const destinationPath = path.join(destinationDir, entry.name);
+        const entryNameLower = entry.name.toLowerCase();
+        const isCoreDirectory = entry.isDirectory() && entryNameLower.startsWith('core');
+        const nextInsideCore = insideCore || isCoreDirectory;
 
         if (entry.isDirectory())
         {
-            await copyDirectory(sourcePath, destinationPath);
+            await copyDirectory(sourcePath, destinationPath, override, nextInsideCore);
             continue;
+        }
+
+        const shouldOverwrite = override || insideCore || entryNameLower.startsWith('core');
+
+        if (!shouldOverwrite)
+        {
+            try
+            {
+                await fs.access(destinationPath);
+                continue;
+            }
+            catch
+            {
+            }
         }
 
         await fs.copyFile(sourcePath, destinationPath);

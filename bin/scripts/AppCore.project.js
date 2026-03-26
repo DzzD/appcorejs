@@ -26,8 +26,8 @@ export async function initialiseProject()
     const targetApp = path.resolve(projectRoot, 'app');
     const targetCore = path.resolve(projectRoot, 'core');
 
-    await copyDirectory(sourceApp, targetApp);
-    await copyDirectory(sourceCore, targetCore);
+    await copyDirectory(sourceApp, targetApp, false);
+    await copyDirectory(sourceCore, targetCore, true);
 
     Log.info('[app-core] Project initialisation completed');
 }

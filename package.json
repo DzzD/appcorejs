@@ -17,7 +17,7 @@
         ".": "./src/index.js"
     },
     "scripts": {
-        "postinstall": "node ./bin/app-core.js --nomodel"
+        "postinstall": "node ./bin/app-core.js"
     },
     "dependencies": {
         "express": "^5.2.1",

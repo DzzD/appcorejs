@@ -30,6 +30,12 @@ If AppCoreJS is used locally and not yet published on npm, you can install it fr
 npm install ../app-core
 ```
 
+To install AppCoreJS directly from the GitHub repository:
+
+```bash
+npm install git+https://github.com/DzzD/appcorejs.git
+```
+
 ## Minimal package.json
 
 AppCoreJS is distributed as an ES module package.
