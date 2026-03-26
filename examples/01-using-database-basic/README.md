@@ -51,7 +51,7 @@ npm run init
 This command runs:
 
 ```bash
-app-core
+app-core --back
 ```
 
 This creates the minimal project skeleton required for the connector usage showcased in this example.

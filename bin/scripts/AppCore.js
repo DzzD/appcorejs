@@ -10,10 +10,10 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 import { Log } from '../../src/app/Log.js';
-import { initialiseProject } from './AppCore.project.js';
-import { generateModel } from './AppCore.model.js';
+import { synchroniseModel } from './AppCore.model.js';
 import { resolveProjectRoot } from './AppCore.helpers.js';
 import { synchroniseFrontend } from './AppCore.front.js';
+import { synchroniseBackend } from './AppCore.back.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +24,7 @@ function parseArguments(rawArgs)
     {
         model: false,
         front: false,
+        back: false,
         dbuser: null,
         dbpassword: null,
         dbport: 5432,
@@ -98,6 +99,17 @@ function parseArguments(rawArgs)
             args.front = true;
             continue;
         }
+
+        if (current === '--back')
+        {
+            args.back = true;
+            continue;
+        }
+    }
+
+    if (args.model)
+    {
+        args.back = true;
     }
 
     return args;
@@ -111,7 +123,10 @@ async function main(rawArgs)
     const frameworkRoot = path.resolve(__dirname, '..', '..');
     const projectRoot = resolveProjectRoot();
 
-    await initialiseProject();
+    if (args.back)
+    {
+        await synchroniseBackend(frameworkRoot, projectRoot);
+    }
 
     if (args.front)
     {
@@ -135,7 +150,7 @@ async function main(rawArgs)
         const computedSchema = args.dbschema || 'ALL';
         const computedPrefix = args.modelPrefix === null ? args.dbname : args.modelPrefix;
 
-        await generateModel({ ...args, dbschema: computedSchema, modelPrefix: computedPrefix });
+        await synchroniseModel({ ...args, dbschema: computedSchema, modelPrefix: computedPrefix });
     }
 
     

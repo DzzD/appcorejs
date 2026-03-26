@@ -41,7 +41,7 @@ See [Installation](./2-installation.md) for more details.
 Once dependencies are installed, generate your application model from a database schema:
 
 ```
-npx app-core --database appcore --schema minimal_app --user appcore --password appcore
+npx app-core --model --database appcore --schema minimal_app --user appcore --password appcore
 ```
 
 This command generates the model files required by the framework from the selected database & schema.

@@ -9,42 +9,77 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-async function copyDirectory(sourceDir, destinationDir, override = false, insideCore = false)
+async function copyDirectory(sourceDir, destinationDir, overrideOrOptions = false)
 {
-    await fs.mkdir(destinationDir, { recursive: true });
+    const options = typeof overrideOrOptions === 'boolean' ? { override: overrideOrOptions } : overrideOrOptions ?? {};
+    const override = options.override === undefined ? false : Boolean(options.override);
+    const exclusionsInput = Array.isArray(options.exclusions) ? options.exclusions : [];
+    const normalisedExclusions = exclusionsInput
+        .map((exclusion) => String(exclusion).trim())
+        .filter((exclusion) => exclusion.length > 0)
+        .map((exclusion) => exclusion.replace(/\\/g, '/').toLowerCase());
 
-    const entries = await fs.readdir(sourceDir, { withFileTypes: true });
-
-    for (const entry of entries)
+    function isExcluded(relativePath)
     {
-        const sourcePath = path.join(sourceDir, entry.name);
-        const destinationPath = path.join(destinationDir, entry.name);
-        const entryNameLower = entry.name.toLowerCase();
-        const isCoreDirectory = entry.isDirectory() && entryNameLower.startsWith('core');
-        const nextInsideCore = insideCore || isCoreDirectory;
-
-        if (entry.isDirectory())
+        if (!relativePath)
         {
-            await copyDirectory(sourcePath, destinationPath, override, nextInsideCore);
-            continue;
+            return false;
         }
 
-        const shouldOverwrite = override || insideCore || entryNameLower.startsWith('core');
+        const normalisedRelativePath = relativePath.replace(/\\/g, '/').toLowerCase();
 
-        if (!shouldOverwrite)
+        return normalisedExclusions.some((exclusion) =>
         {
-            try
+            return normalisedRelativePath === exclusion || normalisedRelativePath.startsWith(`${exclusion}/`);
+        });
+    }
+
+    async function traverse(currentSourceDir, currentDestinationDir, insideCore)
+    {
+        await fs.mkdir(currentDestinationDir, { recursive: true });
+
+        const entries = await fs.readdir(currentSourceDir, { withFileTypes: true });
+
+        for (const entry of entries)
+        {
+            const sourcePath = path.join(currentSourceDir, entry.name);
+            const destinationPath = path.join(currentDestinationDir, entry.name);
+            const relativePath = path.relative(sourceDir, sourcePath);
+
+            if (isExcluded(relativePath))
             {
-                await fs.access(destinationPath);
                 continue;
             }
-            catch
-            {
-            }
-        }
 
-        await fs.copyFile(sourcePath, destinationPath);
+            const entryNameLower = entry.name.toLowerCase();
+            const isCoreDirectory = entry.isDirectory() && entryNameLower.startsWith('core');
+            const nextInsideCore = insideCore || isCoreDirectory;
+
+            if (entry.isDirectory())
+            {
+                await traverse(sourcePath, destinationPath, nextInsideCore);
+                continue;
+            }
+
+            const shouldOverwrite = override || insideCore || entryNameLower.startsWith('core');
+
+            if (!shouldOverwrite)
+            {
+                try
+                {
+                    await fs.access(destinationPath);
+                    continue;
+                }
+                catch
+                {
+                }
+            }
+
+            await fs.copyFile(sourcePath, destinationPath);
+        }
     }
+
+    await traverse(sourceDir, destinationDir, false);
 }
 
 function splitIntoSegments(text)

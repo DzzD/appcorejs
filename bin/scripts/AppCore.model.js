@@ -13,9 +13,9 @@ import { Log } from '../../src/app/Log.js';
 import { toPascalCase, toCamelCase, pluralizeName, resolveProjectRoot } from './AppCore.helpers.js';
 import { withDatabase, resolveTargetSchemas, fetchSchemaTables, fetchTableColumns, fetchTablePrimaryKeys, fetchTableForeignKeys } from './AppCore.sql.js';
 
-export async function generateModel(configuration)
+export async function synchroniseModel(configuration)
 {
-    Log.info('[app-core] Model generation requested');
+    Log.info('[app-core] Model synchronisation requested');
     Log.info('[app-core] Database configuration:', configuration);
 
 
@@ -28,7 +28,7 @@ export async function generateModel(configuration)
         const tables = await loadDatabaseMetadata(configuration);
         if (tables.length === 0)
         {
-            Log.warn('[app-core] No database tables found, skipping model generation');
+            Log.warn('[app-core] No database tables found, skipping model synchronisation');
             return;
         }
 
@@ -418,4 +418,3 @@ function buildTableKey(schema, table)
     const normalizedSchema = schema ?? '';
     return `${normalizedSchema}.${table}`;
 }
-

@@ -7,6 +7,7 @@
  */
 
 import fs from 'node:fs/promises';
+import { constants as fsConstants } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -30,39 +31,20 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
     const frameworkIndexPath = path.join(resolvedFrameworkRoot, 'src', 'index.js');
     const targetIndexPath = path.resolve(resolvedProjectRoot, 'index.js');
 
-    let frameworkIndexExists = false;
-
     try
     {
-        await fs.access(frameworkIndexPath);
-        frameworkIndexExists = true;
+        await fs.copyFile(frameworkIndexPath, targetIndexPath, fsConstants.COPYFILE_EXCL);
+        Log.info(`[app-core] Copied frontend entry: ${targetIndexPath}`);
     }
-    catch
+    catch (error)
     {
-        Log.warn('[app-core] Frontend index template not found, skipping index.js copy');
-    }
-
-    if (frameworkIndexExists)
-    {
-        let destinationExists = false;
-
-        try
+        if (error && error.code === 'EEXIST')
         {
-            await fs.access(targetIndexPath);
-            destinationExists = true;
-        }
-        catch
-        {
-        }
-
-        if (!destinationExists)
-        {
-            await fs.copyFile(frameworkIndexPath, targetIndexPath);
-            Log.info(`[app-core] Copied frontend entry: ${targetIndexPath}`);
+            Log.info(`[app-core] Preserved existing frontend entry: ${targetIndexPath}`);
         }
         else
         {
-            Log.info(`[app-core] Preserved existing frontend entry: ${targetIndexPath}`);
+            throw error;
         }
     }
 

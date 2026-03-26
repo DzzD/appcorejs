@@ -74,7 +74,7 @@ npx app-core --model --dbname appcore --dbschema minimal_app --dbuser appcore --
 To only initialize the framework structure without generating a model structure :
 
 ```bash
-npx app-core 
+npx app-core --back
 ```
 
 ## Notes
