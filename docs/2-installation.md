@@ -16,6 +16,15 @@ Initialize a new Node.js project:
 
 ```bash
 npm init -y
+npm pkg set type=module
+```
+
+If your npm version does not support `npm pkg`, edit `package.json` manually and add:
+
+```json
+{
+    "type": "module"
+}
 ```
 
 Then install AppCoreJS:
@@ -38,16 +47,7 @@ npm install git+https://github.com/DzzD/appcorejs.git
 
 ## Minimal package.json
 
-AppCoreJS is distributed as an ES module package.
-To use it, your project must enable ES modules, for example by setting:
-
-```json
-{
-    "type": "module"
-}
-```
-
-A more complete minimal example:
+A minimal `package.json` after running the commands above looks like:
 
 `package.json`
 ```js
@@ -55,7 +55,7 @@ A more complete minimal example:
   "name": "my-app",
   "type": "module",
   "dependencies": {
-    "@app-core/framework": "file:../.."
+    "app-core": "^1.0.0"
   },
   "scripts": {
     "start": "node index.js"
@@ -85,16 +85,16 @@ npx app-core --back
 
 ## Status
 
-AppCoreJS is currently under heavy development.
+AppCoreJS is fully functional but still in an early beta phase.
 
-At this stage, the backend foundation is usable for experimentation and prototype work, but the frontend layer is not yet available as a distributable part of the framework.
-
-The frontend architecture is intended to follow the exact same philosophy as the backend:
+Both backend and frontend layers follow the same philosophy:
 
 - strict separation between Core and App
 - immutable framework base
 - application-side overrides only
 - no direct modification of Core files
+
+Synchronisation commands let you refresh the baseline (for example regenerating models after database changes) without losing application-specific overrides.
 
 ## Next step
 

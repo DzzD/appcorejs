@@ -14,25 +14,31 @@ Before using AppCoreJS, make sure you have:
 
 ## Install dependencies
 
-`package.json`
-```js
-{
-  "name": "my-app",
-  "type": "module",
-  "dependencies": {
-    "@app-core/framework": "file:../.." //set path of appcorejs folder
-  },
-  "scripts": {
-    "start": "node index.js"
-  }
-}
-```
+1. Initialize your project:
 
-Once your `package.json` is ready, install the project dependencies from the project root:
+    ```bash
+    npm init -y
+    ```
 
-```
-npm install
-```
+2. Ensure the project uses ES modules (skip if already configured):
+
+    ```bash
+    npm pkg set type=module
+    ```
+
+    Alternatively, edit `package.json` manually and add:
+
+    ```json
+    {
+        "type": "module"
+    }
+    ```
+
+3. Install AppCoreJS from the Git repository:
+
+    ```bash
+    npm install git+https://github.com/DzzD/appcorejs.git
+    ```
 
 See [Installation](./2-installation.md) for more details.
 
