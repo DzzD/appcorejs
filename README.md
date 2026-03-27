@@ -26,6 +26,23 @@ Core classes are never used directly, not even by the framework itself.
 
 This keeps the Core layer immutable while ensuring that all behavior remains extensible from the App layer, including inside the framework itself, so the framework can be patched without ever modifying the Core layer.
 
+## Quick Start
+
+Generate a project immediately:
+
+```bash
+npm init -y
+npm pkg set type=module
+npm install git+https://github.com/DzzD/appcorejs.git
+npx app-core --front --back --intro
+npm start
+```
+
+Then open:
+
+- `http://localhost:3000` to view your application
+- `http://localhost:3000/intro/` for an introduction to the framework
+
 ## Philosophy
 
 AppCore<sub>JS</sub> is designed to stay focused, understandable, and maintainable over time.
@@ -124,7 +141,7 @@ AppCore<sub>JS</sub> provides a CLI entry point:
 
 Example usage:
 
-    npx app-core
+    npx app-core --front --back
 
 Or through an npm script:
 

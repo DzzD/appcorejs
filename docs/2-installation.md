@@ -58,7 +58,7 @@ A minimal `package.json` after running the commands above looks like:
     "app-core": "^1.0.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   }
 }
 ```

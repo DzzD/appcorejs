@@ -14,7 +14,7 @@ Each synchronisation entry point mirrors the behaviour of its dedicated script:
 
 ### `--front`
 
-Synchronises the frontend bundle by copying the framework `src/public/` directory into your project `public/` folder. The command keeps existing project overrides whenever possible and only copies the default `index.js` entry if it does not already exist.
+Synchronises the frontend bundle by copying the framework `src/public/` directory into your project `public/` folder. The command keeps existing project overrides whenever possible and only copies the default `server.js` entry if it does not already exist.
 
 ```bash
 npx app-core --front

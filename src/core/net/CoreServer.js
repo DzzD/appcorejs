@@ -9,6 +9,7 @@
 import express from 'express';
 import path from 'node:path';
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { Log } from '../../app/Log.js';
 
@@ -46,7 +47,16 @@ export class CoreServer
         {
             this.#httpServer = this.#application.listen(port, host, () =>
             {
+                const introductionDirectoryPath = path.join(this.#staticDirectory, 'intro');
+
                 Log.info(`Server listening on http://${host}:${port}`);
+                Log.info(`Open http://${host}:${port} to view your application.`);
+
+                if (existsSync(introductionDirectoryPath))
+                {
+                    Log.info(`Open http://${host}:${port}/intro/ for an introduction to the framework.`);
+                }
+
                 resolve();
             });
 

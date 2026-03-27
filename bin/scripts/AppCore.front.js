@@ -28,8 +28,8 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
 
     await copyDirectory(sourcePublic, targetPublic, false);
 
-    const frameworkIndexPath = path.join(resolvedFrameworkRoot, 'src', 'index.js');
-    const targetIndexPath = path.resolve(resolvedProjectRoot, 'index.js');
+    const frameworkIndexPath = path.join(resolvedFrameworkRoot, 'src', 'server.js');
+    const targetIndexPath = path.resolve(resolvedProjectRoot, 'server.js');
 
     try
     {
