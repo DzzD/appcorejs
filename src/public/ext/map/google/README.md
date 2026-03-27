@@ -27,7 +27,6 @@ Its value usually consists of a fully qualified component name, optionally follo
 ```html
 <div
     data-appcore-id="ext.map.google.google-map::your-optional-uid"
-    data-appcore-class="ext.google.google-map"
     data-apikey="YOUR_GOOGLE_MAPS_API_KEY"
     data-mapid="YOUR_GOOGLE_MAP_ID"
     data-lat="48.8566"
@@ -42,7 +41,7 @@ The component can be extended with a custom JavaScript class.
 This works both with inline HTML usage and with programmatic usage.
 
 ```js
-export class MyMap extends CoreGoogleMap
+export class MyMap extends GoogleMap
 {
     async onLoad()
     {

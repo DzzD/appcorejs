@@ -23,7 +23,6 @@ Its value usually consists of a fully qualified component name, optionally follo
 ```html
 <div
     data-appcore-id="ext.map.leaflet.leaflet-map::your-optional-uid"
-    data-appcore-class="ext.map.leaflet.leaflet-map"
     data-lat="48.8566"
     data-lng="2.3522"
     data-zoom="10">
@@ -36,7 +35,7 @@ The component can be extended with a custom JavaScript class.
 This works both with inline HTML usage and with programmatic usage.
 
 ```js
-export class MyLeafletMap extends CoreLeafletMap
+export class MyLeafletMap extends LeafletMap
 {
     async onLoad()
     {
