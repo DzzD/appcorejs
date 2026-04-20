@@ -17,7 +17,8 @@
         ".": "./src/index.js"
     },
     "scripts": {
-        "postinstall": "node ./bin/app-core.js"
+        "postinstall": "node ./bin/app-core.js",
+        "start" : "node src/server.js"
     },
     "dependencies": {
         "express": "^5.2.1",
