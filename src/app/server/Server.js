@@ -6,7 +6,7 @@
  * Licensed under the MIT License
  */
 
-import { CoreServer } from '../../core/net/CoreServer.js';
+import { CoreServer } from '../../core/server/CoreServer.js';
 
 export class Server extends CoreServer
 {

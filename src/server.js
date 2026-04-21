@@ -6,7 +6,7 @@
  * Licensed under the MIT License
  */
 
-import { Server } from './app/net/Server.js';
+import { Server } from './app/server/Server.js';
 import { Log } from './app/Log.js';
 
 const server = new Server();
