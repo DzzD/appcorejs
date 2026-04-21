@@ -105,7 +105,7 @@ export class CoreDbConnector
             const result = await this._client.query(sql, params);
             this._rowBuffer = result && Array.isArray(result.rows) ? result.rows : [];
             this._rowBufferIndex = -1;
-            return this;
+            return this._rowBuffer[this._rowBufferIndex] ?? null;
         }
         catch (error)
         {

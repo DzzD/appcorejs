@@ -50,8 +50,8 @@ export class CoreDbObject
       }
 
       return `${this._databaseName}.${this._schema}.${this._tableName} :\n`
-          + `(${currentValues.join(', ')})\n`
-          + `(${originalValues.join(', ')})`;
+          + `NEW VALUES - (${currentValues.join(', ')})\n`
+          + `OLD VALUES - (${originalValues.join(', ')})`;
   }
 
   getFullTableName()
@@ -306,7 +306,7 @@ export class CoreDbObject
 
     this.afterSave(insertOrUpdateResult);
 
-    connector.close();
+    // connector.close(); **
 
     return true;
   }
