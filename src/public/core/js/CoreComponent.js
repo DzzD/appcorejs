@@ -24,8 +24,9 @@ export class CoreComponent
         this.parent = parent;
         this.id = componentId;
         this.template = null;
+        this.templatePath = null;
         this.childs = new Map();  
-             
+              
     }
 
 
@@ -138,6 +139,16 @@ export class CoreComponent
             return;
         }
 
+        const templateAttribute = this.templatePath ?? this.node.getAttribute('data-template');
+
+        if (templateAttribute)
+        {
+            this.templatePath = templateAttribute;
+            const resolvedTemplatePath = this.#resolveTemplatePath(templateAttribute);
+            this.template = await Loader.loadTemplate(resolvedTemplatePath);
+            await this.loadTemplate();
+        }
+
         const childElements = this.#getClosestChildComponentElements(this.node);
         
         for (const childElement of childElements)
@@ -197,22 +208,6 @@ export class CoreComponent
     }
 
 
-    // extractTemplate()
-    // {
-    //     const clone = this.node.cloneNode(true);
-    //     const childComponents = this.#getClosestChildComponentElements(clone);
-
-    //     for (const child of childComponents)
-    //     {
-    //         const componentId = child.getAttribute('data-appcore-id');
-    //         child.replaceWith(document.createTextNode(`{{${componentId}}}`));
-    //     }
-
-    //     return clone.outerHTML;
-    // }    
-
-    
-
     explodeId(componentId)
     {
         const [path, uid] = componentId.split('::');
@@ -230,6 +225,59 @@ export class CoreComponent
             className,
             uid
         };
+    }
+
+    async loadTemplate()
+    {
+        if (!this.template)
+        {
+            return;
+        }
+
+        const templateWrapper = document.createElement('template');
+        templateWrapper.innerHTML = this.template.trim();
+
+        const templateRoot = templateWrapper.content.firstElementChild;
+
+        if (!templateRoot)
+        {
+            return;
+        }
+
+        const currentNode = this.node;
+
+        for (const attribute of templateRoot.attributes)
+        {
+            if (attribute.name === 'data-template')
+            {
+                continue;
+            }
+
+            if (!currentNode.hasAttribute(attribute.name))
+            {
+                currentNode.setAttribute(attribute.name, attribute.value);
+            }
+        }
+
+        currentNode.removeAttribute('data-template');
+
+        currentNode.replaceChildren();
+
+        const fragment = document.createDocumentFragment();
+
+        while (templateRoot.firstChild)
+        {
+            fragment.appendChild(templateRoot.firstChild);
+        }
+
+        currentNode.appendChild(fragment);
+    }
+    
+    #resolveTemplatePath(templatePath)
+    {
+        const { filePath } = this.explodeId(this.id);
+        const baseUrl = new URL(`${filePath}/`, document.baseURI);
+        return new URL(templatePath, baseUrl).href;
     }
     
     #getClosestChildComponentElements(rootElement)

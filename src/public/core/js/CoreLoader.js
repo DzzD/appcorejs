@@ -12,6 +12,7 @@ export class CoreLoader
 {
     static loadedScripts = new Set();
     static loadedStyles = new Set();
+    static loadedTemplates = new Map();
 
     static async loadFile(uri, type = "text")
     {
@@ -157,4 +158,25 @@ export class CoreLoader
 
         return script;
     }    
+
+    static async loadTemplate(filePath)
+    {
+        const templateUrl = new URL(filePath, document.baseURI);
+        const href = templateUrl.href;
+
+        if (this.loadedTemplates.has(href))
+        {
+            return this.loadedTemplates.get(href);
+        }
+
+        const response = await fetch(href);
+        if (!response.ok)
+        {
+            throw new Error(`Unable to load template: ${href}`);
+        }
+
+        const content = await response.text();
+        this.loadedTemplates.set(href, content);
+        return content;
+    }
 }

@@ -10,3 +10,9 @@ examples/**/core/
 /docs/images/app-core-js.logo-big.png
 /docs/images/logo-app-core-js-square.png
 /docs/images/logo-app-core-js-square.psd
+/public
+/index.js
+/init.sql
+/init-data.sql
+/server.js
+/compose.yml
