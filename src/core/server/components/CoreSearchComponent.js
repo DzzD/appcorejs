@@ -64,13 +64,39 @@ export class CoreSearchComponent extends ServerComponent
     }
 
     return {
-      criterias: this.criterias,
-      columns: this.columns,
-      actions: this.actions,
+      criterias: this.getFrontCriterias(),
+      columns: this.getFrontColumns(),
+      actions: this.getFrontActions(),
       order: options.order ?? this.order,
       limit: options.limit ?? this.limit,
       rows,
     };
+  }
+
+
+  getFrontCriterias()
+  {
+    return this.criterias.map((criteria) => ({
+      code: criteria.code,
+      label: criteria.label,
+      type: criteria.type ?? null,
+    }));
+  }
+
+
+  getFrontColumns()
+  {
+    return this.columns.map((column) => ({
+      code: column.code,
+      label: column.label,
+      type: column.type ?? null,
+    }));
+  }
+
+
+  getFrontActions()
+  {
+    return this.actions;
   }
 
 
@@ -179,27 +205,18 @@ export class CoreSearchComponent extends ServerComponent
   }
 
 
-resultRow()
-{
-  const row = {};
-
-  for (const column of this.columns)
+  resultRow()
   {
-    const value = this.resultField(column);
+    const row = {};
 
-    console.log('[SEARCH RESULT FIELD]', {
-      column,
-      object: column.object ? this.query[column.object] : null,
-      value,
-    });
+    for (const column of this.columns)
+    {
+      row[column.code] = this.resultField(column);
+    }
 
-    row[column.code] = value;
+    return row;
   }
 
-  console.log('[SEARCH RESULT ROW]', row);
-
-  return row;
-}
 
   resultField(column)
   {
