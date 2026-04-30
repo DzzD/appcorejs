@@ -70,14 +70,15 @@ export class CoreDbQueryObject
     }
 
 
-    addDbObject(ClassRef, alias = null)
+    addDbObject(ClassRef, objectName = null, alias = null)
     {
         if (!ClassRef)
         {
             return null;
         }
 
-        const key = alias ?? ClassRef.name;
+        const key = objectName ?? alias ?? ClassRef.name;
+
         const meta =
         {
             ClassRef,
@@ -91,9 +92,14 @@ export class CoreDbQueryObject
         }
 
         this._dbObjects.set(key, meta);
+
+        Object.defineProperty(this, key, {
+            get: () => this.getDbObject(key),
+            configurable: true
+        });
+
         return key;
     }
-
 
     getDbObject(key)
     {

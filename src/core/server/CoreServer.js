@@ -111,7 +111,7 @@ export class CoreServer
 
     registerServerComponent(serverComponent)
     {
-        serverComponent.setServer(this);
+        serverComponent.server = this;
         this.#serverComponents.push(serverComponent);
         return serverComponent;
     }

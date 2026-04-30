@@ -20,9 +20,6 @@ import { DataUserGroup } from '../models/DataUserGroup.js';
 
 export class DbQueryUserGroupByUser extends DbQueryObject
 {
-    _userAliasKey;
-    _userGroupAliasKey;
-
     constructor(connectionUid = "default")
     {
         super('appcore', connectionUid);
@@ -35,19 +32,9 @@ export class DbQueryUserGroupByUser extends DbQueryObject
             "user" u
             LEFT JOIN user_group ug on u.id = ug.user_id`;
 
-        this._userAliasKey = this.addDbObject(DataUser, 'u');
-        this._userGroupAliasKey = this.addDbObject(DataUserGroup, 'ug');
+        this.addDbObject(DataUser, 'user', 'u');
+        this.addDbObject(DataUserGroup, 'userGroup', 'ug');
     }
 
 
-    get user()
-    {
-        return this.getDbObject(this._userAliasKey);
-    }
-
-
-    get userGroup()
-    {
-        return this.getDbObject(this._userGroupAliasKey);
-    }
 }

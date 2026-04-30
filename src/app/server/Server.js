@@ -7,6 +7,7 @@
  */
 
 import { CoreServer } from '../../core/server/CoreServer.js';
+import { UserSearchComponent } from './components/UserSearchComponent.js';
 
 export class Server extends CoreServer
 {
@@ -14,5 +15,6 @@ export class Server extends CoreServer
     {
         super();
         this.devModeEnabled = true;
+        this.registerServerComponent(new UserSearchComponent());
     }
 }

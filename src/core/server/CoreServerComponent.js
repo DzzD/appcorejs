@@ -15,10 +15,9 @@ export class CoreServerComponent
         return this.#server;
     }
 
-    setServer(server)
+    set server(server)
     {
         this.#server = server;
-        return this;
     }
 
     async start()
