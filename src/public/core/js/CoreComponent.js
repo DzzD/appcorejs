@@ -227,6 +227,7 @@ export class CoreComponent
         };
     }
 
+
     async loadTemplate()
     {
         if (!this.template)

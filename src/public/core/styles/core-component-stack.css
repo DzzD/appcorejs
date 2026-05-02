@@ -13,13 +13,7 @@
 {
     transform-origin : center center;
     backface-visibility : hidden;
-    webkit-backface-visibility : hidden;
-    transform-style : preserve-3d;
+    -webkit-backface-visibility : hidden;
+    transform-style : preserve-3d;  
 }
 
-[data-appcore-class~="app.js.component-stack"] .screen-slider
-{
-    /* display: flex; */
-    /* height: 100%; */
-    /* transform: translateX(-100%); */
-}

@@ -28,6 +28,7 @@ export class UserSearchComponent extends SearchComponent
 
   criterias = [
     { code: 'login', label: 'Login', sql: 'u.login', type: 'string' },
+    { code: 'createdAt', label: 'Créé le', sql: 'u.created_at', type: 'string' },
   ];
 
   columns = [
