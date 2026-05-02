@@ -26,6 +26,9 @@ export class CoreComponentSearch extends Component
 
   limit = null;
 
+  isSearching = false;
+  hasPendingSearch = false;
+
 
   async onLoad()
   {
@@ -34,6 +37,8 @@ export class CoreComponentSearch extends Component
 
     await this.loadDefinition();
     this.render();
+
+    await this.search();
   }
 
 
@@ -47,6 +52,12 @@ export class CoreComponentSearch extends Component
     `;
 
     this.find('[data-action="search"]').addEventListener("click", () => this.search());
+
+    for (const input of this.findAll(".criterias input, .criterias select"))
+    {
+      input.addEventListener("input", () => this.search());
+      input.addEventListener("change", () => this.search());
+    }
   }
 
 
@@ -85,20 +96,41 @@ export class CoreComponentSearch extends Component
 
   async search()
   {
-    const response = await fetch(this.route, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        criterias: this.getCriterias(),
-        options: this.getOptions(),
-      }),
-    });
+    if (this.isSearching)
+    {
+      this.hasPendingSearch = true;
+      return;
+    }
 
-    const result = await response.json();
+    this.isSearching = true;
 
-    this.renderResult(result);
+    try
+    {
+      const response = await fetch(this.route, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          criterias: this.getCriterias(),
+          options: this.getOptions(),
+        }),
+      });
+
+      const result = await response.json();
+
+      this.renderResult(result);
+    }
+    finally
+    {
+      this.isSearching = false;
+
+      if (this.hasPendingSearch)
+      {
+        this.hasPendingSearch = false;
+        this.search();
+      }
+    }
   }
 
 
