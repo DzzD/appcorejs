@@ -273,12 +273,17 @@ export class CoreComponent
         currentNode.appendChild(fragment);
     }
     
-    #resolveTemplatePath(templatePath)
+    // #resolveTemplatePath(templatePath)
+    // {
+    //     const { filePath } = this.explodeId(this.id);
+    //     const baseUrl = new URL(`${filePath}/`, document.baseURI);
+    //     return new URL(templatePath, baseUrl).href;
+    // }
+    #resolveTemplatePath(templateId)
     {
-        const { filePath } = this.explodeId(this.id);
-        const baseUrl = new URL(`${filePath}/`, document.baseURI);
-        return new URL(templatePath, baseUrl).href;
-    }
+        const filePath = templateId.split(".").join("/");
+        return new URL(`${filePath}.tpl.html`, document.baseURI).href;
+    }        
     
     #getClosestChildComponentElements(rootElement)
     {

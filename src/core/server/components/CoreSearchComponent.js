@@ -33,6 +33,18 @@ export class CoreSearchComponent extends ServerComponent
 
   startHttp(route = this.route)
   {
+    this.server.application.get(route, async (request, response) =>
+    {
+      response.json({
+        title: this.title,
+        criterias: this.criterias,
+        columns: this.columns,
+        actions: this.actions,
+        order: this.order,
+        limit: this.limit,
+      });
+    });
+
     this.server.application.post(route, async (request, response) =>
     {
       const result = await this.search(
@@ -43,7 +55,6 @@ export class CoreSearchComponent extends ServerComponent
       response.json(result);
     });
   }
-
 
   async search(criterias = {}, options = {})
   {

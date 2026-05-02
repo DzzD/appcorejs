@@ -58,13 +58,13 @@ export class CoreComponentStack extends Component
             this.#transitionMinScale = Number(this.node.dataset.transitionMinScale);
         }
 
-        for (const [, component] of this.childs)
-        {
-            component.node.style.transformOrigin = "center center";
-            component.node.style.backfaceVisibility = "hidden";
-            component.node.style.webkitBackfaceVisibility = "hidden";
-            component.node.style.transformStyle = "preserve-3d";
-        }
+        // for (const [, component] of this.childs)
+        // {
+        //     component.node.style.transformOrigin = "center center";
+        //     component.node.style.backfaceVisibility = "hidden";
+        //     component.node.style.webkitBackfaceVisibility = "hidden";
+        //     component.node.style.transformStyle = "preserve-3d";
+        // }
 
         this.transitionDuration = this.#transitionDuration;
 

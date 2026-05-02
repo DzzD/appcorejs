@@ -10,23 +10,46 @@
 
 [data-appcore-class~="app.js.screen"]  .screen-content
 {
+    position: relative;
     display: grid;
-    overflow-y: auto;
     /* grid-template-rows: 1fr auto; */
     min-height: 100%;
     border-radius: 1rem;
+    padding-bottom: 6rem;
     height: 100%;
     padding: 1rem;
     background: linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 75%, #ffffff), color-mix(in srgb, var(--color-bg) 25%, #ffffff82));
 }
 
+[data-appcore-class~="app.js.screen"] > .screen-content > :first-child
+{
+    display: grid;
+    grid-template-rows: max-content;
+    align-content: start;
+    overflow-y: auto;
+    height: 100%;
+    min-height: 0;
+}
+
 [data-appcore-class~="app.js.screen"] > .screen-content  .screen-footer
 {
-    position: sticky;
-    bottom: 0;
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+
     padding: 1rem;
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    align-self: end;
+
+    z-index: 2;
+
+    pointer-events: none;
+}
+
+[data-appcore-class~="app.js.screen"] > .screen-content .screen-footer button,
+[data-appcore-class~="app.js.screen"] > .screen-content .screen-footer a
+{
+    pointer-events: auto;
 }
