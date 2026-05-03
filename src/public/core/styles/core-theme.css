@@ -25,17 +25,32 @@
 
 :root
 {
-  /* global */
-  --color-bg: #f4f8fc;
-  --color-text : #333333;
-  --font-family: 'Inter', system-ui, sans-serif;
-  --font-size: 16px;
+    /* background + surfaces */
+    --color-background: #f4f8fc;
+    --color-surface: #ffffff;
 
-  /* Status colors */
-  --color-success: #16a34a;
-  --color-warning: #f2a100;
-  --color-danger: #dc2626;
 
-  --main-background : url("../../assets/images/background.jpg") center / cover no-repeat;
- 
+    /* brand */
+    --color-primary: #345f9f;
+    --color-accent: #ff5500;    
+
+    /* typography */
+    --color-text: #333333;
+    --color-text-on-primary: #ffffff;
+    --color-text-on-accent: #ffffff;
+    --font-family: 'Inter', system-ui, sans-serif;
+    --font-size: 16px;
+
+    /* borders */
+    --color-border: #cbcbcb;
+
+    /* feedback */
+    --color-success: #16a34a;
+    --color-warning: #f2a100;
+    --color-danger: #dc2626;
+
+    /* overlays + shadows */
+    --shadow-soft: rgba(15, 23, 42, 0.08);
+
+    --main-background: url("../../assets/images/background.jpg") center / cover no-repeat;
 }

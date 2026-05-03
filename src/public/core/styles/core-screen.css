@@ -1,6 +1,6 @@
 [data-appcore-class~="app.js.screen"]
 {
-    padding: 1.5rem;
+    padding: 1rem;
     position: absolute;
     inset: 0;
     /* min-height: 0; */
@@ -14,12 +14,30 @@
     display: grid;
     /* grid-template-rows: 1fr auto; */
     min-height: 100%;
-    border-radius: 1rem;
+    /* border-radius: 1rem; */
+    
+    /* border-radius: 0 1.5rem 0 0;
+    corner-shape: bevel; */
     padding-bottom: 6rem;
     height: 100%;
     padding: 1rem;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--color-bg) 75%, #ffffff), color-mix(in srgb, var(--color-bg) 25%, #ffffff82));
-}
+    overflow: hidden;
+    border: 0;
+    background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+    --cut: 36px;
+
+clip-path: polygon(
+    0 0,
+    calc(100% - var(--cut)) 0,
+    100% var(--cut),
+    100% 100%,
+    var(--cut) 100%,
+    0 calc(100% - var(--cut))
+);
+}    
+
+
+
 
 [data-appcore-class~="app.js.screen"] > .screen-content > :first-child
 {

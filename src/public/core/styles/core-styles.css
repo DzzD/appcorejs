@@ -16,7 +16,7 @@
 html
 {
     color: var(--color-text);
-    background-color: var(--color-bg);
+    /* background-color: var(--color-background); */
     font-family: var(--font-family);
     font-size: var(--font-size);
     margin: 0;
@@ -69,8 +69,8 @@ button
     /* min-width: 6rem; */
     height: 3rem;
     padding: 0.5rem 2rem;
-    color: #ffffff;
-    background: #0175cd;
+    color: var(--color-text-on-primary);
+    background: color-mix(in srgb, var(--color-primary) 85%, black);
     border: 0;
     appearance: none;
     border-radius: 0.35rem;
@@ -89,7 +89,7 @@ button
 
 button:hover
 {
-   background: color-mix(in srgb, #0175cd 80%, transparent);
+    background: color-mix(in srgb, var(--color-primary) 80%, transparent);
 }
 
 
@@ -103,9 +103,23 @@ h1,h2,h3
     letter-spacing: 0.02em;
 }
 
-h1 { font-size: 2.25rem; color:#0175cd }
-h2 {font-size: 2rem;color:#0175cd}
-h3 {font-size: 1.5rem;color:#ff5500}
+h1
+{
+    font-size: 2.25rem;
+    color: var(--color-text);
+}
+
+h2
+{
+    font-size: 2rem;
+    color: var(--color-primary);
+}
+
+h3
+{
+    font-size: 1.5rem;
+    color: color-mix(in srgb, var(--color-accent) 75%, var(--color-text));
+}
 
 p
 {
@@ -162,12 +176,6 @@ u
     text-underline-offset: 0.12em;
 }
 
-mark
-{
-    background: rgba(255, 230, 120, 0.55);
-    padding: 0.05em 0.2em;
-    border-radius: 0.2em;
-}
 
 sub,
 sup

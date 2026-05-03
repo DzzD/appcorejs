@@ -12,13 +12,13 @@
     flex-direction: column;
     overflow: hidden;
     color: var(--color-text);
-    /* background: color-mix(in srgb, var(--color-bg) 70%, transparent); */
+    /* background: color-mix(in srgb, var(--color-background) 70%, transparent); */
     /* border: 1px solid #0175cd; */
     border-radius: 0.5rem;
     /* box-shadow: 0 0.75rem 4rem rgb(0 0 0 / 49%); */
     transition: opacity 0.2s ease;
     border-radius: 0.75rem;
-    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.25);
+    box-shadow: 0 1rem 2.5rem var(--shadow-soft);
 }
 
 [data-appcore-class~="app.js.window"] .window-modal-overlay
@@ -28,10 +28,10 @@
     inset: 0;
     backdrop-filter: blur(1px);
     transition: backdrop-filter 3s ease;
-    background-color: color-mix(in srgb, var(--color-bg) 25%, transparent);
+    background-color: color-mix(in srgb, var(--color-background) 25%, transparent);
     /* background-color: rgba(20, 24, 31, 0.45); */
     /* opacity: 1; */
-    background-color: rgba(20, 24, 31, 0.45);
+    background-color: var(--shadow-soft);
     /* display: none; */
 }
 
@@ -43,11 +43,11 @@
     /* justify-content: space-between; */
     gap: 1rem;
     padding: 0.75rem 1rem;
-    color: #0175cd;
+    color: var(--color-primary);
     /* background: linear-gradient(178deg, #0175d6, #9ab7e9); */
-    border-bottom: 1px solid rgb(255 255 255 / 20%);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-surface) 20%, transparent);
     cursor: default;
-    background-color: #ffffff;
+    background-color: var(--color-surface);
 }
 
 
@@ -70,7 +70,7 @@
 
 [data-appcore-class~="app.js.window"][data-type="info"] > .window-header .window-icon
 {
-    color: #ffffff;
+    color: var(--color-text-on-primary);
 }
 
 [data-appcore-class~="app.js.window"][data-type="warning"] > .window-header .window-icon
@@ -110,14 +110,14 @@
 {
     margin: 0;
     padding: 0 1rem;
-    color: #ffffff;
+    color: var(--color-text-on-primary);
     /* font-size: 1.25rem; */
     /* font-weight: 400; */
     display: flex;
     align-items: center;
     vertical-align: middle;
     user-select: none;
-    color: #0175cd;
+    color: var(--color-primary);
 }
 
 [data-appcore-class~="app.js.window"] > .window-body
@@ -125,8 +125,8 @@
     flex: 1 1 auto;
     padding: 1rem;
     overflow: auto;
-    /* background: color-mix(in srgb, var(--color-bg) 90%, transparent); */
-    background-color: #ffffff;
+    /* background: color-mix(in srgb, var(--color-background) 90%, transparent); */
+    background-color: var(--color-surface);
 }
 
 [data-appcore-class~="app.js.window"] > .window-footer
@@ -135,7 +135,7 @@
     justify-content: flex-end;
     gap: 0.75rem;
     padding: 0 1rem 1rem 1rem;
-    background-color: #ffffff;
+    background-color: var(--color-surface);
 }
 
 [data-appcore-class~="app.js.window"] > .window-footer .window-confirm

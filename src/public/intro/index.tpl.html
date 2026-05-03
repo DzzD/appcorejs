@@ -26,23 +26,23 @@
             <img class="logo" src="./assets/icons/icon-512.png" alt="">
             <span class="title">{{APPCORE_APP_NAME}}</span>
         </h1> 
-        <div class="menu">
-          <button onClick="appcore('::optional-uid').active='::screen-home-1'">⌂ Home</button>
-          <button onClick="appcore('app.js.component-stack::optional-uid').active='app.js.screen-home::screen-home-2'">Screen 2</button>
-          <button onClick="appcore('app.js.component-stack::optional-uid').active='app.js.screen-home2::inst2'">Screen 3</button>
+        <nav  class="menu">
+          <button onClick="appcore('::screen-intro-slider').active='::screen-intro-1'">Home</button>
+          <button onClick="appcore('::screen-intro-slider').active='::screen-intro-2'">Screen 2</button>
+          <button onClick="appcore('::screen-intro-slider').active='::screen-intro-3'">Screen 3</button>
           <button onClick="appcore('app.js.window::window-info').open();">Window</button>
-        </div>
+        </nav>
       </header>
 
       <main>
 
-        <section data-appcore-id="app.js.component-stack::optional-uid" 
+        <section data-appcore-id="app.js.component-stack::screen-intro-slider" 
                  data-transition-mode="scale/slide-x/fade"
                  data-transition-duration="1000"
                  data-transition-min-scale="0.95">
           <!--<secton class="screen-slider">-->
 
-            <section data-appcore-id="app.js.screen-home::screen-home-1" >
+            <section data-appcore-id="app.js.screen-intro::screen-intro-1" >
               <div class="screen-content">
                 
                 
@@ -87,7 +87,7 @@
               </div>
             </section>
           
-            <section data-appcore-id="app.js.screen-home::screen-home-2" class="hidden" >
+            <section data-appcore-id="app.js.screen-intro::screen-intro-2" class="hidden" >
               <div class="screen-content">
                 <div>
                   <h2>Ecran exemple 2</h2>
@@ -104,7 +104,19 @@
               </div>     
             </section>
           
-            <section data-appcore-id="app.js.screen-home2::inst2" class="hidden">
+            <section data-appcore-id="app.js.screen-intro::screen-intro-3" class="hidden">
+              <div class="screen-content">
+                <div data-appcore-id="app.js.user-search::users"
+                    data-template="assets.tpl.component-search">
+                </div>
+
+                <div class="screen-footer">
+                  <button type="button">Next &#8250;</button>
+                </div>
+              </div>
+            </section>
+          
+            <section data-appcore-id="app.js.screen-intro::screen-intro-4" class="hidden">
               <div class="screen-content">
                 <div>
                   <div>
@@ -112,7 +124,6 @@
                     <br>
                     <h3>Titre paragraphe 1</h3>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</p>
-                    <input type="text" value="<rechercher>"/>
                   </div>
                  <div data-appcore-id="app.js.user-search::users"
                       data-template="assets.tpl.component-search">

@@ -10,6 +10,8 @@ import { Server } from './app/server/Server.js';
 import { Log } from './app/Log.js';
 
 const server = new Server();
+const SHUTDOWN_TIMEOUT = 5000;
+
 let isShuttingDown = false;
 
 async function shutdown(signal)
@@ -21,7 +23,21 @@ async function shutdown(signal)
 
     isShuttingDown = true;
     Log.info(`${signal} received, stopping server...`);
-    await server.stop();
+
+    const timeout = new Promise((resolve) =>
+    {
+        setTimeout(() =>
+        {
+            Log.warning(`Server stop timeout after ${SHUTDOWN_TIMEOUT}ms, forcing exit...`);
+            resolve();
+        }, SHUTDOWN_TIMEOUT);
+    });
+
+    await Promise.race([
+        server.stop(),
+        timeout,
+    ]);
+
     process.exit(0);
 }
 
