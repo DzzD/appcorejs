@@ -112,13 +112,13 @@ h1
 h2
 {
     font-size: 2rem;
-    color: var(--color-primary);
+    color: color-mix(in srgb, var(--color-primary) 80%, transparent); 
 }
 
 h3
 {
     font-size: 1.5rem;
-    color: color-mix(in srgb, var(--color-accent) 75%, var(--color-text));
+    color: color-mix(in srgb, var(--color-accent) 80%, transparent);
 }
 
 p
