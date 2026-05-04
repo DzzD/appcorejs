@@ -16,3 +16,5 @@ examples/**/core/
 /init-data.sql
 /server.js
 /compose.yml
+/testp2
+/testp1

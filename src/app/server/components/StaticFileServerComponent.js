@@ -8,7 +8,7 @@ export class StaticFileServerComponent extends CoreStaticFileServerComponent
     {
         content = content.replaceAll("{{APPCORE_APP_NAME}}", this.server.appName);
 
-        const base = path.join(this.staticDirectory, 'assets/tpl');
+        const base = path.join(this.staticDirectory, 'app/tpl');
 
         const devBadge = this.server.devModeEnabled ? await fs.readFile(path.join(base, 'appcore-dev-mode-badge.tpl.html'), 'utf8') : '';
 

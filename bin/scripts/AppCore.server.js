@@ -26,9 +26,11 @@ export async function synchroniseServer(frameworkRoot = null, projectRoot = null
     const sourceServerPath = path.join(resolvedFrameworkRoot, 'src', 'server.js');
     const targetServerPath = path.resolve(resolvedProjectRoot, 'server.js');
     const targetProjectServerDirectory = path.resolve(resolvedProjectRoot, projectName, 'server');
+    const targetProjectServerComponentsDirectory = path.join(targetProjectServerDirectory, 'components');
     const targetProjectServerClassPath = path.join(targetProjectServerDirectory, `${projectClassName}Server.js`);
 
     await fs.mkdir(targetProjectServerDirectory, { recursive: true });
+    await fs.mkdir(targetProjectServerComponentsDirectory, { recursive: true });
 
     await createProjectServerClassIfMissing(targetProjectServerClassPath, projectClassName);
     await createRootServerIfMissing(sourceServerPath, targetServerPath, projectName, projectClassName);
