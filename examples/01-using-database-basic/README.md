@@ -1,36 +1,22 @@
-# Using Database Basic
+# 01 - Using Database Basic
 
-This example demonstrates a basic AppCore workflow interacting directly with the database through a connector.
+This example shows the smallest backend workflow with AppCoreJS.
 
-It uses the shared `minimal_app.item` table to demonstrate how to initialize a simple application and perform basic insert and read operations without generating models, using both explicit and implicit schemas.
+It uses:
 
-Even in this simplified setup, the database layer already supports:
+- `DbManager` to declare a database
+- `DbConnector` to run SQL directly
+- shared schema `minimal_app`
 
-- multiple database registrations
-- multiple schemas
-- connection management
-- complex transaction handling
+No model generation is required.
 
-This architecture scales from introductory scripts to advanced applications requiring several databases, schema separation, controlled connector usage, and transactional operations.
+## Requires database
 
-## Prerequisites
+Yes.
 
-- Node.js and npm
-- Docker
+Use the shared DB setup described in:
 
-## Database
-
-From the `examples/` directory, start the shared PostgreSQL container:
-
-```bash
-docker compose up -d
-```
-
-Then initialize or reset the database for this example:
-
-```bash
-docker compose exec postgres psql -U appcore -d appcore -f /examples/01-using-database-basic/init.sql
-```
+- [`../README.md`](../README.md)
 
 ## Install dependencies
 
@@ -40,25 +26,47 @@ From this example directory:
 npm install
 ```
 
-## Initialize the example
-
-Generate the basic application structure without model generation:
+## Initialize AppCoreJS structure
 
 ```bash
 npm run init
 ```
 
-This command runs:
+Script executed:
 
 ```bash
-app-core --back
+app-core --back --project project
 ```
 
-This creates the minimal project skeleton required for the connector usage showcased in this example.
+This creates/synchronizes:
 
-#### Usage example:
+- `app/`
+- `core/`
+- `project/`
 
-`index.js`
+## Run the example
+
+```bash
+npm run start
+```
+
+or
+
+```bash
+node index.js
+```
+
+## What the example does
+
+`index.js`:
+
+- registers database `appcore`
+- inserts rows into `minimal_app.item`
+- reads rows and prints them
+- closes connector and releases database
+
+Simplified extract:
+
 ```js
 import { DbManager } from './app/db/DbManager.js';
 
@@ -73,32 +81,6 @@ DbManager.addDatabase(
 
 const connector = DbManager.getConnector('appcore');
 await connector.query('SELECT * FROM minimal_app.item');
-let row = await connector.next();
-while (row)
-{
-    Log.info(row);
-    row = await connector.next();
-}
 ```
 
-See [`index.js`](./index.js) for the full code.
-
-## Run the example
-
-```bash
-npm run start
-```
-
-or
-
-```bash
-node index.js
-```
-
-## Notes
-
-- This example is intentionally minimalistic.
-- It relies on the shared PostgreSQL service defined in `examples/compose.yaml`.
-- The database schema for this example contains a single `item` table.
-- The same database layer is designed to support multi-database and multi-schema applications.
-- Connector usage, connection management, and transactions are handled through the framework database layer.
+See full source: [`./index.js`](./index.js)

@@ -6,7 +6,7 @@
     "@app-core/framework": "file:../.."
   },
   "scripts": {
-    "init": "app-core --back",
+    "init": "app-core --back --project project",
     "start": "node index.js"
   }
 }

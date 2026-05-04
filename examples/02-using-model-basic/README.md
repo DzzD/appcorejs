@@ -1,74 +1,88 @@
-# Using Model Basic
+# 02 - Using Model Basic
 
-This example extends the minimal setup by generating data objects with AppCore and using them to interact with the same `minimal_app.item` table.
+This example shows model generation + ORM usage on a simple table.
 
-## Prerequisites
+It uses:
 
-- Node.js and npm
-- Docker
+- `app-core --model` to generate ORM classes
+- `DbManager` for DB declaration
+- generated `DataItem` model for CRUD operations
 
-## Database
+## Requires database
 
-From the `examples/` directory, start the shared PostgreSQL container:
+Yes.
 
-```bash
-docker compose up -d
-```
+Use the shared DB setup described in:
 
-Then initialize or reset the database for this example:
+- [`../README.md`](../README.md)
 
-```bash
-docker compose exec postgres psql -U appcore -d appcore -f /examples/02-using-model-basic/init.sql
-```
-
-## Install dependencies and generate the model
+## Install dependencies
 
 From this example directory:
 
 ```bash
 npm install
+```
+
+## Generate framework + models
+
+```bash
 npm run init
 ```
-The `init` script runs:
- 
+
+Script executed:
+
 ```bash
-npx app-core --model --dbname appcore --schema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data
+app-core --model --project project --dbname appcore --dbschema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data
 ```
 
-This creates the model objects using the optional `Data` prefix, so the `item` table classe becomes `DataItem`.
+Generated model location:
 
-#### Usage example:
-
-`index.js`
-```js
-import { DataItem } from './app/db/models/DataItem.js';
-import { DbManager } from './app/db/DbManager.js';
-
-DbManager.addDatabase(
-{
-    host: 'localhost',
-    port: 5432,
-    user: 'appcore',
-    password: 'appcore',
-    database: 'appcore'
-});
-
-const item = new DataItem();
-item.name = "John Doe";
-item.save();
+```text
+./project/db/models/
 ```
 
-See [`index.js`](./index.js) for the full code.
+`item` is generated as `DataItem` (because of `--model-prefix data`).
 
 ## Run the example
 
 ```bash
 npm run start
+```
+
 or
+
+```bash
 node index.js
 ```
 
-## Notes
+## What the example does
 
-- This example depends on the same shared PostgreSQL service defined in `examples/compose.yaml`.
-- `npm run init` must be executed once to generate the models inside `app/db/models/` before running the script.
+`index.js`:
+
+- registers database `appcore`
+- creates one `DataItem`
+- updates it
+- searches and prints rows
+
+Simplified extract:
+
+```js
+import { DataItem } from './project/db/models/DataItem.js';
+
+const item = new DataItem();
+item.name = 'Model example';
+await item.save();
+
+await item.search();
+while (await item.next())
+{
+    Log.info(item.id, item.name);
+}
+```
+
+See full source: [`./index.js`](./index.js)
+
+## Note
+
+This example demonstrates the `project -> app -> core` model chain in practice.

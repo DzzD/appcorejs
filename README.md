@@ -1,182 +1,169 @@
 ![AppCore<sub>JS</sub> logo](./docs/images/app-core-logo-1024.png)
 
-
-
 # AppCore<sub>JS</sub> Framework
 
-AppCore<sub>JS</sub> is a framework for building Node.js / PostgreSQL / HTML5 / CSS / JavaScript applications.
+AppCore<sub>JS</sub> is a layered framework for Node.js applications.
 
-Its architecture is based on two strict principles:
+The rule is strict:
 
-- strict separation between `core/` and `app/`
-- no direct use of Core classes
+```text
+project -> app -> core
+```
 
-AppCore<sub>JS</sub> enforces a clear boundary between:
+`core` is internal.
+`app` is the mandatory interface.
+Project code uses `app`, never `core` directly.
 
-- `src/core/`: immutable framework base classes and internal framework logic
-- `src/app/`: application-level classes for extending, specializing, and exposing framework behavior
-- `src/public/`: public frontend assets and files
-- `src/public/app/`: application-specific frontend files
-- `src/public/core/`: core frontend files
-- `src/public/ext/`: external frontend components
-- `bin/`: CLI entry points, including the `app-core` generator (`AppCore.js`)
-
-Developers work only through the `app/` layer.  
-Core classes are never used directly, not even by the framework itself.
-
-This keeps the Core layer immutable while ensuring that all behavior remains extensible from the App layer, including inside the framework itself, so the framework can be patched without ever modifying the Core layer.
+---
 
 ## Quick Start
 
-Generate a project immediately:
+Minimal full command (all layers):
 
 ```bash
-npm init -y
-npm pkg set type=module
-npm install git+https://github.com/DzzD/appcorejs.git
-npx app-core --front --back --intro
-npm start
+npx app-core --back --server --front --model --project myProject --dbuser appcore --dbpassword appcore --dbname appcore
 ```
 
-Then open:
+Generated structure (current directory):
 
-- `http://localhost:3000` to view your application
-- `http://localhost:3000/intro/` for an introduction to the framework
+```text
+./core/
+./app/
+./myProject/
+./myProject/public/
+./server.js
+./index.js
+```
 
-## Philosophy
+Run the server:
 
-AppCore<sub>JS</sub> is designed to stay focused, understandable, and maintainable over time.
+```bash
+node server.js
+```
 
-It is not intended to solve every possible use case, support every kind of application, or abstract every database system behind a universal model. This is a deliberate design choice.
+Open:
 
-Rather than trying to be a framework for everything, AppCore<sub>JS</sub> focuses on a well-defined application stack and a small set of simple architectural rules.
+- `http://127.0.0.1:3000`
 
-AppCore<sub>JS</sub> is both a framework and a development method.
+---
 
-Its goal is not to do more, but to do fewer things in a more consistent, more explicit, and more maintainable way.
+## Global Concept
 
-This helps reduce technical debt, avoids "factory-gas-plant" framework complexity, and keeps the framework code easier to understand, debug, and evolve.
+### `core`
+- internal engine
+- framework internals
+- not intended to be used directly
 
-Because the architecture is based on simple and explicit rules, the framework remains easier to port when needed, both across programming languages and across storage backends.
+### `app`
+- framework interface
+- mandatory entry point
+- place to adapt framework behavior globally
 
-AppCore<sub>JS</sub> follows an architectural approach that has evolved since 2003 through earlier versions developed in PHP, Java, and ActionScript, before being ported to Node.js. It has been used in both web and desktop applications, and adapted over time to multiple storage systems including MySQL, Oracle, and even flat-file JSON storage.
+### `project` (`./<project>/`)
+- business code
+- business models, queries, server components, frontend components/screens
+- uses `app` only
 
-## Key Principles
+Fundamental rule:
 
-- strict separation between framework code and application code
-- immutable Core layer
-- no direct use of Core classes
-- application-level extension through `app/` classes only
-- predictable project structure
-- synchronization and code generation managed by the framework
-- safer framework evolution over time
+```text
+project -> app -> core
+```
 
-## Project Structure
+Never:
 
-    src/core/
-      Immutable framework code
+```text
+project -> core
+```
 
-    src/app/
-      User-extensible façade classes and project-specific overrides
+---
 
-    src/public/
-      Public frontend files
+## Why `app` is mandatory
 
-    src/public/app/
-      Application frontend files
+`app` is your control layer.
+You can change framework behavior without patching `core`.
 
-    src/public/core/
-      Core frontend files
+Example: global save rule in `app/db/DbObject.js`.
 
-    src/public/ext/
-      External frontend components
+```js
+import { CoreDbObject } from '../../core/db/CoreDbObject.js';
 
-    bin/
-      CLI entry points and framework scripts
-
-    examples/
-      Sample applications demonstrating framework usage
-
-## How It Works
-
-AppCore<sub>JS</sub> is not intended to be used as a traditional library where developers work directly with framework internals.
-
-Instead, it combines project structure, synchronization, and architectural rules to enforce a strict separation between framework-owned code and application-owned code.
-
-In practice, AppCore<sub>JS</sub>:
-
-- initializes and maintains a consistent project structure
-- synchronizes framework-managed files and classes
-- preserves the immutability of the Core layer
-- exposes extension and specialization points through the App layer
-- ensures that Core classes are never used directly, including by the framework itself
-- can regenerate Data Objects at any time directly from the database schema, using the database as the source of truth, without overwriting application-level customizations in most cases
-- provides a CLI entry point (`app-core`) for project setup, synchronization, and future framework features
-
-## Installation
-
-AppCore<sub>JS</sub> is installed as a Node.js package.
-
-Depending on the distribution mode, it can be installed from a local package, a packaged archive, a private Git repository, or a package registry.
-
-During installation, AppCore<sub>JS</sub> can automatically initialize or synchronize the target project through its installation script.
-
-Example using a local package:
-
-    npm install file:../app-corejs
-
-Example using a packaged archive:
-
-    npm install file:./libs/app-corejs-1.0.0.tgz
-
-Example using the GitHub repository:
-
-    npm install git+https://github.com/DzzD/appcorejs.git
-
-## Usage
-
-AppCore<sub>JS</sub> provides a CLI entry point:
-
-    app-core
-
-Example usage:
-
-    npx app-core --front --back
-
-Or through an npm script:
-
+export class DbObject extends CoreDbObject
+{
+    async save(forceInsert = false)
     {
-      "scripts": {
-        "app-core": "app-core"
-      }
+        if ('updatedAt' in this)
+        {
+            this.updatedAt = new Date();
+        }
+
+        return await super.save(forceInsert);
     }
+}
+```
 
-## Architecture
+This check is functional.
+It applies only when the model has `updatedAt`.
 
-AppCore<sub>JS</sub> is built around a strict two-layer architecture:
+---
 
-- `src/core/` contains immutable framework base classes and internal framework logic
-- `src/app/` contains application-level subclasses used for customization, specialization, and framework extension
+## Project Vision
 
-In this architecture:
+```text
+./core/
+./app/
+./myProject/
+  db/
+  server/
+  public/
+```
 
-- `core/` must never be modified directly
-- Core classes are never used directly, including by the framework itself
-- all customization and extension happen through `app/` classes
-- synchronization tooling updates framework-managed files while preserving application-level customizations in most cases
+- `core/`: framework internals.
+- `app/`: framework interface layer.
+- `myProject/`: business layer.
 
-This model keeps responsibilities clear and helps preserve a clean, understandable, and maintainable upgrade path.
+---
+
+## Domain Overview
+
+### Backend
+- ORM classes are exposed through `app/db/*`.
+- project models are in `./<project>/db/models/`.
+
+### Server
+- server base class is `app/server/Server.js`.
+- project server extends it in `./<project>/server/`.
+
+### Frontend
+- frontend root is `./<project>/public/`.
+- `public/core`: frontend engine.
+- `public/app`: frontend interface.
+- `public/components` and `public/screens`: project UI code.
+
+### Models
+- generated with `--model`.
+- app model classes generated in `./<project>/db/models/`.
+- core base model classes generated in `./core/db/models/`.
+
+---
 
 ## Documentation
 
-- [Getting Started](./docs/1-getting-started.md)
-- [Installation](./docs/2-installation.md)
-- [Architecture](./docs/3-architecture.md)
-- [CLI app-core](./docs/4-app-core.md)
+Start here:
 
-## Status
+- [Documentation index](./docs/README.md)
 
-AppCore is currently intended for private usage, experimentation, and controlled integration across projects.
+Direct access:
+
+- [001 - app-core CLI](./docs/001-app-core-cli.md)
+- [002 - Architecture](./docs/002-architecture.md)
+- [003 - Backend](./docs/003-backend.md)
+- [004 - Model / ORM](./docs/004-model-orm.md)
+- [005 - Server](./docs/005-server.md)
+- [006 - Frontend](./docs/006-frontend.md)
+- [007 - Examples](./docs/007-examples.md)
+
+---
 
 ## Author
 

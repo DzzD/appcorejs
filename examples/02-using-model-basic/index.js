@@ -1,6 +1,6 @@
 import { DbManager } from './app/db/DbManager.js';
 import { Log } from './app/Log.js';
-import { DataItem } from './app/db/models/DataItem.js';
+import { DataItem } from './project/db/models/DataItem.js';
 
 
 
