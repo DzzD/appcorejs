@@ -16,10 +16,10 @@ import { withDatabase, resolveTargetSchemas, fetchSchemaTables, fetchTableColumn
 export async function synchroniseModel(configuration)
 {
     Log.info('[app-core] Model synchronisation requested');
-    Log.info('[app-core] Database configuration:', configuration);
+    // Log.info('[app-core] Database configuration:', configuration);
 
 
-    configuration.projectRoot = resolveProjectRoot();
+    configuration.projectRoot = configuration.projectRoot ?? resolveProjectRoot();
     
 
     if (!configuration.tables || configuration.tables.length === 0)
@@ -43,7 +43,7 @@ export async function synchroniseModel(configuration)
 
 async function generateAppModels(configuration)
 {
-    const appModelsRoot = path.resolve(configuration.projectRoot || process.cwd(), 'app', 'db', 'models');
+    const appModelsRoot = resolveProjectModelsRoot(configuration);
     await fs.mkdir(appModelsRoot, { recursive: true });
 
     const tables = configuration.tables ?? [];
@@ -89,7 +89,7 @@ export class ${className} extends ${coreClassName}
 
 async function generateCoreModels(configuration)
 {
-    const coreModelsRoot = path.resolve(configuration.projectRoot || process.cwd(), 'core', 'db', 'models');
+    const coreModelsRoot = resolveCoreModelsRoot(configuration);
     await fs.mkdir(coreModelsRoot, { recursive: true });
 
     const tables = configuration.tables ?? [];
@@ -130,7 +130,7 @@ function buildCoreClassContent(className, table, configuration, referencingForei
     const uniqueImports = Array.from(new Set([...relatedImports, ...incomingImports]));
     const importLines = [
         "import { DbObject } from '../../../app/db/DbObject.js';",
-        ...uniqueImports.map((relatedClassName) => `import { ${relatedClassName} } from '../../../app/db/models/${relatedClassName}.js';`)
+        ...uniqueImports.map((relatedClassName) => `import { ${relatedClassName} } from '../../../${configuration.projectName}/db/models/${relatedClassName}.js';`)
     ].join('\n');
 
     const propertyLines = [];
@@ -417,4 +417,14 @@ function buildTableKey(schema, table)
 {
     const normalizedSchema = schema ?? '';
     return `${normalizedSchema}.${table}`;
+}
+
+function resolveProjectModelsRoot(configuration)
+{
+    return path.resolve(configuration.projectRoot || process.cwd(), configuration.projectName, 'db', 'models');
+}
+
+function resolveCoreModelsRoot(configuration)
+{
+    return path.resolve(configuration.projectRoot || process.cwd(), 'core', 'db', 'models');
 }

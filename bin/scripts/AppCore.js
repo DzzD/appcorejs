@@ -14,6 +14,7 @@ import { synchroniseModel } from './AppCore.model.js';
 import { resolveProjectRoot } from './AppCore.helpers.js';
 import { synchroniseFrontend } from './AppCore.front.js';
 import { synchroniseBackend } from './AppCore.back.js';
+import { synchroniseServer } from './AppCore.server.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,9 +23,11 @@ function parseArguments(rawArgs)
 {
     const args =
     {
+        project: null,
         model: false,
         front: false,
         back: false,
+        server: false,
         dbuser: null,
         dbpassword: null,
         dbport: 5432,
@@ -41,6 +44,12 @@ function parseArguments(rawArgs)
         if (current === '--model')
         {
             args.model = true;
+            continue;
+        }
+
+        if (current === '--project')
+        {
+            args.project = rawArgs[++index] || null;
             continue;
         }
 
@@ -87,7 +96,7 @@ function parseArguments(rawArgs)
             continue;
         }
 
-        if (current === '--noprefix')
+        if (current === '--model-noprefix')
         {
             args.model = true;
             args.modelPrefix = '';
@@ -105,6 +114,12 @@ function parseArguments(rawArgs)
             args.back = true;
             continue;
         }
+
+        if (current === '--server')
+        {
+            args.server = true;
+            continue;
+        }
     }
 
     if (args.model)
@@ -112,48 +127,112 @@ function parseArguments(rawArgs)
         args.back = true;
     }
 
+    if (args.server)
+    {
+        args.back = true;
+    }
+
     return args;
+}
+
+function printUsage()
+{
+    console.info(`app-core options
+
+--back      generate backend files (core, app, <project>/db)
+--front     generate front files (eg <project>/public folder)
+--server    generate project server files (server.js and <project>/server)
+--model     generate model files
+            depend on --dbuser     : mandatory db user
+                     --dbpassword  : mandatory db password
+                     --dbname      : mandatory db name
+--dbhost    optional db host (default: localhost)
+--dbport    optional db port (default: 5432)
+--dbschema  optional schema (default: ALL)
+--model-prefix optional model prefix (default: database name from --dbname when not provided and without --model-noprefix)
+--model-noprefix generate model files without prefix (overrides default database-name prefix)
+--project   mandatory project/module name
+
+Dependencies:
+--model implies --back
+--server implies --back`);
+}
+
+function exitWithUsage(errorMessage)
+{
+    if (errorMessage)
+    {
+        Log.error(errorMessage);
+    }
+
+    printUsage();
+    process.exit(1);
 }
 
 async function main(rawArgs)
 {
+    if (rawArgs.length === 0)
+    {
+        exitWithUsage('No option provided');
+    }
+
     const args = parseArguments(rawArgs);
-    Log.info('[app-core] Command invoked with arguments:', args);
+
+    if (!args.project)
+    {
+        exitWithUsage('Missing required option: --project <name>');
+    }
+
+    if (args.model)
+    {
+        if (!args.dbuser)
+        {
+            exitWithUsage('Missing required option for --model: --dbuser <user>');
+        }
+
+        if (!args.dbpassword)
+        {
+            exitWithUsage('Missing required option for --model: --dbpassword <password>');
+        }
+
+        if (!args.dbname)
+        {
+            exitWithUsage('Missing required option for --model: --dbname <name>');
+        }
+    }
 
     const frameworkRoot = path.resolve(__dirname, '..', '..');
     const projectRoot = resolveProjectRoot();
 
     if (args.back)
     {
-        await synchroniseBackend(frameworkRoot, projectRoot);
+        await synchroniseBackend(frameworkRoot, projectRoot, args.project);
     }
 
     if (args.front)
     {
-        await synchroniseFrontend(frameworkRoot, projectRoot);
+        await synchroniseFrontend(frameworkRoot, projectRoot, args.project);
+    }
+
+    if (args.server)
+    {
+        await synchroniseServer(frameworkRoot, projectRoot, args.project);
     }
 
     if (args.model)
     {
-        if (!args.dbuser || !args.dbpassword)
-        {
-            Log.error('[app-core] Missing database credentials for model generation');
-            process.exit(1);
-        }
-
-        if (!args.dbname)
-        {
-            Log.error('[app-core] Missing database name for model generation');
-            process.exit(1);
-        }
-
         const computedSchema = args.dbschema || 'ALL';
         const computedPrefix = args.modelPrefix === null ? args.dbname : args.modelPrefix;
 
-        await synchroniseModel({ ...args, dbschema: computedSchema, modelPrefix: computedPrefix });
+        await synchroniseModel(
+        {
+            ...args,
+            projectRoot,
+            projectName: args.project,
+            dbschema: computedSchema,
+            modelPrefix: computedPrefix
+        });
     }
-
-    
 }
 
 main(process.argv.slice(2));

@@ -13,6 +13,7 @@ async function copyDirectory(sourceDir, destinationDir, overrideOrOptions = fals
 {
     const options = typeof overrideOrOptions === 'boolean' ? { override: overrideOrOptions } : overrideOrOptions ?? {};
     const override = options.override === undefined ? false : Boolean(options.override);
+    const coreOverride = options.coreOverride === undefined ? true : Boolean(options.coreOverride);
     const exclusionsInput = Array.isArray(options.exclusions) ? options.exclusions : [];
     const normalisedExclusions = exclusionsInput
         .map((exclusion) => String(exclusion).trim())
@@ -61,7 +62,7 @@ async function copyDirectory(sourceDir, destinationDir, overrideOrOptions = fals
                 continue;
             }
 
-            const shouldOverwrite = override || insideCore || entryNameLower.startsWith('core');
+            const shouldOverwrite = override || (coreOverride && (insideCore || entryNameLower.startsWith('core')));
 
             if (!shouldOverwrite)
             {

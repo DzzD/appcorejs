@@ -7,7 +7,6 @@
  */
 
 import fs from 'node:fs/promises';
-import { constants as fsConstants } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -17,36 +16,24 @@ import { copyDirectory, resolveProjectRoot } from './AppCore.helpers.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function synchroniseFrontend(frameworkRoot = null, projectRoot = null)
+export async function synchroniseFrontend(frameworkRoot = null, projectRoot = null, projectName = null)
 {
     Log.info('[app-core] Frontend synchronisation...');
 
     const resolvedFrameworkRoot = frameworkRoot ?? path.resolve(__dirname, '..', '..');
     const resolvedProjectRoot = projectRoot ?? resolveProjectRoot();
     const sourcePublic = path.join(resolvedFrameworkRoot, 'src', 'public');
-    const targetPublic = path.resolve(resolvedProjectRoot, 'public');
+    const sourcePublicCore = path.join(sourcePublic, 'core');
+    const sourcePublicApp = path.join(sourcePublic, 'app');
+    const targetPublic = path.resolve(resolvedProjectRoot, projectName, 'public');
+    const targetPublicCore = path.join(targetPublic, 'core');
+    const targetPublicApp = path.join(targetPublic, 'app');
 
-    await copyDirectory(sourcePublic, targetPublic, false);
-
-    const frameworkIndexPath = path.join(resolvedFrameworkRoot, 'src', 'server.js');
-    const targetIndexPath = path.resolve(resolvedProjectRoot, 'server.js');
-
-    try
-    {
-        await fs.copyFile(frameworkIndexPath, targetIndexPath, fsConstants.COPYFILE_EXCL);
-        Log.info(`[app-core] Copied frontend entry: ${targetIndexPath}`);
-    }
-    catch (error)
-    {
-        if (error && error.code === 'EEXIST')
-        {
-            Log.info(`[app-core] Preserved existing frontend entry: ${targetIndexPath}`);
-        }
-        else
-        {
-            throw error;
-        }
-    }
+    await fs.mkdir(targetPublic, { recursive: true });
+    await fs.rm(targetPublicCore, { recursive: true, force: true });
+    await copyDirectory(sourcePublicCore, targetPublicCore, { override: true });
+    await copyDirectory(sourcePublicApp, targetPublicApp, { override: false, coreOverride: false });
+    await copyDirectory(sourcePublic, targetPublic, { override: false, coreOverride: false, exclusions: ['core', 'app'] });
 
     Log.info('[app-core] Frontend synchronisation completed');
 }

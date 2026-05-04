@@ -7,11 +7,9 @@
  */
 
 import express from 'express';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+// import path from 'node:path';
+// import { fileURLToPath } from 'node:url';
 import { Log } from '../../app/Log.js';
-import { StaticFileServerComponent } from '../../app/server/components/StaticFileServerComponent.js';
-import { ChromeDevToolsServerComponent } from '../../app/server/components/ChromeDevToolsServerComponent.js';
 
 export class CoreServer
 {
@@ -29,14 +27,11 @@ export class CoreServer
         this.#application = express();
         this.#application.use(express.json());
         this.#httpServer = null;
-
-        this.registerServerComponent(new ChromeDevToolsServerComponent());
-        this.registerServerComponent(new StaticFileServerComponent());
     }
 
     get baseDirectory()
     {
-        return path.dirname(fileURLToPath(import.meta.url));
+        throw new Error('baseDirectory must be implemented.');
     }
     
     get application()

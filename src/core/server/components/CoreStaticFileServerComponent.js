@@ -25,7 +25,7 @@ export class CoreStaticFileServerComponent extends ServerComponent
 
     get staticDirectory()
     {
-        return path.resolve(this.server.baseDirectory, `../../${this.directory}`);
+        return path.resolve(this.server.baseDirectory, this.directory);
     }
 
     async start()
@@ -58,7 +58,7 @@ export class CoreStaticFileServerComponent extends ServerComponent
 
     async getStaticFile(fileName, request)
     {
-        Log.debug(request.path);
+        Log.debug(`${request.path} => ${fileName}`);
 
         if (fileName.includes('.tpl.'))
         {
