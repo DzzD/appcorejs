@@ -75,6 +75,7 @@ Never:
 ```text
 project -> core
 ```
+![AppCore<sub>JS</sub> Architecture](./docs/images/Draw-global-design.png)
 
 ---
 
