@@ -26,6 +26,8 @@ function parseArguments(rawArgs)
         project: null,
         model: false,
         front: false,
+        intro: false,
+        ext: false,
         back: false,
         server: false,
         dbuser: null,
@@ -109,6 +111,18 @@ function parseArguments(rawArgs)
             continue;
         }
 
+        if (current === '--intro')
+        {
+            args.intro = true;
+            continue;
+        }
+
+        if (current === '--ext')
+        {
+            args.ext = true;
+            continue;
+        }
+
         if (current === '--back')
         {
             args.back = true;
@@ -132,6 +146,11 @@ function parseArguments(rawArgs)
         args.back = true;
     }
 
+    if (args.intro)
+    {
+        args.ext = true;
+    }
+
     return args;
 }
 
@@ -141,6 +160,8 @@ function printUsage()
 
 --back      generate backend files (core, app, <project>/db)
 --front     generate front files (eg <project>/public folder)
+--intro     generate intro frontend files (<project>/public/intro)
+--ext       generate ext frontend files (<project>/public/ext)
 --server    generate project server files (server.js and <project>/server)
 --model     generate model files
             depend on --dbuser     : mandatory db user
@@ -155,7 +176,10 @@ function printUsage()
 
 Dependencies:
 --model implies --back
---server implies --back`);
+--server implies --back
+--intro implies --ext
+--intro requires --front
+--ext requires --front`);
 }
 
 function exitWithUsage(errorMessage)
@@ -177,6 +201,19 @@ async function main(rawArgs)
     }
 
     const args = parseArguments(rawArgs);
+
+    if (!args.front)
+    {
+        if (args.intro)
+        {
+            exitWithUsage('Invalid option: --intro requires --front');
+        }
+
+        if (args.ext)
+        {
+            exitWithUsage('Invalid option: --ext requires --front');
+        }
+    }
 
     if (!args.project)
     {
@@ -211,7 +248,11 @@ async function main(rawArgs)
 
     if (args.front)
     {
-        await synchroniseFrontend(frameworkRoot, projectRoot, args.project);
+        await synchroniseFrontend(frameworkRoot, projectRoot, args.project,
+        {
+            intro: args.intro,
+            ext: args.ext
+        });
     }
 
     if (args.server)

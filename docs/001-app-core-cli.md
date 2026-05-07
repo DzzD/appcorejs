@@ -5,7 +5,7 @@
 ## Command shape
 
 ```bash
-app-core --project myProject --back --server --front --model
+app-core --project myProject --back --server --front [--ext] [--intro] --model
 ```
 
 `--project <name>` is mandatory.
@@ -20,6 +20,21 @@ Synchronizes backend layers and backend entrypoint.
 
 ### `--front`
 Synchronizes frontend layers into `./<project>/public/`.
+
+### `--ext`
+Synchronizes external frontend modules into `./<project>/public/ext/`.
+
+Constraint:
+
+- requires `--front`
+
+### `--intro`
+Synchronizes intro files into `./<project>/public/intro/`.
+
+Constraints:
+
+- requires `--front`
+- implies `--ext`
 
 ### `--server`
 Creates/updates server entrypoint and project server class.
@@ -45,6 +60,9 @@ Optional model options:
 
 - `--model` implies `--back`
 - `--server` implies `--back`
+- `--intro` implies `--ext`
+- `--intro` requires `--front`
+- `--ext` requires `--front`
 
 ## Synchronization summary
 
@@ -63,6 +81,8 @@ Target root: `./<project>/public/`
 - `public/core/` replaced completely.
 - `public/app/` synchronized without overwrite.
 - other `public/*` copied only if missing.
+- `public/ext/` copied only when `--ext` (or `--intro`) is used.
+- `public/intro/` copied only when `--intro` is used.
 
 ### Server (`--server`)
 
@@ -106,6 +126,32 @@ Backend + server + frontend:
 
 ```bash
 npx app-core --back --server --front --project myProject
+```
+
+Frontend + ext only:
+
+```bash
+npx app-core --front --ext --project myProject
+```
+
+Frontend + intro (implies ext):
+
+```bash
+npx app-core --front --intro --project myProject
+```
+
+Frontend + intro + ext:
+
+```bash
+npx app-core --front --intro --ext --project myProject
+```
+
+Invalid usage examples:
+
+```bash
+npx app-core --intro --project myProject
+npx app-core --ext --project myProject
+npx app-core --intro --ext --project myProject
 ```
 
 Full generation with models:

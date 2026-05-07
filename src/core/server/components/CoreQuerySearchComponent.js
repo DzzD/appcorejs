@@ -8,8 +8,32 @@
 
 import { ServerComponent } from '../../../app/server/ServerComponent.js';
 
-export class CoreSearchComponent extends ServerComponent
+export class CoreQuerySearchComponent extends ServerComponent
 {
+  static TYPES =
+  {
+    STRING: 'string',
+    NUMBER: 'number',
+    BOOLEAN: 'boolean',
+    DATE: 'date',
+    DATETIME: 'datetime',
+    VECTOR: 'vector',
+    ENUM: 'enum',
+    SELECT: 'select',
+  };
+
+  static OPERATORS =
+  {
+    EQUALS: '=',
+    CONTAINS: 'contains',
+    STARTS_WITH: 'starts_with',
+    GREATER: '>',
+    LOWER: '<',
+    GREATER_EQUALS: '>=',
+    LOWER_EQUALS: '<='
+  };
+
+  title = null;
   route = null;
   query = null;
 
@@ -22,7 +46,8 @@ export class CoreSearchComponent extends ServerComponent
     direction: 'asc',
   };
 
-  limit = null;
+  resultSizeMin = 30;
+  resultSizeIncrement = 30;
 
 
   start()
@@ -37,11 +62,12 @@ export class CoreSearchComponent extends ServerComponent
     {
       response.json({
         title: this.title,
-        criterias: this.criterias,
-        columns: this.columns,
-        actions: this.actions,
+        criterias: this.getFrontCriterias(),
+        columns: this.getFrontColumns(),
+        actions: this.getFrontActions(),
         order: this.order,
-        limit: this.limit,
+        resultSizeMin: this.resultSizeMin,
+        resultSizeIncrement: this.resultSizeIncrement,
       });
     });
 
@@ -56,15 +82,21 @@ export class CoreSearchComponent extends ServerComponent
     });
   }
 
+
   async search(criterias = {}, options = {})
   {
     const where = this.getSqlWhere(criterias);
     const order = this.getSqlOrder(options.order ?? this.order);
-    const limit = this.getSqlLimit(options.limit ?? this.limit);
+    const resultSize = this.getResultSize(options.resultSize);
+
+    const searchRecordCount = await this.query.recordCountAll(
+      where.sql,
+      where.params
+    );
 
     await this.query.search(where.sql, where.params, {
       order,
-      limit,
+      limit: resultSize,
     });
 
     const rows = [];
@@ -79,9 +111,25 @@ export class CoreSearchComponent extends ServerComponent
       columns: this.getFrontColumns(),
       actions: this.getFrontActions(),
       order: options.order ?? this.order,
-      limit: options.limit ?? this.limit,
+      resultSize,
+      resultSizeMin: this.resultSizeMin,
+      resultSizeIncrement: this.resultSizeIncrement,
+      searchRecordCount,
       rows,
     };
+  }
+
+
+  getResultSize(resultSize = null)
+  {
+    const size = Number(resultSize ?? this.resultSizeMin);
+
+    if (!Number.isFinite(size))
+    {
+      return this.resultSizeMin;
+    }
+
+    return Math.max(this.resultSizeMin, size);
   }
 
 
@@ -91,6 +139,8 @@ export class CoreSearchComponent extends ServerComponent
       code: criteria.code,
       label: criteria.label,
       type: criteria.type ?? null,
+      operator: criteria.operator ?? this.constructor.OPERATORS.EQUALS,
+      options: criteria.options ?? []
     }));
   }
 
@@ -155,8 +205,59 @@ export class CoreSearchComponent extends ServerComponent
       return null;
     }
 
+    const field = this.getSqlField(criteria);
+    const operator = criteria.operator ?? this.constructor.OPERATORS.EQUALS;
+
+    if (operator === this.constructor.OPERATORS.CONTAINS)
+    {
+      return {
+        sql: `${field}::text ILIKE $${paramIndex}`,
+        params: [`%${value}%`],
+      };
+    }
+
+    if (operator === this.constructor.OPERATORS.STARTS_WITH)
+    {
+      return {
+        sql: `${field}::text ILIKE $${paramIndex}`,
+        params: [`${value}%`],
+      };
+    }
+
+    if (operator === this.constructor.OPERATORS.GREATER)
+    {
+      return {
+        sql: `${field} > $${paramIndex}`,
+        params: [value],
+      };
+    }
+
+    if (operator === this.constructor.OPERATORS.LOWER)
+    {
+      return {
+        sql: `${field} < $${paramIndex}`,
+        params: [value],
+      };
+    }
+
+    if (operator === this.constructor.OPERATORS.GREATER_EQUALS)
+    {
+      return {
+        sql: `${field} >= $${paramIndex}`,
+        params: [value],
+      };
+    }
+
+    if (operator === this.constructor.OPERATORS.LOWER_EQUALS)
+    {
+      return {
+        sql: `${field} <= $${paramIndex}`,
+        params: [value],
+      };
+    }
+
     return {
-      sql: `${this.getSqlField(criteria)} = $${paramIndex}`,
+      sql: `${field} = $${paramIndex}`,
       params: [value],
     };
   }
@@ -171,10 +272,16 @@ export class CoreSearchComponent extends ServerComponent
 
     if (item.alias && item.field)
     {
-      return `${item.alias}.${item.field}`;
+      return `${this.quoteSqlIdentifier(item.alias)}.${this.quoteSqlIdentifier(item.field)}`;
     }
 
-    return item.field ?? item.code;
+    return this.quoteSqlIdentifier(item.field ?? item.code);
+  }
+
+
+  quoteSqlIdentifier(name)
+  {
+    return `"${String(name).replaceAll('"', '""')}"`;
   }
 
 
@@ -198,24 +305,6 @@ export class CoreSearchComponent extends ServerComponent
   }
 
 
-  getSqlLimit(limit = null)
-  {
-    if (limit === null || limit === undefined || limit === '')
-    {
-      return null;
-    }
-
-    const parsedLimit = Number(limit);
-
-    if (!Number.isInteger(parsedLimit) || parsedLimit <= 0)
-    {
-      return null;
-    }
-
-    return parsedLimit;
-  }
-
-
   resultRow()
   {
     const row = {};
@@ -231,11 +320,6 @@ export class CoreSearchComponent extends ServerComponent
 
   resultField(column)
   {
-    if (column.object)
-    {
-      return this.query[column.object]?.[column.code] ?? null;
-    }
-
-    return this.query[column.code] ?? null;
+    return this.query.getFieldValue(column.code, column.object);
   }
 }

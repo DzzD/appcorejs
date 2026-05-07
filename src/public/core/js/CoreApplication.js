@@ -33,18 +33,46 @@ export class CoreApplication extends Component
   constructor(componentId, parent = null)
   {
       super(componentId, parent);
-           
+      this.path = "/";
   }
 
   async onLoad()
   {
-    super.onLoad();
-    await Loader.loadStyle("app/styles/application.css"); 
-    this.find(".application")?.style.removeProperty("display");
-    this._hide(this.find(".application-loader"));
-    this._show(this.find(".application"));
-    Log.info("AppCoreJS - Application ready!");
+      await super.onLoad();
+      await Loader.loadStyle("app/styles/application.css");
+
+      const application = this.find(".application");
+      const loader = this.find(".application-loader");
+
+      application?.style.removeProperty("display");
+
+      this._show(application);
+      await this._hide(loader);
+
+      if (loader?.appcore)
+      {
+          loader.appcore.unload();
+          this.childs.delete(loader.appcore.id);
+      }
+
+      loader?.remove();
+
+      Log.info("AppCoreJS - Application ready!");
+
+      window.addEventListener('hashchange', () =>
+      {
+          this.onUrlChange();
+      });
+
+      this.onUrlChange();
   }
+  
+  onUrlChange()
+  {
+    const path = location.hash.slice(1) || '/';
+    Log.info("path" + path);
+    this.onPath(path);
+  }  
 
   /*
   * User application booting

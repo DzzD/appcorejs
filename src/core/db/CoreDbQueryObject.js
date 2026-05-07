@@ -47,7 +47,7 @@ export class CoreDbQueryObject
             }
         }
 
-        let sql = this._query ?? '';
+        let sql = `SELECT * FROM (${this._query}) as result`;
 
         if (where)
         {
@@ -128,6 +128,36 @@ export class CoreDbQueryObject
         return this._searchConnector.recordCount();
     }
 
+    async recordCountAll(where = null, params = [])
+    {
+        const connector = DbManager.getConnector(this._databaseName, this._connectionUid);
+
+        let sql = `SELECT COUNT(*) AS nb FROM (${this._query}) as result`;
+
+        if (where)
+        {
+            sql += ' WHERE ' + where;
+        }
+
+        await connector.query(sql, params);
+
+        if (await connector.next())
+        {
+            const count = connector.getFieldValue('nb') ?? 0;
+
+            connector.close();
+
+            return Number(count);
+        }
+
+
+        return 0;
+    }
+
+    getFieldValue(name, alias = null)
+    {
+        return this._searchConnector?.getFieldValue(name, alias) ?? null;
+    }
 
     close()
     {

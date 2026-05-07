@@ -153,23 +153,24 @@ function buildCoreClassContent(className, table, configuration, referencingForei
         const isPrimaryKey = column.isPrimaryKey ?? (table.primaryKeys ?? []).includes(columnName);
         const dataType = column.dataType ?? '';
         const isNullable = column.isNullable ?? true;
-        const defaultValue = column.defaultValue ?? null;
-        const foreignKeyValue = column.foreignKey === null ? 'null' : `'${column.foreignKey}'`;
+        const defaultValueLiteral = JSON.stringify(column.defaultValue ?? null);
+        const foreignKeyLiteral = JSON.stringify(column.foreignKey ?? null);
 
         const lines =
-`           ${columnName}:
-            {
-                columnName: '${columnName}',
-                attributeName: '${attribute}',
-                isPrimaryKey: ${isPrimaryKey},
-                dataType: '${dataType}',
-                isNullable: ${isNullable},
-                defaultValue: ${defaultValue === null ? 'null' : `'${defaultValue}'`},
-                foreignKey: ${foreignKeyValue}
-            }`;
+    `           ${columnName}:
+                {
+                    columnName: ${JSON.stringify(columnName)},
+                    attributeName: ${JSON.stringify(attribute)},
+                    isPrimaryKey: ${isPrimaryKey},
+                    dataType: ${JSON.stringify(dataType)},
+                    isNullable: ${isNullable},
+                    defaultValue: ${defaultValueLiteral},
+                    foreignKey: ${foreignKeyLiteral}
+                }`;
+
         return lines;
     });
-
+    
     const fieldsBlock = fieldsEntries.length > 0 ?
 `        this._fields =
         {

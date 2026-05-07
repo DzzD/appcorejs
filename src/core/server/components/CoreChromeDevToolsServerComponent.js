@@ -6,12 +6,22 @@
  * Licensed under the MIT License
  */
 
+import crypto from 'node:crypto';
 import { CoreServerComponent } from '../CoreServerComponent.js';
 import { StaticFileServerComponent } from '../../../app/server/components/StaticFileServerComponent.js';
 
 export class CoreChromeDevToolsServerComponent extends CoreServerComponent
 {
     chromeDevToolsPath = '/.well-known/appspecific/com.chrome.devtools.json';
+
+    chromeDevToolsUuid = null;
+
+    constructor({ chromeDevToolsUuid = null } = {})
+    {
+        super();
+
+        this.chromeDevToolsUuid = chromeDevToolsUuid ?? crypto.randomUUID();
+    }
 
     async start()
     {
@@ -43,7 +53,7 @@ export class CoreChromeDevToolsServerComponent extends CoreServerComponent
             workspace:
             {
                 root: staticFileServerComponent?.staticDirectory ?? null,
-                uuid: '53b029bb-c989-4dca-969b-9999ecec3717'
+                uuid: this.chromeDevToolsUuid
             }
         };
     }

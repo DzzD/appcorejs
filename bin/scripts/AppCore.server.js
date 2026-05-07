@@ -9,6 +9,7 @@
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import crypto from 'node:crypto';
 
 import { Log } from '../../src/app/Log.js';
 import { resolveProjectRoot } from './AppCore.helpers.js';
@@ -40,6 +41,8 @@ export async function synchroniseServer(frameworkRoot = null, projectRoot = null
 
 async function createProjectServerClassIfMissing(targetPath, projectClassName)
 {
+    const chromeDevToolsUuid = crypto.randomUUID();
+
     const content = `
 /**
  * AppCoreJS Project Server
@@ -60,8 +63,10 @@ export class ${projectClassName}Server extends Server
     constructor()
     {
         super();
+
         this.devModeEnabled = true;
-        this.registerServerComponent(new ChromeDevToolsServerComponent());
+
+        this.registerServerComponent(new ChromeDevToolsServerComponent({chromeDevToolsUuid: '${chromeDevToolsUuid}' }));
         this.registerServerComponent(new StaticFileServerComponent());
     }
 

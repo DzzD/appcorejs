@@ -6,7 +6,7 @@
  * Licensed under the MIT License
  */
 
-[data-appcore-class~="app.js.search-component"]
+[data-appcore-class~="app.js.query-search-component"]
 {
     display: grid;
     grid-template-rows: auto auto minmax(0, 1fr);
@@ -23,7 +23,7 @@
     overflow: hidden;
 }
 
-[data-appcore-class~="app.js.search-component"] .criterias
+[data-appcore-class~="app.js.query-search-component"] .criterias
 {
     display: flex;
     flex-wrap: wrap;
@@ -34,10 +34,9 @@
     padding: 1rem;
 
     background-color: var(--color-surface);
-    /* border-radius: 0.75rem; */
 }
 
-[data-appcore-class~="app.js.search-component"] label
+[data-appcore-class~="app.js.query-search-component"] label
 {
     display: flex;
     flex-direction: column;
@@ -45,14 +44,14 @@
     min-width: 0;
 }
 
-[data-appcore-class~="app.js.search-component"] label span
+[data-appcore-class~="app.js.query-search-component"] label span
 {
     font-size: 0.9rem;
     opacity: 0.75;
 }
 
-[data-appcore-class~="app.js.search-component"] input,
-[data-appcore-class~="app.js.search-component"] select
+[data-appcore-class~="app.js.query-search-component"] input,
+[data-appcore-class~="app.js.query-search-component"] select
 {
     min-height: 2.5rem;
     min-width: 0;
@@ -68,7 +67,7 @@
     font-size: 1rem;
 }
 
-[data-appcore-class~="app.js.search-component"] .result-block
+[data-appcore-class~="app.js.query-search-component"] .result-block
 {
     display: grid;
     grid-template-rows: minmax(0, 1fr) auto;
@@ -79,10 +78,9 @@
     overflow: hidden;
 
     background-color: var(--color-surface);
-    /* border-radius: 0.75rem; */
 }
 
-[data-appcore-class~="app.js.search-component"] .result
+[data-appcore-class~="app.js.query-search-component"] .result
 {
     min-width: 0;
     min-height: 0;
@@ -90,26 +88,37 @@
     overflow: auto;
 }
 
-[data-appcore-class~="app.js.search-component"] .table
+[data-appcore-class~="app.js.query-search-component"] .query-search-result
 {
+    display: table;
+    table-layout: fixed;
+
     width: 100%;
-    min-width: max-content;
+    min-width: 0;
 
     border-collapse: separate;
     border-spacing: 0;
 }
 
-[data-appcore-class~="app.js.search-component"] .table th,
-[data-appcore-class~="app.js.search-component"] .table td
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-row
 {
+    display: table-row;
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-cell
+{
+    display: table-cell;
+
     padding: 0.75rem 1rem;
     text-align: left;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     border-bottom: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
 }
 
-[data-appcore-class~="app.js.search-component"] .table th
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell
 {
     position: sticky;
     top: 0;
@@ -123,12 +132,27 @@
     font-weight: 400;
 }
 
-[data-appcore-class~="app.js.search-component"] .table tbody tr:hover
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-cell
+{
+    /* max-width: 0; */
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell[data-sortable="true"]
+{
+    cursor: pointer;
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-row:not(.query-search-result-header):hover
 {
     background-color: color-mix(in srgb, var(--color-primary) 6%, transparent);
 }
 
-[data-appcore-class~="app.js.search-component"] .footer
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell[data-sortable="true"]:hover
+{
+    background-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+}
+
+[data-appcore-class~="app.js.query-search-component"] .footer
 {
     display: flex;
     align-items: center;
@@ -148,13 +172,13 @@
 
 @media (max-width: 768px)
 {
-    [data-appcore-class~="app.js.search-component"] .criterias
+    [data-appcore-class~="app.js.query-search-component"] .criterias
     {
         flex-direction: column;
         align-items: stretch;
     }
 
-    [data-appcore-class~="app.js.search-component"] button
+    [data-appcore-class~="app.js.query-search-component"] button
     {
         width: 100%;
     }

@@ -35,16 +35,16 @@ export class CoreDbConnector
             this._client = await DbManager.getClient(this.databaseName, this._connectionUid);
         }
     }
-    
 
-	close()
-	{
-		if (this._client)
-		{
+
+    close()
+    {
+        if (this._client)
+        {
             DbManager.releaseConnection(this._connectionUid);
-			this._client = null;
-		}
-	}
+            this._client = null;
+        }
+    }
 
 
     async beginTransaction()
@@ -53,7 +53,7 @@ export class CoreDbConnector
 
         try
         {
-            await this._client.query('BEGIN');
+            await this._client.begin();
         }
         catch (error)
         {
@@ -68,7 +68,7 @@ export class CoreDbConnector
 
         try
         {
-            await this._client.query('COMMIT');
+            await this._client.commit();
         }
         catch (error)
         {
@@ -83,7 +83,7 @@ export class CoreDbConnector
 
         try
         {
-            await this._client.query('ROLLBACK');
+            await this._client.rollback();
         }
         catch (error)
         {
@@ -100,15 +100,29 @@ export class CoreDbConnector
 
         this._rowBuffer = [];
         this._rowBufferIndex = -1;
+
         try
         {
             const result = await this._client.query(sql, params);
+
             this._rowBuffer = result && Array.isArray(result.rows) ? result.rows : [];
             this._rowBufferIndex = -1;
+
             return this._rowBuffer[this._rowBufferIndex] ?? null;
         }
         catch (error)
         {
+            console.error('[CoreDbConnector][query][error]',
+            {
+                message: error.message,
+                code: error.code,
+                detail: error.detail,
+                hint: error.hint,
+                position: error.position,
+                query: sql,
+                params
+            });
+
             throw new Error('Query failed', error, { sql, params, databaseName: this.databaseName });
         }
     }
@@ -121,12 +135,12 @@ export class CoreDbConnector
         if (this._rowBuffer.length > 0 && this._rowBufferIndex < this._rowBuffer.length)
         {
             this._rowBufferIndex += 1;
-            row = this._rowBuffer[this._rowBufferIndex];  
+            row = this._rowBuffer[this._rowBufferIndex];
         }
 
         for (const [obj, alias] of this._links)
         {
-            if(!alias)
+            if (!alias)
             {
                 obj.fromRow(row);
             }
@@ -140,6 +154,17 @@ export class CoreDbConnector
     }
 
 
+    getFieldValue(name, alias = null)
+    {
+        if (alias)
+        {
+            return this._rowBuffer?.[this._rowBufferIndex]?.[alias]?.[name] ?? null;
+        }
+
+        return this._rowBuffer?.[this._rowBufferIndex]?.[name] ?? null;
+    }
+
+
     recordCount()
     {
         if (!this._rowBuffer)
@@ -149,6 +174,7 @@ export class CoreDbConnector
 
         return this._rowBuffer.length;
     }
+
 
     linkTo(obj, alias)
     {

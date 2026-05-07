@@ -469,6 +469,49 @@ export class CoreDbObject
     return { sql, params };
   }
 
+  getType(field)
+  {
+      const type = this.constructor.fields?.[field]?.type;
+
+      if (!type)
+      {
+          return null;
+      }
+
+      if (
+          type.includes('int') ||
+          type === 'numeric' ||
+          type === 'decimal' ||
+          type === 'real' ||
+          type === 'double precision'
+      )
+      {
+          return 'number';
+      }
+
+      if (type === 'boolean')
+      {
+          return 'boolean';
+      }
+
+      if (type === 'date')
+      {
+          return 'date';
+      }
+
+      if (type.includes('timestamp'))
+      {
+          return 'datetime';
+      }
+
+      if (type === 'vector')
+      {
+          return 'vector';
+      }
+
+      return 'string';
+  }  
+
   // ===========================
 // Hooks (override dans DbObject ou ApplicationXXX)
 // ===========================

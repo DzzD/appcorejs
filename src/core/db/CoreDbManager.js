@@ -8,7 +8,6 @@
 
 import { Pool } from 'pg';
 import util from 'node:util';
-import { Log } from '../../app/Log.js';
 import { DbConnector } from '../../app/db/DbConnector.js';
 import { DbManager } from '../../app/db/DbManager.js';
 
@@ -22,9 +21,13 @@ export class CoreDbManager
         const databases = Array.from(DbManager._databases.keys());
         const connections = {};
 
-        Array.from(DbManager._connections.values()).forEach((client) =>
+        Array.from(DbManager._connections.values()).forEach((connection) =>
         {
-            connections[client.connectionUid] = client.database.config.database;
+            connections[connection.connectionUid] =
+            {
+                database: connection.database.config.database,
+                transaction: !!connection.transactionClient
+            };
         });
 
         return {
@@ -35,22 +38,25 @@ export class CoreDbManager
 
     static addDatabase(config)
     {
-        const database = DbManager._databases.get(config.database);
+        const name = config.name ?? config.database;
+        const database = DbManager._databases.get(name);
 
         if (database)
         {
-            throw new Error(`Base de données déjà existante ${config.database}`);
+            throw new Error(`Base de données déjà existante ${name}`);
         }
 
         const poolSize = config.poolSize ?? 50;
         const poolConfig = { ...config, max: poolSize };
+
+        delete poolConfig.name;
         delete poolConfig.poolSize;
 
         const pool = new Pool(poolConfig);
 
-        DbManager._databases.set(config.database,
+        DbManager._databases.set(name,
         {
-            name: config.database,
+            name,
             config,
             pool
         });
@@ -64,37 +70,110 @@ export class CoreDbManager
 
         if (!database)
         {
-            throw new Error((`Base de données manquante ${databaseName}`));
+            throw new Error(`Base de données manquante ${databaseName}`);
         }
 
-        let client = DbManager._connections.get(connectionUid);
+        let connection = DbManager._connections.get(connectionUid);
 
-        if(client)
+        if (connection)
         {
-            if(client.connectionUid != connectionUid && client.database != database)
+            if (connection.database !== database)
             {
-                throw new Error((`Mixed client, connection ${connectionUid}, database ${databaseName}`));
+                throw new Error(`Mixed client, connection ${connectionUid}, database ${databaseName}`);
             }
-            return client;
+
+            return connection;
         }
-            
-        client = await database.pool.connect(); 
-        client.database = database;
-        client.connectionUid = connectionUid;
-        DbManager._connections.set(connectionUid, client);
 
-        return client;
+        connection =
+        {
+            database,
+            connectionUid,
+            transactionClient: null,
+
+            async query(sql, params = [])
+            {
+                if (this.transactionClient)
+                {
+                    return await this.transactionClient.query(sql, params);
+                }
+
+                return await this.database.pool.query(sql, params);
+            },
+
+            async begin()
+            {
+                if (this.transactionClient)
+                {
+                    throw new Error(`Transaction déjà ouverte ${this.connectionUid}`);
+                }
+
+                this.transactionClient = await this.database.pool.connect();
+                await this.transactionClient.query('BEGIN');
+            },
+
+            async commit()
+            {
+                if (!this.transactionClient)
+                {
+                    throw new Error(`Aucune transaction ouverte ${this.connectionUid}`);
+                }
+
+                try
+                {
+                    await this.transactionClient.query('COMMIT');
+                }
+                finally
+                {
+                    this.transactionClient.release();
+                    this.transactionClient = null;
+                }
+            },
+
+            async rollback()
+            {
+                if (!this.transactionClient)
+                {
+                    throw new Error(`Aucune transaction ouverte ${this.connectionUid}`);
+                }
+
+                try
+                {
+                    await this.transactionClient.query('ROLLBACK');
+                }
+                finally
+                {
+                    this.transactionClient.release();
+                    this.transactionClient = null;
+                }
+            },
+
+            release()
+            {
+                if (this.transactionClient)
+                {
+                    this.transactionClient.release();
+                    this.transactionClient = null;
+                }
+            }
+        };
+
+        DbManager._connections.set(connectionUid, connection);
+
+        return connection;
     }
-
 
     static releaseConnection(connectionUid = "default")
     {
-        const client = DbManager._connections.get(connectionUid);    
+        const connection = DbManager._connections.get(connectionUid);
+
+        if (!connection)
+        {
+            return;
+        }
+
+        connection.release();
         DbManager._connections.delete(connectionUid);
-        delete client.connectionUid;
-        delete client.database;
-        client.release();
-        // DbManager.releaseClient(client);   
     }
 
     static releaseAllConnections()
@@ -108,13 +187,15 @@ export class CoreDbManager
     static async removeDatabase(databaseName)
     {
         const database = DbManager._databases.get(databaseName ?? DbManager._getFirstDatabaseName());
-        Array.from(DbManager._connections.values()).forEach((client) =>
+
+        Array.from(DbManager._connections.values()).forEach((connection) =>
         {
-            if(client.database == database)
+            if (connection.database === database)
             {
-                DbManager.releaseConnection(client.connectionUid);
+                DbManager.releaseConnection(connection.connectionUid);
             }
         });
+
         await database.pool.end();
         DbManager._databases.delete(databaseName);
     }
@@ -132,6 +213,7 @@ export class CoreDbManager
         const connector = new DbConnector();
         connector.databaseName = resolvedDatabaseName;
         connector._connectionUid = connectionUid;
+
         return connector;
     }
 

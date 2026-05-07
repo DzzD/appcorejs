@@ -5,7 +5,7 @@
  * Copyright (c) 2026 Bruno Augier
  * Licensed under the MIT License
  */
-
+import { Log } from "../../app/js/Log.js";
 
 export class CoreComponent
 {
@@ -17,6 +17,7 @@ export class CoreComponent
     id;
     template;
     childs;
+    path;
 
     constructor(componentId, parent = null)
     {
@@ -26,6 +27,7 @@ export class CoreComponent
         this.template = null;
         this.templatePath = null;
         this.childs = new Map();  
+        this.path = null;
               
     }
 
@@ -47,42 +49,65 @@ export class CoreComponent
         
     }    
 
-    async _show(node, args)
+    _show(node, args)
     {
-        if(!node) { Log.debug("Missing node"); return; }
-        if(node.hiddingInterval) { clearTimeout(node.hiddingInterval); node.hiddingInterval = null};
+        if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
+
+        if (node.hiddingInterval)
+        {
+            clearTimeout(node.hiddingInterval);
+            node.hiddingInterval = null;
+        }
+
         node.classList.add('invisible');
         node.classList.remove('visible');
         node.classList.remove('hidden');
-        if(!node.showingInterval)
+
+        return new Promise((resolve) =>
         {
-            node.showingInterval = setTimeout(() => {node.showingInterval = null;node.classList.add('visible');node.classList.remove('invisible')}, 50);        
+            node.showingInterval = setTimeout(() =>
+            {
+                node.showingInterval = null;
+                node.classList.add('visible');
+                node.classList.remove('invisible');
+                resolve();
+            }, 50);
+        });
+    }
+
+    show(args)
+    {
+        return this._show(this.node, args);
+    }
+
+    _hide(node, args)
+    {
+        if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
+
+        if (node.showingInterval)
+        {
+            clearTimeout(node.showingInterval);
+            node.showingInterval = null;
         }
-    }
 
-    async show(args)
-    {
-        this._show(this.node);
-    }
-
-    async _hide(node, args)
-    {
-        if(!node) { Log.debug("Missing node"); return; }
-        if(node.showingInterval) { clearTimeout(node.showingInterval); node.showingInterval = null};
         node.classList.add('invisible');
         node.classList.remove('visible');
-        
-        if(!node.hiddingInterval)
+
+        return new Promise((resolve) =>
         {
-            node.hiddingInterval = setTimeout(() => {node.hiddingInterval = null;node.classList.add('hidden')}, 500);
-        }
+            node.hiddingInterval = setTimeout(() =>
+            {
+                node.hiddingInterval = null;
+                node.classList.add('hidden');
+                resolve();
+            }, 500);
+        });
     }
 
-    async hide(args)
+    hide(args)
     {
-        this._hide(this.node);
+        return this._hide(this.node, args);
     }
-
     async close(args)
     {
     }
@@ -132,6 +157,81 @@ export class CoreComponent
         return null;
     }
 
+    findPathChild(segment)
+    {
+        Log.info("segment " + segment);
+        for (const child of this.childs.values())
+        {
+            if (child.path === segment)
+            {
+                return child;
+            }
+        }
+
+        return null;
+    }
+
+    onPathHere()
+    {
+        Log.debug(`Path resolved on component "${this.id}".`);
+    }
+
+    onPathNotFound(segment, parts = [])
+    {
+        Log.warn(`Path segment "${segment}" not found from component "${this.id}".`);
+    }    
+
+    onPath(path = '/')
+    {
+        Log.info("path" + path);
+        const parts = path.split('/').filter(Boolean);
+        const segment = parts.shift();
+
+        if (!segment)
+        {
+            return this.onPathHere();
+        }
+
+        const child = this.findPathChild(segment);
+
+        if (!child)
+        {
+            return this.onPathNotFound(segment, parts);
+        }
+
+        return child.onPath('/' + parts.join('/'));
+    }    
+
+    static async setInnerHtml(node, html)
+    {
+        node.innerHTML = html;
+
+        const parentNode = node.closest("[data-appcore-id]");
+
+        if (!parentNode?.appcore)
+        {
+            return;
+        }
+
+        await parentNode.appcore.loadChildComponents(node);
+    }    
+
+    async loadChildComponents(rootNode = this.node)
+    {
+        const childElements = this.#getClosestChildComponentElements(rootNode);
+
+        for (const childElement of childElements)
+        {
+            const componentId = childElement.getAttribute("data-appcore-id");
+
+            const component = await this.loadComponent(componentId);
+            component.parent = this;
+            this.childs.set(component.id, component);
+
+            await component.load();
+        }
+    }    
+
     async load()
     {
         if (this.isLoaded)
@@ -149,27 +249,55 @@ export class CoreComponent
             await this.loadTemplate();
         }
 
-        const childElements = this.#getClosestChildComponentElements(this.node);
-        
-        for (const childElement of childElements)
-        {
-            const componentId = childElement.getAttribute('data-appcore-id');
-            const component = await this.loadComponent(componentId);
-            component.parent = this;
-            this.childs.set(component.id, component);
-            await component.load();            
-        }
         this.node.appcore = this;
         this.node.dataset.appcoreClass = this.appcoreClasses;
+
+        for (const [key, value] of Object.entries(this.node.dataset))
+        {
+            this[key] = value;
+        }
+
+        for (
+                let prototype = Object.getPrototypeOf(this);
+                prototype && prototype !== Object.prototype;
+                prototype = Object.getPrototypeOf(prototype)
+            )
+            {
+                const descriptors = Object.getOwnPropertyDescriptors(prototype);
+
+                for (const [property, descriptor] of Object.entries(descriptors))
+                {
+                    if (property === "constructor")
+                    {
+                        continue;
+                    }
+
+                    if (!descriptor.get && !descriptor.set)
+                    {
+                        continue;
+                    }
+
+                    Object.defineProperty(this.node, property, {
+                        get: descriptor.get ? () => this[property] : undefined,
+                        set: descriptor.set ? (value) => { this[property] = value; } : undefined,
+                        configurable: true,
+                    });
+                }
+            }
+
+        await this.loadChildComponents(this.node);
+
         this.#resizeObserver = new ResizeObserver(() =>
         {
             this.onResize();
         });
-        this.#resizeObserver.observe(this.node);
-        await this.onLoad();
-        this.isLoaded = true;
-    }    
 
+        this.#resizeObserver.observe(this.node);
+
+        await this.onLoad();
+
+        this.isLoaded = true;
+    }
 
     unload()
     {
@@ -199,7 +327,7 @@ export class CoreComponent
 
         if(!cls)
         {
-            Log.warning(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            Log.warn(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
             return  new CoreComponent(componentId, this);
         }
 
@@ -246,6 +374,12 @@ export class CoreComponent
         }
 
         const currentNode = this.node;
+        const currentZones = new Map();
+
+        for (const zone of currentNode.querySelectorAll('[data-zone]'))
+        {
+            currentZones.set(zone.getAttribute('data-zone'), zone.cloneNode(true));
+        }
 
         for (const attribute of templateRoot.attributes)
         {
@@ -260,7 +394,26 @@ export class CoreComponent
             }
         }
 
-        currentNode.removeAttribute('data-template');
+        for (const templateZone of templateRoot.querySelectorAll('[data-zone]'))
+        {
+            const zoneName = templateZone.getAttribute('data-zone');
+            const currentZone = currentZones.get(zoneName);
+
+            if (!currentZone)
+            {
+                continue;
+            }
+
+            for (const attribute of templateZone.attributes)
+            {
+                if (!currentZone.hasAttribute(attribute.name))
+                {
+                    currentZone.setAttribute(attribute.name, attribute.value);
+                }
+            }
+
+            templateZone.replaceWith(currentZone);
+        }
 
         currentNode.replaceChildren();
 
@@ -274,12 +427,6 @@ export class CoreComponent
         currentNode.appendChild(fragment);
     }
     
-    // #resolveTemplatePath(templatePath)
-    // {
-    //     const { filePath } = this.explodeId(this.id);
-    //     const baseUrl = new URL(`${filePath}/`, document.baseURI);
-    //     return new URL(templatePath, baseUrl).href;
-    // }
     #resolveTemplatePath(templateId)
     {
         const filePath = templateId.split(".").join("/");
@@ -295,7 +442,7 @@ export class CoreComponent
         {
             const parentComponent = element.parentElement?.closest('[data-appcore-id]');
 
-            if (parentComponent === rootElement)
+            if (parentComponent === this.node)
             {
                 result.push(element);
             }

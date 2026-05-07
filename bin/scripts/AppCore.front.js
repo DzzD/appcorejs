@@ -16,24 +16,38 @@ import { copyDirectory, resolveProjectRoot } from './AppCore.helpers.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export async function synchroniseFrontend(frameworkRoot = null, projectRoot = null, projectName = null)
+export async function synchroniseFrontend(frameworkRoot = null, projectRoot = null, projectName = null, options = null)
 {
     Log.info('[app-core] Frontend synchronisation...');
 
     const resolvedFrameworkRoot = frameworkRoot ?? path.resolve(__dirname, '..', '..');
     const resolvedProjectRoot = projectRoot ?? resolveProjectRoot();
+    const resolvedOptions = options ?? {};
+    const includeIntro = Boolean(resolvedOptions.intro);
+    const includeExt = Boolean(resolvedOptions.ext);
     const sourcePublic = path.join(resolvedFrameworkRoot, 'src', 'public');
     const sourcePublicCore = path.join(sourcePublic, 'core');
     const sourcePublicApp = path.join(sourcePublic, 'app');
     const targetPublic = path.resolve(resolvedProjectRoot, projectName, 'public');
     const targetPublicCore = path.join(targetPublic, 'core');
     const targetPublicApp = path.join(targetPublic, 'app');
+    const exclusions = ['core', 'app'];
+
+    if (!includeExt)
+    {
+        exclusions.push('ext');
+    }
+
+    if (!includeIntro)
+    {
+        exclusions.push('intro');
+    }
 
     await fs.mkdir(targetPublic, { recursive: true });
     await fs.rm(targetPublicCore, { recursive: true, force: true });
     await copyDirectory(sourcePublicCore, targetPublicCore, { override: true });
     await copyDirectory(sourcePublicApp, targetPublicApp, { override: false, coreOverride: false });
-    await copyDirectory(sourcePublic, targetPublic, { override: false, coreOverride: false, exclusions: ['core', 'app'] });
+    await copyDirectory(sourcePublic, targetPublic, { override: false, coreOverride: false, exclusions });
 
     Log.info('[app-core] Frontend synchronisation completed');
 }

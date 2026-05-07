@@ -28,6 +28,14 @@ export class CoreStaticFileServerComponent extends ServerComponent
         return path.resolve(this.server.baseDirectory, this.directory);
     }
 
+    get fallbackDirectories()
+    {
+        return [
+            'app',
+            'core',
+        ];
+    }
+
     async start()
     {
         this.server.application.use(async (request, response, next) =>
@@ -62,21 +70,92 @@ export class CoreStaticFileServerComponent extends ServerComponent
 
         if (fileName.includes('.tpl.'))
         {
-            return null;
+            const resolvedFileName = await this.resolveStaticFile(fileName, request);
+
+            if (resolvedFileName === null)
+            {
+                return null;
+            }
+
+            const content = await fs.readFile(resolvedFileName, 'utf8');
+
+            return { content };
         }
 
         const templateFileName = fileName.replace(/(\.[^./]+)$/, '.tpl$1');
+        const resolvedTemplateFileName = await this.resolveStaticFile(templateFileName, request);
 
-        try
+        if (resolvedTemplateFileName !== null)
         {
-            let content = await fs.readFile(templateFileName, 'utf8');
-            content = await this.processTemplate(content, templateFileName, request);
+            let content = await fs.readFile(resolvedTemplateFileName, 'utf8');
+            content = await this.processTemplate(content, resolvedTemplateFileName, request);
+
             return { content };
         }
-        catch
+
+        const resolvedFileName = await this.resolveStaticFile(fileName, request);
+
+        if (resolvedFileName === null)
         {
             return null;
         }
+
+        const content = await fs.readFile(resolvedFileName);
+
+        return { content };
+    }
+
+    async resolveStaticFile(fileName, request)
+    {
+        try
+        {
+            await fs.access(fileName);
+            return fileName;
+        }
+        catch
+        {
+            return await this.resolveFallbackStaticFile(fileName, request);
+        }
+    }
+
+    async resolveFallbackStaticFile(fileName, request)
+    {
+        let relativeFileName = path.relative(this.staticDirectory, fileName).replaceAll('\\', '/');
+
+        if (relativeFileName.startsWith('core/'))
+        {
+            return null;
+        }
+
+        let fallbackDirectories = this.fallbackDirectories;
+
+        if (relativeFileName.startsWith('app/'))
+        {
+            relativeFileName = relativeFileName.replace(/^app\//, '');
+
+            fallbackDirectories = [
+                'core',
+            ];
+        }
+
+        for (const fallbackDirectory of fallbackDirectories)
+        {
+            const fallbackFileName = path.join(this.staticDirectory, fallbackDirectory, relativeFileName);
+
+            try
+            {
+                await fs.access(fallbackFileName);
+
+                Log.debug(`${request.path} => ${fileName} => ${fallbackFileName}`);
+
+                return fallbackFileName;
+            }
+            catch
+            {
+            }
+        }
+
+        return null;
     }
 
     async processTemplate(content, fileName, request)

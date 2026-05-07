@@ -6,8 +6,9 @@
  * Licensed under the MIT License
  */
 
-import { CoreSearchComponent } from '../../../core/server/components/CoreSearchComponent.js';
+import { CoreQuerySearchComponent } from "../../core/js/CoreQuerySearchComponent.js";
 
-export class SearchComponent extends CoreSearchComponent
+export class QuerySearchComponent extends CoreQuerySearchComponent
 {
+
 }

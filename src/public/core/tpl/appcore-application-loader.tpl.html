@@ -1,0 +1,80 @@
+<div>
+    <style>
+    .application-loader
+    {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: #fff;
+        z-index: 9999;
+        overflow: hidden;
+    }
+
+    .application-loader-content
+    {
+        display: grid;
+        justify-items: center;
+        gap: 1rem;
+    }
+
+    .application-loader svg
+    {
+        width: 48px;
+        height: 48px;
+        color: #0175cd;
+        animation: application-loader-spin 0.9s linear infinite;
+    }
+
+    .application-loader-text
+    {
+        font-family: Arial, sans-serif;
+        font-size: 1.5rem;
+        color: #5b6b7c;
+        letter-spacing: 0.04em;
+        text-align: center;
+    }
+
+    .application-loader-text span:nth-child(1)
+    {
+        color: #0175cd;
+        font-weight: 600;
+    }
+    .application-loader-text span:nth-child(2)
+    {
+        color: #ff5500;
+        font-weight: 600;
+    }
+    .application-loader-text sub:first-of-type
+    {
+        color: #fbd000;
+        font-weight: 600;
+    }
+
+    @keyframes application-loader-spin
+    {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+    </style>
+
+    <div class="application-loader" aria-hidden="true">
+        <div class="application-loader-content">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <circle
+                    cx="50"
+                    cy="50"
+                    r="38"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="10"
+                    stroke-linecap="round"
+                    stroke-dasharray="180 80"
+                />
+            </svg>
+            <div class="application-loader-text">
+                Powered by <span>App</span><span>Core</span><sub>JS</sub></strong>
+            </div>
+        </div>
+    </div>
+</div>

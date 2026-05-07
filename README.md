@@ -140,6 +140,8 @@ It applies only when the model has `updatedAt`.
 - `public/core`: frontend engine.
 - `public/app`: frontend interface.
 - `public/components` and `public/screens`: project UI code.
+- `public/ext`: generated only with `--front --ext` (or `--front --intro`).
+- `public/intro`: generated only with `--front --intro`.
 
 ### Models
 - generated with `--model`.

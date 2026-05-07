@@ -41,7 +41,7 @@ Use `data-template` when markup is externalized.
 ```html
 <div
     data-appcore-id="components.user-search.user-search-component::users"
-    data-template="app.tpl.search-component">
+    data-template="app.tpl.query-search-component">
 </div>
 ```
 
@@ -54,7 +54,6 @@ Use `data-template` when markup is externalized.
   assets/
   ext/
   components/
-  screens/
 ```
 
 - `core/`: frontend engine internals.
@@ -62,12 +61,7 @@ Use `data-template` when markup is externalized.
 - `assets/`: static resources only.
 - `ext/`: external modules/components.
 - `components/`: reusable project components.
-- `screens/`: page/screen-level project components.
 
-## Components vs screens
-
-- `components/` are reusable UI bricks.
-- `screens/` compose page flows and states.
 
 ## Global frontend behavior via `app/js/Component.js`
 
@@ -97,21 +91,13 @@ If project components call `super.onLoad()`, this rule applies everywhere.
 Typical style loading:
 
 ```js
-await Loader.loadStyle('app/styles/search-component.css');
+await Loader.loadStyle('app/styles/query-search-component.css');
 ```
 
 Use layer-first paths only.
 
 Do not use legacy flat paths like `public/js` or `public/styles`.
 
-## Important template rule
-
-Do not store templates in `assets`.
-
-Templates should be in:
-
-- component/screen folders
-- or dedicated interface template folders (example: `app/tpl`)
 
 ## Cross-reference
 

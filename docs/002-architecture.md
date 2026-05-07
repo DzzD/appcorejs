@@ -31,7 +31,6 @@ project -> app -> core
   assets/
   ext/
   components/
-  screens/
 ```
 
 - `public/core/`: frontend engine internals.
@@ -39,7 +38,6 @@ project -> app -> core
 - `public/assets/`: static files only (images, icons, fonts, manifest assets).
 - `public/ext/`: external modules/components.
 - `public/components/`: reusable project components.
-- `public/screens/`: project screens/pages.
 
 ## Why this split?
 

@@ -58,14 +58,6 @@ export class CoreStackComponent extends Component
             this.#transitionMinScale = Number(this.node.dataset.transitionMinScale);
         }
 
-        // for (const [, component] of this.childs)
-        // {
-        //     component.node.style.transformOrigin = "center center";
-        //     component.node.style.backfaceVisibility = "hidden";
-        //     component.node.style.webkitBackfaceVisibility = "hidden";
-        //     component.node.style.transformStyle = "preserve-3d";
-        // }
-
         this.transitionDuration = this.#transitionDuration;
 
         const firstComponentId = this.childs.keys().next().value;
@@ -74,6 +66,14 @@ export class CoreStackComponent extends Component
         {
             this.active = firstComponentId;
         }
+    }
+
+    onPath(path = "/")
+    {
+        console.log(path);
+        const componentId = path.split("/")[1];
+        if (componentId) this.active = componentId;
+        return super.onPath(path);
     }
 
 
