@@ -13,6 +13,7 @@ export class CoreStackComponent extends Component
     static appcoreClass = "app.js.stack-component";
 
     #activeComponentId = null;
+    #stackTrack = null;
 
     static TransitionMode =
     {
@@ -26,39 +27,21 @@ export class CoreStackComponent extends Component
         FLIP_Y: "flip-y"
     };
 
-    #transitionMode = CoreStackComponent.TransitionMode.SLIDE_X + 
-                      CoreStackComponent.TransitionMode.SCALE +                      
-                      CoreStackComponent.TransitionMode.FADE;
+    transitionMode = CoreStackComponent.TransitionMode.SLIDE_X +
+                     CoreStackComponent.TransitionMode.SCALE +
+                     CoreStackComponent.TransitionMode.FADE;
 
-    #transitionDuration = 1000;
-    #transitionMinScale = 0.5;
-
-    constructor(componentId, parent = null)
-    {
-        super(componentId, parent);
-    }
+    transitionDuration = 1000;
+    transitionMinScale = 0.5;
 
     async onLoad()
     {
-        super.onLoad();
+        await super.onLoad();
         await Loader.loadStyle("app/styles/stack-component.css");
 
-        if (this.node.dataset.transitionMode)
-        {
-            this.#transitionMode = this.node.dataset.transitionMode;
-        }
+        this.#stackTrack = this.find(":scope > .stack-track") ?? this.node;
 
-        if (this.node.dataset.transitionDuration)
-        {
-            this.#transitionDuration = Number(this.node.dataset.transitionDuration);
-        }
-
-        if (this.node.dataset.transitionMinScale)
-        {
-            this.#transitionMinScale = Number(this.node.dataset.transitionMinScale);
-        }
-
-        this.transitionDuration = this.#transitionDuration;
+        this.applyTransitionDuration();
 
         const firstComponentId = this.childs.keys().next().value;
 
@@ -70,73 +53,61 @@ export class CoreStackComponent extends Component
 
     onPath(path = "/")
     {
-        console.log(path);
-        const componentId = path.split("/")[1];
-        if (componentId) this.active = componentId;
-        return super.onPath(path);
-    }
+        const parts = path.split("/").filter(part => part);
+        const componentId = parts.shift();
 
+        if (componentId)
+        {
+            this.active = componentId;
+        }
+
+        const component = this.childs.get(this.active);
+
+        if (component)
+        {
+            component.onPath("/" + parts.join("/"));
+        }
+    }
 
     _getComponentTransform(index, activeIndex)
     {
         const active = index == activeIndex;
 
-        if (this.#transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
+        if (this.transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
         {
             return "none";
         }
 
         let transform = "";
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_X))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_X))
         {
             transform += ` translateX(${index * 100}%)`;
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_Y))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_Y))
         {
             transform += ` translateY(${index * 100}%)`;
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.SCALE))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.SCALE))
         {
-            transform += ` scale(${active ? "1" : this.#transitionMinScale})`;
+            transform += ` scale(${active ? "1" : this.transitionMinScale})`;
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.ROTATE))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.ROTATE))
         {
-            if (active)
-            {
-                transform += ` rotate(0deg)`;
-            }
-            else
-            {
-                transform += (index < activeIndex) ? ` rotate(-179.9deg)` : ` rotate(179.9deg)`;
-            }
+            transform += active ? " rotate(0deg)" : (index < activeIndex ? " rotate(-179.9deg)" : " rotate(179.9deg)");
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.FLIP_X))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.FLIP_X))
         {
-            if (active)
-            {
-                transform += ` rotateX(0deg)`;
-            }
-            else
-            {
-                transform += ` rotateX(-179.9deg)`;
-            }
+            transform += active ? " rotateX(0deg)" : " rotateX(-179.9deg)";
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.FLIP_Y))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.FLIP_Y))
         {
-            if (active)
-            {
-                transform += ` rotateY(0deg)`;
-            }
-            else
-            {
-                transform += ` rotateY(-179.9deg)`;
-            }
+            transform += active ? " rotateY(0deg)" : " rotateY(-179.9deg)";
         }
 
         return transform.trim() || "none";
@@ -146,22 +117,17 @@ export class CoreStackComponent extends Component
     {
         let transform = "";
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_X))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_X))
         {
             transform += ` translateX(${-index * 100}%)`;
         }
 
-        if (this.#transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_Y))
+        if (this.transitionMode.includes(CoreStackComponent.TransitionMode.SLIDE_Y))
         {
             transform += ` translateY(${-index * 100}%)`;
         }
 
         return transform.trim() || "none";
-    }
-
-    set transitionMinScale(transitionMinScale)
-    {
-        this.#transitionMinScale = transitionMinScale;
     }
 
     set active(componentId)
@@ -175,9 +141,9 @@ export class CoreStackComponent extends Component
 
         this.#activeComponentId = componentId;
 
-        if (this.#transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
+        if (this.transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
         {
-            this.node.style.transform = "none";
+            this.#stackTrack.style.transform = "none";
 
             for (const [id, component] of this.childs)
             {
@@ -213,17 +179,16 @@ export class CoreStackComponent extends Component
         {
             const active = activeIndex == index;
 
-            // component.show();
             component.node.classList.remove("hidden");
             component.node.classList.remove("visible");
             component.node.style.pointerEvents = active ? "auto" : "none";
-            component.node.style.opacity = this.#transitionMode.includes(CoreStackComponent.TransitionMode.FADE) ? (active ? "1" : "0") : "1";
+            component.node.style.opacity = this.transitionMode.includes(CoreStackComponent.TransitionMode.FADE) ? (active ? "1" : "0") : "1";
             component.node.style.transform = this._getComponentTransform(index, activeIndex);
 
             index++;
         }
 
-        this.node.style.transform = this._getStackTransform(activeIndex);
+        this.#stackTrack.style.transform = this._getStackTransform(activeIndex);
     }
 
     get active()
@@ -231,20 +196,13 @@ export class CoreStackComponent extends Component
         return this.#activeComponentId;
     }
 
-    set transitionMode(value)
+    applyTransitionDuration()
     {
-        this.#transitionMode = value;
-    }
-
-    set transitionDuration(value)
-    {
-        this.#transitionDuration = value;
-
-        this.node.style.transition = `transform ${this.#transitionDuration}ms ease, opacity ${this.#transitionDuration}ms ease`;
+        this.#stackTrack.style.transition = `transform ${this.transitionDuration}ms ease, opacity ${this.transitionDuration}ms ease`;
 
         for (const [, component] of this.childs)
         {
-            component.node.style.transition = `transform ${this.#transitionDuration}ms ease, opacity ${this.#transitionDuration}ms ease`;
+            component.node.style.transition = `transform ${this.transitionDuration}ms ease, opacity ${this.transitionDuration}ms ease`;
         }
     }
 }

@@ -148,9 +148,12 @@ export class CoreQuerySearchComponent extends ServerComponent
   getFrontColumns()
   {
     return this.columns.map((column) => ({
-      code: column.code,
-      label: column.label,
-      type: column.type ?? null,
+        code: column.code,
+        label: column.label,
+        type: column.type ?? null,
+        visible: column.visible ?? true,
+        sortable: column.sortable ?? true,
+        width: column.width ?? null,
     }));
   }
 

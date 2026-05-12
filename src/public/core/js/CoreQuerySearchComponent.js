@@ -203,7 +203,7 @@ export class CoreQuerySearchComponent extends Component
       this.order = result.order ?? this.order;
       this.rows = result.rows ?? [];
 
-      this.renderResult();
+      await this.renderResult();
     }
     finally
     {
@@ -219,28 +219,34 @@ export class CoreQuerySearchComponent extends Component
     }
   }
 
-
-  renderResult()
+  get visibleColumns()
   {
-    this.find(".result").innerHTML = `
-      <div class="query-search-result">
-        ${this.renderHeaderRow()}
-        ${this.rows.map((row, index) => this.renderRow(row, index)).join("")}
-      </div>
-    `;
+      return this.columns.filter((column) => column.visible !== false);
+  }
 
-    this.bindHeaderColumns();
-    this.renderFooter();
+
+  async renderResult()
+  {
+      await Component.setInnerHtml(this.find(".result"), `
+          <div class="query-search-result">
+              ${this.renderHeaderRow()}
+              ${this.rows.map((row, index) => this.renderRow(row, index)).join("")}
+          </div>
+      `);
+
+      this.bindHeaderColumns();
+      this.bindRows();
+      await this.renderFooter();
   }
 
 
   renderHeaderRow()
   {
-    return `
-      <div class="query-search-result-row query-search-result-header">
-        ${this.columns.map((column) => this.renderHeaderColumn(column)).join("")}
-      </div>
-    `;
+      return `
+        <div class="query-search-result-row query-search-result-header">
+          ${this.visibleColumns.map((column) => this.renderHeaderColumn(column)).join("")}
+        </div>
+      `;
   }
 
 
@@ -256,6 +262,28 @@ export class CoreQuerySearchComponent extends Component
   bindHeaderColumn(header)
   {
     header.addEventListener("click", () => this.orderBy(header.dataset.column));
+  }
+
+  bindRows()
+  {
+      for (const rowNode of this.findAll(".result .query-search-result-row[data-row-index]"))
+      {
+          rowNode.addEventListener("click", () =>
+          {
+              this.onRowClick(this.rows[rowNode.dataset.rowIndex]);
+          });
+      }
+  }
+
+  onRowClick(row)
+  {
+  }
+
+
+
+  executeRowAction(action, row)
+  {
+    console.log(action, row);
   }
 
 
@@ -299,11 +327,11 @@ export class CoreQuerySearchComponent extends Component
 
   renderRow(row, index)
   {
-    return `
-      <div class="query-search-result-row">
-        ${this.columns.map((column) => this.renderField(row, column, index)).join("")}
-      </div>
-    `;
+      return `
+          <div class="query-search-result-row" data-row-index="${index}">
+              ${this.visibleColumns.map((column) => this.renderField(row, column, index)).join("")}
+          </div>
+      `;
   }
 
 
@@ -317,14 +345,21 @@ export class CoreQuerySearchComponent extends Component
   }
 
 
-  renderFooter()
+  async renderFooter()
   {
-    const count = this.searchRecordCount;
+      const count = this.searchRecordCount;
 
-    this.find(".footer").textContent =
-      count > 1
-        ? `${count} results found`
-        : `${count} result found`;
+      await Component.setInnerHtml(this.find(".footer"), `
+          <div class="query-search-footer-count">
+              ${count > 1 ? `${count} results found` : `${count} result found`}
+          </div>
+
+          <div class="query-search-footer-actions">
+              ${this.actions.map((action) => this.renderAction(action)).join("")}
+          </div>
+      `);
+
+      this.bindActions();
   }
 
 
@@ -342,4 +377,28 @@ export class CoreQuerySearchComponent extends Component
     this.resultSize = this.resultSizeMin;
     this.resultSizeIncrement = result.resultSizeIncrement ?? this.resultSizeIncrement;
   }
+
+  renderAction(action)
+  {
+      return `
+          <button type="button" data-action="${action.code}">
+              ${action.label}
+          </button>
+      `;
+  }
+
+
+  bindActions()
+  {
+      for (const button of this.findAll(".footer [data-action]"))
+      {
+          button.addEventListener("click", () => this.executeAction(button.dataset.action));
+      }
+  }
+
+
+  executeAction(action)
+  {
+      console.log(action);
+  }  
 }

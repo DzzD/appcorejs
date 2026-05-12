@@ -42,7 +42,7 @@
 [data-appcore-class~="app.js.screen"] > .screen-content > :first-child
 {
     display: grid;
-    grid-template-rows: max-content;
+    /* grid-template-rows: max-content; */
     align-content: start;
     overflow-y: auto;
     height: 100%;

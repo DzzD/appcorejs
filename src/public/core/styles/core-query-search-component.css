@@ -105,11 +105,17 @@
     display: table-row;
 }
 
+[data-appcore-class~="app.js.query-search-component"] .query-search-result-row[data-row-index]
+{
+    cursor: pointer;
+}
+
 [data-appcore-class~="app.js.query-search-component"] .query-search-result-cell
 {
     display: table-cell;
 
     padding: 0.75rem 1rem;
+
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
@@ -132,11 +138,6 @@
     font-weight: 400;
 }
 
-[data-appcore-class~="app.js.query-search-component"] .query-search-result-cell
-{
-    /* max-width: 0; */
-}
-
 [data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell[data-sortable="true"]
 {
     cursor: pointer;
@@ -155,19 +156,58 @@
 [data-appcore-class~="app.js.query-search-component"] .footer
 {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
+    gap: 0.25rem 0.75rem;
 
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.75rem;
 
     color: var(--color-primary);
     background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
 
     font-family: "Antonio", sans-serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 400;
 
     border-top: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-footer-count
+{
+    flex: 1 1 auto;
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions
+{
+    gap: 0.5rem;
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions button
+{
+    min-height: 1.8rem;
+    height: auto;
+    padding: 0.2rem 0.6rem;
+
+    color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+
+    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
+    border-radius: 0.35rem;
+
+    font-family: "Antonio", sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+
+    cursor: pointer;
+}
+
+[data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions button:hover
+{
+    background-color: color-mix(in srgb, var(--color-primary) 14%, transparent);
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+    text-decoration: none;
+    filter: none;
 }
 
 @media (max-width: 768px)
@@ -178,8 +218,9 @@
         align-items: stretch;
     }
 
-    [data-appcore-class~="app.js.query-search-component"] button
+    [data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions
     {
         width: 100%;
+        justify-content: flex-start;
     }
 }
