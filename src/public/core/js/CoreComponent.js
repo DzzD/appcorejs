@@ -28,7 +28,6 @@ export class CoreComponent
         this.templatePath = null;
         this.childs = new Map();  
         this.path = null;
-              
     }
 
 
@@ -160,9 +159,10 @@ export class CoreComponent
     findPathChild(segment)
     {
         Log.info("segment " + segment);
+
         for (const child of this.childs.values())
         {
-            if (child.path === segment)
+            if (child.path === segment || child.path === "*")
             {
                 return child;
             }
@@ -181,10 +181,11 @@ export class CoreComponent
         Log.warn(`Path segment "${segment}" not found from component "${this.id}".`);
     }    
 
-    onPath(path = '/')
+    onPath(path = "/")
     {
         Log.info("path" + path);
-        const parts = path.split('/').filter(Boolean);
+
+        const parts = path.split("/").filter(Boolean);
         const segment = parts.shift();
 
         if (!segment)
@@ -199,8 +200,13 @@ export class CoreComponent
             return this.onPathNotFound(segment, parts);
         }
 
-        return child.onPath('/' + parts.join('/'));
-    }    
+        if (child.path === "*")
+        {
+            return child.onPath(path);
+        }
+
+        return child.onPath("/" + parts.join("/"));
+    }   
 
     static async setInnerHtml(node, html)
     {
