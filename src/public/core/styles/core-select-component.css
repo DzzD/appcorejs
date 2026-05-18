@@ -46,7 +46,7 @@
     text-overflow: ellipsis;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-arrow
+[data-appcore-class~="app.js.select-component"] .select-icon
 {
     flex: 0 0 auto;
     font-size: 0.75rem;

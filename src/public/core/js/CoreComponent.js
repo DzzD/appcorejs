@@ -137,7 +137,7 @@ export class CoreComponent
     {
         for (const child of this.childs.values())
         {
-            if (child.id === id)
+            if (child.id.endsWith(id))
             {
                 return child;
             }
@@ -296,7 +296,7 @@ export class CoreComponent
         this.#resizeObserver = new ResizeObserver(() =>
         {
             this.onResize();
-        });
+        }); 
 
         this.#resizeObserver.observe(this.node);
 

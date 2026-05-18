@@ -14,7 +14,7 @@ export class CoreQueryDetailComponent extends Component
 
     route = null;
     title = "Détail";
-    key = null;
+    #key = null;
 
     groups = [];
     fields = [];
@@ -36,6 +36,34 @@ export class CoreQueryDetailComponent extends Component
         }
     }
 
+    get key()
+    {
+        return this.#key;
+    }
+
+    set key(value)
+    {
+        this.#key = value;
+
+        if (!this.isLoaded)
+        {
+            return;
+        }
+
+        if (this.#key)
+        {
+            this.executeAction("load");
+            return;
+        }
+
+        this.clear();
+    }
+
+    clear()
+    {
+        this.record = null;
+        this.setValues({});
+    }
 
     async loadDefinition()
     {
