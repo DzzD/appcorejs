@@ -1,11 +1,12 @@
 [data-appcore-class~="app.js.screen"]
 {
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     position: absolute;
     inset: 0;
 }
 
-[data-appcore-class~="app.js.screen"]  .screen-content
+[data-appcore-class~="app.js.screen"] > [data-zone="content"],
+[data-appcore-class~="app.js.screen"] > .screen-content
 {
     position: relative;
     display: grid;
@@ -19,7 +20,8 @@
 
 
 
-[data-appcore-class~="app.js.screen"] > .screen-content .screen-body
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="body"],
+[data-appcore-class~="app.js.screen"] > .screen-content > .screen-body
 {
     display: grid;
     align-content: start;
@@ -28,12 +30,14 @@
     min-height: 0;
 }
 
-[data-appcore-class~="app.js.screen"] .screen-content:has(> .screen-footer) > .screen-body
+[data-appcore-class~="app.js.screen"] > [data-zone="content"]:has(> [data-zone="footer"]) > [data-zone="body"],
+[data-appcore-class~="app.js.screen"] > .screen-content:has(> .screen-footer) > .screen-body
 {
     padding-bottom: 4rem;
 }
 
-[data-appcore-class~="app.js.screen"] > .screen-content  .screen-footer
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"],
+[data-appcore-class~="app.js.screen"] > .screen-content > .screen-footer
 {
     position: absolute;
     left: 1rem;
@@ -46,11 +50,11 @@
     pointer-events: none;
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+    /* border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent); */
 }
 
-[data-appcore-class~="app.js.screen"] > .screen-content .screen-footer button,
-[data-appcore-class~="app.js.screen"] > .screen-content .screen-footer a
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"] > *,
+[data-appcore-class~="app.js.screen"] > .screen-content > .screen-footer > *
 {
     pointer-events: auto;
 }

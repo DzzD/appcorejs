@@ -47,6 +47,22 @@ html
     --cut: var(--appcore-cut);
 }
 
+.appcore-cut-surface-bottom-left
+{
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    --cut: var(--appcore-cut);
+}
+
+.appcore-cut-surface-top-right
+{
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    --cut: var(--appcore-cut);
+}
+
 .appcore-cut-surface::before
 {
     content: "";
@@ -64,6 +80,44 @@ html
         100% 100%,
         var(--cut) 100%,
         0 calc(100% - var(--cut))
+    );
+}
+
+.appcore-cut-surface-bottom-left::before
+{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: var(--color-surface);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        var(--cut) 100%,
+        0 calc(100% - var(--cut))
+    );
+}
+
+.appcore-cut-surface-top-right::before
+{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: var(--color-surface);
+
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--cut)) 0,
+        100% var(--cut),
+        100% 100%,
+        0 100%
     );
 }
 

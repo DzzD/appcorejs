@@ -14,7 +14,8 @@
 }
 
 
-[data-appcore-class~="app.js.select-component"] .select-button
+[data-appcore-class~="app.js.select-component"] > [data-zone="button"],
+[data-appcore-class~="app.js.select-component"] > .select-button
 {
     display: flex;
     align-items: center;
@@ -38,7 +39,8 @@
     cursor: pointer;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-label
+[data-appcore-class~="app.js.select-component"] > [data-zone="button"] > [data-zone="label"],
+[data-appcore-class~="app.js.select-component"] > .select-button > .select-label
 {
     min-width: 0;
     overflow: hidden;
@@ -46,14 +48,16 @@
     text-overflow: ellipsis;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-icon
+[data-appcore-class~="app.js.select-component"] > [data-zone="button"] > [data-zone="icon"],
+[data-appcore-class~="app.js.select-component"] > .select-button > .select-icon
 {
     flex: 0 0 auto;
     font-size: 0.75rem;
     opacity: 0.65;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-options
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"],
+[data-appcore-class~="app.js.select-component"] > .select-options
 {
     display: none;
 
@@ -73,12 +77,14 @@
     box-shadow: 0 0.5rem 1.5rem color-mix(in srgb, black 18%, transparent);
 }
 
-[data-appcore-class~="app.js.select-component"].is-open .select-options
+[data-appcore-class~="app.js.select-component"].is-open > [data-zone="options"],
+[data-appcore-class~="app.js.select-component"].is-open > .select-options
 {
     display: block;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-option
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"] > .select-option,
+[data-appcore-class~="app.js.select-component"] > .select-options > .select-option
 {
     display: flex;
     align-items: center;
@@ -90,18 +96,21 @@
     cursor: pointer;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-option:hover
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"] > .select-option:hover,
+[data-appcore-class~="app.js.select-component"] > .select-options > .select-option:hover
 {
     background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
 }
 
-[data-appcore-class~="app.js.select-component"] .select-option.is-selected
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"] > .select-option.is-selected,
+[data-appcore-class~="app.js.select-component"] > .select-options > .select-option.is-selected
 {
     color: var(--color-primary);
     background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
 }
 
-[data-appcore-class~="app.js.select-component"] .select-checkbox
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"] .select-checkbox,
+[data-appcore-class~="app.js.select-component"] > .select-options .select-checkbox
 {
     display: inline-flex;
     align-items: center;
@@ -118,7 +127,8 @@
     line-height: 1;
 }
 
-[data-appcore-class~="app.js.select-component"] .select-option-label
+[data-appcore-class~="app.js.select-component"] > [data-zone="options"] .select-option-label,
+[data-appcore-class~="app.js.select-component"] > .select-options .select-option-label
 {
     min-width: 0;
     overflow: hidden;

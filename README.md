@@ -1,4 +1,6 @@
-![AppCore<sub>JS</sub> logo](./docs/images/app-core-logo-1024.png)
+<p align="center">
+  <img src="./docs/images/global-appcore-logo-256.png" alt="AppCoreJS logo">
+</p>
 
 # AppCore<sub>JS</sub> Framework
 
@@ -75,7 +77,7 @@ Never:
 ```text
 project -> core
 ```
-![AppCore<sub>JS</sub> Architecture](./docs/images/Draw-global-design.png)
+![AppCore<sub>JS</sub> Architecture](./docs/images/global-design.png)
 
 ---
 
@@ -163,7 +165,7 @@ Direct access:
 - [003 - Backend](./docs/003-backend.md)
 - [004 - Model / ORM](./docs/004-model-orm.md)
 - [005 - Server](./docs/005-server.md)
-- [006 - Frontend](./docs/006-frontend.md)
+- [006 - Frontend](./docs/006-0-frontend.md)
 - [007 - Examples](./docs/007-examples.md)
 
 ---

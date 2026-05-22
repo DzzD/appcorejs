@@ -32,7 +32,7 @@ export class CoreQueryDetailComponent extends Component
 
         if (this.key)
         {
-            await this.executeAction("load");
+            await this.action("load");
         }
     }
 
@@ -52,7 +52,7 @@ export class CoreQueryDetailComponent extends Component
 
         if (this.#key)
         {
-            this.executeAction("load");
+            this.action("load");
             return;
         }
 
@@ -85,11 +85,8 @@ export class CoreQueryDetailComponent extends Component
             ${this.groups.map((group) => this.renderGroup(group)).join("")}
         `);
 
-        await Component.setInnerHtml(this.find('[data-zone="footer"]'), `
-            ${this.actions.map((action) => this.renderAction(action)).join("")}
-        `);
-
-        this.bindActions();
+        await Component.setInnerHtml(this.find('[data-zone="footer"]'), "");
+        await this.renderActions();
     }
 
 
@@ -148,21 +145,57 @@ export class CoreQueryDetailComponent extends Component
     }
 
 
-    renderAction(action)
+    async renderActions()
     {
-        return `
-            <button type="button" data-action="${action.code}">
-                ${action.label}
-            </button>
-        `;
+        const actionsZone = this.find('[data-zone="actions"]');
+
+        if (!actionsZone)
+        {
+            return;
+        }
+
+        if (!Array.isArray(this.actions) || this.actions.length === 0)
+        {
+            await Component.setInnerHtml(actionsZone, "");
+            return;
+        }
+
+        await Component.setInnerHtml(actionsZone, `
+            <div data-appcore-id="app.js.action-bar-component::query-detail-actions-bar"
+                 data-template="app.tpl.action-bar-component">
+            </div>
+        `);
+
+        const actionBar = this.getChild("query-detail-actions-bar");
+
+        if (!actionBar)
+        {
+            return;
+        }
+
+        for (const action of this.actions)
+        {
+            actionBar.add(action);
+        }
     }
 
-
-    bindActions()
+    async action(name, args = null)
     {
-        for (const button of this.findAll('[data-zone="footer"] [data-action]'))
+        switch (name)
         {
-            button.addEventListener("click", () => this.executeAction(button.dataset.action));
+            case "load":
+            {
+                return await this.executeAction("load");
+            }
+
+            default:
+            {
+                const actionCodes = this.actions.map((action) => action.code);
+
+                return actionCodes.includes(name)
+                    ? await this.executeAction(name)
+                    : await super.action(name, args);
+            }
         }
     }
 

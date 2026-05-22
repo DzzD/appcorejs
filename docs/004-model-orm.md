@@ -4,7 +4,7 @@
 This chapter explains the ORM layer in detail.
 
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-global-orm.png)
+![AppCore<sub>JS</sub> Architecture](./images/global-orm.png)
 
 ## 0) Layer reminder
 
@@ -83,7 +83,7 @@ for (let row = await dbConnector.next(); row; row = await dbConnector.next())
 
 `DbObject` is the interface ORM base class.
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-detail-orm.png)
+![AppCore<sub>JS</sub> Architecture](./images/orm-detail.png)
 
 It provides:
 
@@ -134,7 +134,7 @@ while (await user.next())
 `DbObject` exposes these overridable hooks:
 
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-detail-orm-object.png)
+![AppCore<sub>JS</sub> Architecture](./images/orm-detail-object.png)
 
 - `beforeSave()`
 - `afterSave(success)`
@@ -241,7 +241,7 @@ This affects only `User`.
 
 `DbQueryObject` encapsulates business SQL and maps multiple ORM objects.
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-detail-orm-dbquery-object.png)
+![AppCore<sub>JS</sub> Architecture](./images/orm-detail-dbquery-object.png)
 
 Example:
 
@@ -315,7 +315,7 @@ Use the style that reads better in your use case.
 
 `connectionUid` lets `DbConnector`, `DbObject`, and `DbQueryObject` share one connection.
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-detail-orm-transaction.png)
+![AppCore<sub>JS</sub> Architecture](./images/orm-detail-transaction.png)
 
 Example transaction flow:
 
@@ -377,7 +377,7 @@ When you override one of these classes in `app`, the behavior is shared across y
 
 ### Example: global `DbConnector` override
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-detail-orm-connector.png)
+![AppCore<sub>JS</sub> Architecture](./images/orm-detail-connector.png)
 
 `app/db/DbConnector.js`
 

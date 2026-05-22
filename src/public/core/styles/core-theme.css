@@ -54,10 +54,7 @@
     /* overlays + shadows */
     --shadow-soft: rgba(15, 23, 42, 0.08);
 
-    --main-background:
-        linear-gradient(
-            rgba(255, 255, 255, 0.90),
-            rgba(255, 255, 255, 0.50)
-        ),
-        url("../../assets/images/background.jpg") center / cover no-repeat;
+    --main-background: radial-gradient(circle at top left, #9d6a9a 0%, transparent 35%),
+                       linear-gradient(180deg, #8f5c8c 0%, #885588 100%);
+        /* url("../../assets/images/background.jpg") center / cover no-repeat; */
 }

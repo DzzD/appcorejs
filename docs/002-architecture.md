@@ -2,7 +2,7 @@
 
 # 002 - Architecture
 
-![AppCore<sub>JS</sub> Architecture](./images/Draw-global-design.png)
+![AppCore<sub>JS</sub> Architecture](./images/global-design.png)
 
 AppCoreJS is built on 3 layers.
 
@@ -69,4 +69,4 @@ You customize behavior in `./<project>/` to apply business-specific rules.
 - Backend concepts: [003 - Backend](./003-backend.md)
 - ORM details: [004 - Model / ORM](./004-model-orm.md)
 - Server details: [005 - Server](./005-server.md)
-- Frontend details: [006 - Frontend](./006-frontend.md)
+- Frontend details: [006 - Frontend](./006-0-frontend.md)

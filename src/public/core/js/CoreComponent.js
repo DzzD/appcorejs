@@ -252,6 +252,11 @@ export class CoreComponent
         return child.onPath("/" + parts.join("/"));
     }   
 
+    async action(name, args = null)
+    {
+        return this.parent?.action(name, args);
+    }
+
     static async setInnerHtml(node, html)
     {
         node.innerHTML = html;
@@ -428,6 +433,10 @@ export class CoreComponent
 
         for (const zone of currentNode.querySelectorAll('[data-zone]'))
         {
+            if (zone.parentElement?.closest("[data-appcore-id]") !== currentNode)
+            {
+                continue;
+            }
             currentZones.set(zone.getAttribute('data-zone'), zone.cloneNode(true));
         }
 

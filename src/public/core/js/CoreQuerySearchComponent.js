@@ -20,7 +20,7 @@ export class CoreQuerySearchComponent extends Component
   actions = [];
   rows = null;
 
-  order = {
+  orderState = {
     column: null,
     direction: "asc",
   };
@@ -44,33 +44,35 @@ export class CoreQuerySearchComponent extends Component
     await this.render();
     this.bindResultScroll();
 
-    await this.search("search");
+    await this.action("search");
   }
 
 
   async render()
   {
-    this.find(".title").textContent = this.title;
+    this.find('[data-zone="title"]').textContent = this.title;
 
-    await Component.setInnerHtml(this.find(".criterias"), `
+    await Component.setInnerHtml(this.find('[data-zone="criterias"]'), `
       ${this.criterias.map((criteria) => this.renderCriteria(criteria)).join("")}
     `);
 
-    for (const input of this.findAll(".criterias [name]"))
+    for (const input of this.findAll('[data-zone="criterias"] [name]'))
     {
-      input.addEventListener("input", () => this.search("search"));
-      input.addEventListener("change", () => this.search("search"));
+      input.addEventListener("input", async () => await this.action("search"));
+      input.addEventListener("change", async () => await this.action("search"));
     }
+
+    await this.renderActions();
   }
 
 
   bindResultScroll()
   {
-    this.find(".result").addEventListener("scroll", () => this.onResultScroll());
+    this.find('[data-zone="result"]').addEventListener("scroll", async () => await this.onResultScroll());
   }
 
 
-  onResultScroll()
+  async onResultScroll()
   {
     if (!this.rows?.length)
     {
@@ -82,12 +84,12 @@ export class CoreQuerySearchComponent extends Component
       return;
     }
 
-    const result = this.find(".result");
+    const result = this.find('[data-zone="result"]');
     const bottomPosition = result.scrollTop + result.clientHeight + this.scrollPreloadMargin;
 
     if (result.scrollHeight !== 0 && bottomPosition >= result.scrollHeight)
     {
-      this.search("loadMoreResult");
+      await this.action("loadMoreResult");
     }
   }
 
@@ -136,7 +138,12 @@ export class CoreQuerySearchComponent extends Component
 
     for (const criteria of this.criterias)
     {
-      const input = this.find(`.criterias [name="${criteria.code}"]`);
+      const input = this.find(`[data-zone="criterias"] [name="${criteria.code}"]`);
+
+      if (!input)
+      {
+        continue;
+      }
 
       values[criteria.code] = input.value;
     }
@@ -148,15 +155,43 @@ export class CoreQuerySearchComponent extends Component
   getOptions()
   {
     return {
-      order: this.order,
+      order: this.orderState,
       resultSize: this.resultSize,
     };
   }
 
 
-  async search(action = "search")
+  async search(args = null)
   {
-    if (this.isSearching && action === "search")
+    return this.runSearch("search");
+  }
+
+
+  async order(args = {})
+  {
+    const column = args.column;
+
+    this.orderState = {
+      column,
+      direction:
+        this.orderState.column === column && this.orderState.direction === "asc"
+          ? "desc"
+          : "asc",
+    };
+
+    return this.runSearch("order");
+  }
+
+
+  async loadMoreResult(args = null)
+  {
+    return this.runSearch("loadMoreResult");
+  }
+
+
+  async runSearch(actionName = "search")
+  {
+    if (this.isSearching && actionName === "search")
     {
       this.hasPendingSearch = true;
       return;
@@ -167,14 +202,14 @@ export class CoreQuerySearchComponent extends Component
       return;
     }
 
-    if (action === "search" || action === "order")
+    if (actionName === "search" || actionName === "order")
     {
       this.resultSize = this.resultSizeMin;
       this.rows = null;
-      this.find(".result").scrollTop = 0;
+      this.find('[data-zone="result"]').scrollTop = 0;
     }
 
-    if (action === "loadMoreResult")
+    if (actionName === "loadMoreResult")
     {
       this.resultSize += this.resultSizeIncrement;
     }
@@ -200,7 +235,7 @@ export class CoreQuerySearchComponent extends Component
       this.resultSizeMin = result.resultSizeMin ?? this.resultSizeMin;
       this.resultSizeIncrement = result.resultSizeIncrement ?? this.resultSizeIncrement;
       this.searchRecordCount = result.searchRecordCount ?? this.searchRecordCount;
-      this.order = result.order ?? this.order;
+      this.orderState = result.order ?? this.orderState;
       this.rows = result.rows ?? [];
 
       await this.renderResult();
@@ -212,10 +247,10 @@ export class CoreQuerySearchComponent extends Component
       if (this.hasPendingSearch)
       {
         this.hasPendingSearch = false;
-        this.search("search");
+        await this.action("search");
       }
 
-      this.onResultScroll();
+      await this.onResultScroll();
     }
   }
 
@@ -227,7 +262,7 @@ export class CoreQuerySearchComponent extends Component
 
   async renderResult()
   {
-      await Component.setInnerHtml(this.find(".result"), `
+      await Component.setInnerHtml(this.find('[data-zone="result"]'), `
           <div class="query-search-result">
               ${this.renderHeaderRow()}
               ${this.rows.map((row, index) => this.renderRow(row, index)).join("")}
@@ -252,7 +287,7 @@ export class CoreQuerySearchComponent extends Component
 
   bindHeaderColumns()
   {
-    for (const header of this.findAll('.result [data-column][data-sortable="true"]'))
+    for (const header of this.findAll('[data-zone="result"] [data-column][data-sortable="true"]'))
     {
       this.bindHeaderColumn(header);
     }
@@ -261,16 +296,20 @@ export class CoreQuerySearchComponent extends Component
 
   bindHeaderColumn(header)
   {
-    header.addEventListener("click", () => this.orderBy(header.dataset.column));
+    header.addEventListener("click", async () => await this.action("order", {
+      column: header.dataset.column,
+    }));
   }
 
   bindRows()
   {
-      for (const rowNode of this.findAll(".result .query-search-result-row[data-row-index]"))
+      for (const rowNode of this.findAll('[data-zone="result"] .query-search-result-row[data-row-index]'))
       {
-          rowNode.addEventListener("click", () =>
+          rowNode.addEventListener("click", async () =>
           {
-              this.onRowClick(this.rows[rowNode.dataset.rowIndex]);
+              await this.action("rowClick", {
+                  row: this.rows[rowNode.dataset.rowIndex],
+              });
           });
       }
   }
@@ -278,14 +317,6 @@ export class CoreQuerySearchComponent extends Component
   onRowClick(row)
   {
   }
-
-
-
-  executeRowAction(action, row)
-  {
-    console.log(action, row);
-  }
-
 
   getColumn(code)
   {
@@ -296,8 +327,8 @@ export class CoreQuerySearchComponent extends Component
   renderHeaderColumn(column)
   {
     const isSortable = column.sortable !== false;
-    const isOrdered = this.order?.column === column.code;
-    const direction = this.order?.direction ?? "asc";
+    const isOrdered = this.orderState.column === column.code;
+    const direction = this.orderState.direction;
     const style = column.width ? ` style="width: ${column.width};"` : "";
 
     return `
@@ -311,17 +342,11 @@ export class CoreQuerySearchComponent extends Component
   }
 
 
-  orderBy(column)
+  async orderBy(column)
   {
-    this.order = {
+    return await this.action("order", {
       column,
-      direction:
-        this.order?.column === column && this.order?.direction === "asc"
-          ? "desc"
-          : "asc",
-    };
-
-    this.search("order");
+    });
   }
 
 
@@ -349,22 +374,45 @@ export class CoreQuerySearchComponent extends Component
   {
     const count = this.searchRecordCount;
 
-    await Component.setInnerHtml(this.find(".footer"), `
+    await Component.setInnerHtml(this.find('[data-zone="footer"]'), `
         <div class="query-search-footer-count">
             ${count > 1 ? `${count} results found` : `${count} result found`}
         </div>
     `);
-
-    await this.renderActions();
   }
 
   async renderActions()
   {
-      await Component.setInnerHtml(this.find(".actions"), `
-          ${this.actions.map((action) => this.renderAction(action)).join("")}
+      const actionsZone = this.find('[data-zone="actions"]');
+
+      if (!actionsZone)
+      {
+          return;
+      }
+
+      if (!Array.isArray(this.actions) || this.actions.length === 0)
+      {
+          await Component.setInnerHtml(actionsZone, "");
+          return;
+      }
+
+      await Component.setInnerHtml(actionsZone, `
+          <div data-appcore-id="app.js.action-bar-component::query-search-actions-bar"
+               data-template="app.tpl.action-bar-component">
+          </div>
       `);
 
-      this.bindActions();
+      const actionBar = this.getChild("query-search-actions-bar");
+
+      if (!actionBar)
+      {
+          return;
+      }
+
+      for (const action of this.actions)
+      {
+          actionBar.add(action);
+      }
   }  
 
 
@@ -377,27 +425,46 @@ export class CoreQuerySearchComponent extends Component
     this.criterias = result.criterias ?? [];
     this.columns = result.columns ?? [];
     this.actions = result.actions ?? [];
-    this.order = result.order ?? { column: null, direction: "asc" };
+    this.orderState = result.order ?? { column: null, direction: "asc" };
     this.resultSizeMin = result.resultSizeMin ?? this.resultSizeMin;
     this.resultSize = this.resultSizeMin;
     this.resultSizeIncrement = result.resultSizeIncrement ?? this.resultSizeIncrement;
   }
 
-  renderAction(action)
+  async action(name, args = null)
   {
-      return `
-          <button type="button" data-action="${action.code}">
-              ${action.label}
-          </button>
-      `;
-  }
-
-
-  bindActions()
-  {
-      for (const button of this.findAll(".actions [data-action]"))
+      switch (name)
       {
-          button.addEventListener("click", () => this.executeAction(button.dataset.action));
+          case "search":
+          {
+              return await this.search(args);
+          }
+
+          case "order":
+          {
+              return await this.order(args);
+          }
+
+          case "loadMoreResult":
+          {
+              return await this.loadMoreResult(args);
+          }
+
+          case "rowAction":
+          {
+              console.log(args.action, args.row);
+              return;
+          }
+
+          case "rowClick":
+          {
+              return await this.onRowClick(args.row);
+          }
+
+          default:
+          {
+              return await super.action(name, args);
+          }
       }
   }
 

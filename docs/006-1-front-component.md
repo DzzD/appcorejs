@@ -1,8 +1,8 @@
-# Règles de conception d’un composant AppCoreJS
+# AppCoreJS Component Design Rules
 
-## 1. Principe général
+## 1. General principle
 
-Un composant AppCoreJS est un pont entre un bloc HTML et une classe JavaScript.
+An AppCoreJS component is a bridge between an HTML block and a JavaScript class.
 
 ```html
 <div data-appcore-id="app.js.my-component::demo">
@@ -28,31 +28,30 @@ export class MyComponent extends Component
 }
 ```
 
-![AppCore<sub>JS</sub> Frontend component](./images/Draw-frontend-component-general.png)
+![AppCore<sub>JS</sub> Frontend component](./images/frontend-component-general.png)
 
-## 2. Le nœud racine
+## 2. The root node
 
-Le bloc déclaré avec `data-appcore-id` devient le nœud racine du composant :
+The block declared with `data-appcore-id` becomes the component root node:
 
 ```js
 this.node
 ```
 
-La classe ne recrée jamais ce nœud.
+The class never recreates this node.
 
-## 3. Le rôle de `onLoad()`
+## 3. The role of `onLoad()`
 
-`onLoad()` initialise le composant :
+`onLoad()` initializes the component:
 
-- charger les styles ;
-- convertir les attributs si nécessaire ;
-- lire le HTML déclaratif éventuel ;
-- attacher les événements ;
-- appeler `render()`.
+- load styles;
+- read optional declarative HTML;
+- attach events;
+- call `render()`.
 
-## 4. Les attributs `data-*`
+## 4. `data-*` attributes
 
-Les attributs HTML sont copiés automatiquement dans l’instance :
+HTML attributes are automatically copied into the instance:
 
 ```html
 <div data-placeholder="Select..." data-multiple="true"></div>
@@ -63,36 +62,36 @@ this.placeholder
 this.multiple
 ```
 
-Les valeurs restent des chaînes, donc conversion explicite si besoin :
+Values remain strings, so convert explicitly when needed:
 
 ```js
 this.multiple = this.multiple === "true";
 ```
 
-## 5. Le rôle du template
+## 5. The role of the template
 
-Un template fournit la structure interne par défaut.
+A template provides the default internal structure.
 
-Il ne remplace pas `this.node`, seulement son contenu.
+It does not replace `this.node`, only its content.
 
-Les attributs du template servent de valeurs par défaut et peuvent être surchargés par l’instance HTML.
+Template attributes act as default values and can be overridden by the HTML instance.
 
-## 6. Le rôle de `render()`
+## 6. The role of `render()`
 
-`render()` ne reconstruit pas tout le composant.
+`render()` does not rebuild the whole component.
 
-Il alimente les zones existantes :
+It fills existing zones:
 
 ```js
 this.find(".label").textContent = this.text;
 ```
 
-Une zone absente est ignorée si elle n’est pas indispensable.
+A missing zone is ignored if it is not required.
 
-## 7. Les usages possibles
+## 7. Supported usage modes
 
-Un composant doit pouvoir fonctionner avec :
+A component should be able to work with:
 
-- HTML inline ;
-- template ;
-- pilotage JavaScript.
+- inline HTML;
+- template;
+- JavaScript control.

@@ -12,7 +12,7 @@ The order goes from basic usage to advanced internals.
 3. [003 - Backend](./003-backend.md)
 4. [004 - Model / ORM](./004-model-orm.md)
 5. [005 - Server](./005-server.md)
-6. [006 - Frontend](./006-frontend.md)
+6. [006 - Frontend](./006-0-frontend.md)
 7. [007 - Examples](./007-examples.md)
 
 ## Core rule to keep in mind

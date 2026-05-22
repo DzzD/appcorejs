@@ -39,7 +39,9 @@ export class CoreStackComponent extends Component
         await super.onLoad();
         await Loader.loadStyle("app/styles/stack-component.css");
 
-        this.#stackTrack = this.find(":scope > .stack-track") ?? this.node;
+        this.#stackTrack = this.find(':scope > [data-zone="track"]')
+            ?? this.find(":scope > .stack-track")
+            ?? this.node;
 
         this.applyTransitionDuration();
 

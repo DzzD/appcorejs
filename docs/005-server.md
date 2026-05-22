@@ -114,4 +114,4 @@ A server can mix multiple protocols through components:
 - CLI generation rules: [001 - app-core CLI](./001-app-core-cli.md)
 - Architecture: [002 - Architecture](./002-architecture.md)
 - ORM integration: [004 - Model / ORM](./004-model-orm.md)
-- Frontend/static relation: [006 - Frontend](./006-frontend.md)
+- Frontend/static relation: [006 - Frontend](./006-0-frontend.md)
