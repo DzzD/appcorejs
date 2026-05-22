@@ -4,7 +4,21 @@
 
 # AppCore<sub>JS</sub> Framework
 
-AppCore<sub>JS</sub> is a layered framework for Node.js applications.
+AppCore<sub>JS</sub> is a **lightweight JavaScript framework** and **application generator** focused on **layered overrides**, **code factorization**, and interoperability with standard web and Node.js code.
+
+It generates a **working application out of the box**, from backend/script projects to full server + frontend applications. The generated structure is designed to be **extended, specialized, or overridden** instead of rewritten from scratch.
+
+Its architecture separates the **framework core**, the **global application layer**, and the **project-specific layer**. The app layer can override core classes and global behavior once, while each project can still specialize or extend what it needs locally. This makes it possible to **factorize most of the code**, keep projects small, and adapt the framework deeply without modifying its core.
+
+AppCore<sub>JS</sub> also provides a **complete ORM layer** that can be **generated and regenerated from multiple databases and multiple schemas** without losing project-specific specializations.
+
+Generated **model classes can be extended** through the same layered override approach, so database changes can be reflected safely while keeping custom business logic and rules intact.
+
+The query system also supports **advanced queries mixing multiple model objects**, making it possible to build rich aggregated results, joins, search screens, detail views, and domain-specific data structures without duplicating low-level SQL logic everywhere.
+
+The frontend is built entirely with **standard HTML5, CSS3, and ES6 JavaScript**. AppCore<sub>JS</sub> components can be mixed naturally with regular **Node.js, HTML, CSS, and vanilla JavaScript** code, so projects are not locked into a rigid framework-only approach.
+
+Because AppCore<sub>JS</sub> stays deliberately **lightweight**, generated applications remain **simple**, **fast to load**, and **fluid in use**.
 
 The rule is strict:
 
@@ -12,8 +26,8 @@ The rule is strict:
 project -> app -> core
 ```
 
-`core` is internal.
-`app` is the mandatory interface.
+`core` is internal.  
+`app` is the mandatory interface.  
 Project code uses `app`, never `core` directly.
 
 ---
