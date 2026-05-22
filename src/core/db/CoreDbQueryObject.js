@@ -39,11 +39,10 @@ export class CoreDbQueryObject
         {
             this._searchConnector = DbManager.getConnector(this._databaseName, this._connectionUid);
 
-            for (const [key, meta] of this._dbObjects.entries())
+            for (const meta of this._dbObjects.values())
             {
-                const instance = meta.ClassRef.from(this._searchConnector, meta.alias);
-                meta.instance = instance;
-                this._dbObjects.set(key, meta);
+                meta.instance._searchConnector = this._searchConnector;
+                this._searchConnector.linkTo(meta.instance, meta.alias);
             }
         }
 
@@ -78,28 +77,32 @@ export class CoreDbQueryObject
         }
 
         const key = objectName ?? alias ?? ClassRef.name;
+        const instance = new ClassRef(this._connectionUid);
 
         const meta =
         {
             ClassRef,
             alias,
-            instance: null
+            instance
         };
 
         if (this._searchConnector)
         {
-            meta.instance = ClassRef.from(this._searchConnector, alias);
+            instance._searchConnector = this._searchConnector;
+            this._searchConnector.linkTo(instance, alias);
         }
 
         this._dbObjects.set(key, meta);
 
-        Object.defineProperty(this, key, {
+        Object.defineProperty(this, key,
+        {
             get: () => this.getDbObject(key),
             configurable: true
         });
 
         return key;
     }
+
 
     getDbObject(key)
     {
@@ -128,6 +131,7 @@ export class CoreDbQueryObject
         return this._searchConnector.recordCount();
     }
 
+
     async recordCountAll(where = null, params = [])
     {
         const connector = DbManager.getConnector(this._databaseName, this._connectionUid);
@@ -150,14 +154,15 @@ export class CoreDbQueryObject
             return Number(count);
         }
 
-
         return 0;
     }
+
 
     getFieldValue(name, alias = null)
     {
         return this._searchConnector?.getFieldValue(name, alias) ?? null;
     }
+
 
     close()
     {
@@ -171,7 +176,7 @@ export class CoreDbQueryObject
 
         for (const meta of this._dbObjects.values())
         {
-            meta.instance = null;
+            meta.instance._searchConnector = null;
         }
     }
 }
