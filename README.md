@@ -63,7 +63,7 @@ Open:
 
 ### `project` (`./<project>/`)
 - business code
-- business models, queries, server components, frontend components/screens
+- business models, queries, server components, frontend components (optional screen split)
 - uses `app` only
 
 Fundamental rule:
@@ -141,14 +141,16 @@ It applies only when the model has `updatedAt`.
 - frontend root is `./<project>/public/`.
 - `public/core`: frontend engine.
 - `public/app`: frontend interface.
-- `public/components` and `public/screens`: project UI code.
+- `public/components`: recommended project frontend folder.
+- `public/screens`: optional project structure when a screen split is needed.
 - `public/ext`: generated only with `--front --ext` (or `--front --intro`).
 - `public/intro`: generated only with `--front --intro`.
 
 ### Models
 - generated with `--model`.
-- app model classes generated in `./<project>/db/models/`.
+- project model classes generated in `./<project>/db/models/`.
 - core base model classes generated in `./core/db/models/`.
+- never generated in `./app/db/models/`.
 
 ---
 

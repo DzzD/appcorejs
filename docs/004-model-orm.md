@@ -25,6 +25,11 @@ So:
 - changing `app/db/DbObject.js` impacts all models
 - changing `./<project>/db/models/User.js` impacts only `User`
 
+Important:
+
+- `./<project>/db/models/User.js` importing `core/db/models/CoreUser.js` is the expected generated ORM bridge.
+- This does not change the rule that business/services code should use `app` as public interface.
+
 ---
 
 ## 1) DbManager

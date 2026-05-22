@@ -22,6 +22,9 @@ See [001 - app-core CLI](./001-app-core-cli.md).
 Project code uses `app` API.
 Project business services and backend workflow code should not use `core` directly.
 
+Exception: generated ORM project model classes in `./<project>/db/models/` are expected to extend generated `core/db/models/Core*` classes.
+This generated bridge is part of the framework ORM chain.
+
 ## Backend class chain
 
 For generated models, inheritance is layered.

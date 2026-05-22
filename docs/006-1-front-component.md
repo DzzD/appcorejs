@@ -6,7 +6,7 @@ An AppCoreJS component is a bridge between an HTML block and a JavaScript class.
 
 ```html
 <div data-appcore-id="app.js.my-component::demo">
-  <span class="label"></span>
+  <span data-zone="label"></span>
 </div>
 ```
 
@@ -23,7 +23,7 @@ export class MyComponent extends Component
 
   render()
   {
-    this.find(".label").textContent = this.text;
+    this.find('[data-zone="label"]').textContent = this.text;
   }
 }
 ```
@@ -83,7 +83,7 @@ Template attributes act as default values and can be overridden by the HTML inst
 It fills existing zones:
 
 ```js
-this.find(".label").textContent = this.text;
+this.find('[data-zone="label"]').textContent = this.text;
 ```
 
 A missing zone is ignored if it is not required.
@@ -95,3 +95,31 @@ A component should be able to work with:
 - inline HTML;
 - template;
 - JavaScript control.
+
+## 8. Frontend action convention
+
+User-triggered actions should pass through:
+
+```js
+async action(name, args = null)
+```
+
+Minimal pattern:
+
+```js
+async action(name, args = null)
+{
+  switch (name)
+  {
+    case "refresh":
+    {
+      return this.render();
+    }
+
+    default:
+    {
+      return await super.action(name, args);
+    }
+  }
+}
+```

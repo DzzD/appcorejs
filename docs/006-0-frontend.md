@@ -165,6 +165,14 @@ The part before :: identifies the component class.
 
 The part after :: is an optional component instance id.
 
+Common mistakes:
+
+```text
+valid:   components.clock.clock-component::main
+invalid: components.clock.ClockComponent::main
+invalid: components.clock.clock-component:main
+```
+
 The component id maps to a JavaScript file and class.
 
 Example:
@@ -339,6 +347,20 @@ Do not use legacy flat paths like:
 ```text
 public/js
 public/styles
+```
+
+## Frontend action convention
+
+User-triggered actions should pass through:
+
+```js
+async action(name, args = null)
+```
+
+If the action is not handled locally, call:
+
+```js
+return await super.action(name, args);
 ```
 
 ## Next chapters
