@@ -112,7 +112,7 @@ export class CoreDbConnector
         }
         catch (error)
         {
-            console.error('[CoreDbConnector][query][error]',
+            Log.error('[CoreDbConnector][query][error]',
             {
                 message: error.message,
                 code: error.code,

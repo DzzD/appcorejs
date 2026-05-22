@@ -30,12 +30,26 @@ export class CoreLog
 
     static set mode(mode)
     {
-        if (!Object.prototype.hasOwnProperty.call(CoreLog.modes, mode))
+        if (typeof mode === 'number')
         {
-            throw new Error('Invalid log mode: ' + mode);
+            if (!Object.values(CoreLog.modes).includes(mode))
+            {
+                throw new Error('Invalid log mode: ' + mode);
+            }
+
+            CoreLog.#mode = mode;
+
+            return;
         }
 
-        CoreLog.#mode = CoreLog.modes[mode];
+        if (typeof mode === 'string' && Object.prototype.hasOwnProperty.call(CoreLog.modes, mode))
+        {
+            CoreLog.#mode = CoreLog.modes[mode];
+
+            return;
+        }
+
+        throw new Error('Invalid log mode: ' + mode);
     }
 
     static setColor(enabled)

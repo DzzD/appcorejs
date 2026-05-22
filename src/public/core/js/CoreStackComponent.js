@@ -31,8 +31,8 @@ export class CoreStackComponent extends Component
                      CoreStackComponent.TransitionMode.SCALE +
                      CoreStackComponent.TransitionMode.FADE;
 
-    transitionDuration = 1000;
-    transitionMinScale = 0.5;
+    transitionDuration = 500;
+    transitionMinScale = 0.75;
 
     async onLoad()
     {
@@ -130,6 +130,51 @@ export class CoreStackComponent extends Component
         return transform.trim() || "none";
     }
 
+    getComponentIndex(componentId)
+    {
+        let index = 0;
+
+        for (const [id] of this.childs)
+        {
+            if (id == componentId)
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return 0;
+    }
+
+    showStackComponents()
+    {
+        for (const [, component] of this.childs)
+        {
+            component.node.classList.remove("hidden");
+            component.node.classList.remove("visible");
+            component.node.classList.remove("invisible");
+        }
+    }
+
+    applyStackState(activeIndex, enablePointerEvents = true)
+    {
+        let index = 0;
+
+        for (const [, component] of this.childs)
+        {
+            const active = activeIndex == index;
+
+            component.node.style.pointerEvents = enablePointerEvents && active ? "auto" : "none";
+            component.node.style.opacity = this.transitionMode.includes(CoreStackComponent.TransitionMode.FADE) ? (active ? "1" : "0") : "1";
+            component.node.style.transform = this._getComponentTransform(index, activeIndex);
+
+            index++;
+        }
+
+        this.#stackTrack.style.transform = this._getStackTransform(activeIndex);
+    }
+
     set active(componentId)
     {
         componentId = appcore(componentId).id;
@@ -139,6 +184,9 @@ export class CoreStackComponent extends Component
             return;
         }
 
+        clearTimeout(this.transitionTimeoutId);
+
+        const previousComponentId = this.#activeComponentId;
         this.#activeComponentId = componentId;
 
         if (this.transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
@@ -160,35 +208,34 @@ export class CoreStackComponent extends Component
             return;
         }
 
-        let index = 0;
-        let activeIndex = 0;
+        const previousIndex = this.getComponentIndex(previousComponentId);
+        const activeIndex = this.getComponentIndex(componentId);
 
-        for (const [id] of this.childs)
+        this.showStackComponents();
+        this.applyStackState(previousIndex, false);
+
+        requestAnimationFrame(() =>
         {
-            if (this.#activeComponentId == id)
+            requestAnimationFrame(() =>
             {
-                activeIndex = index;
-            }
+                this.applyStackState(activeIndex, true);
 
-            index++;
-        }
-
-        index = 0;
-
-        for (const [, component] of this.childs)
-        {
-            const active = activeIndex == index;
-
-            component.node.classList.remove("hidden");
-            component.node.classList.remove("visible");
-            component.node.style.pointerEvents = active ? "auto" : "none";
-            component.node.style.opacity = this.transitionMode.includes(CoreStackComponent.TransitionMode.FADE) ? (active ? "1" : "0") : "1";
-            component.node.style.transform = this._getComponentTransform(index, activeIndex);
-
-            index++;
-        }
-
-        this.#stackTrack.style.transform = this._getStackTransform(activeIndex);
+                this.transitionTimeoutId = setTimeout(() =>
+                {
+                    for (const [id, component] of this.childs)
+                    {
+                        if (id == this.#activeComponentId)
+                        {
+                            component.show({ duration: 0 });
+                        }
+                        else
+                        {
+                            component.hide({ duration: 0 });
+                        }
+                    }
+                }, this.transitionDuration);
+            });
+        });
     }
 
     get active()

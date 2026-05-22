@@ -70,7 +70,7 @@
 [data-appcore-class~="app.js.query-search-component"] .result-block
 {
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto;
 
     min-width: 0;
     min-height: 0;
@@ -130,12 +130,13 @@
     top: 0;
     z-index: 1;
 
-    color: var(--color-primary);
-    background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+    background: color-mix(in srgb, var(--color-surface) 95%, var(--color-accent));
+    color: var(--color-accent);
 
-    font-family: "Antonio", sans-serif;
+    font-family: var(--font-family-2);
     font-size: 1.15rem;
     font-weight: 400;
+    transition: 0.25s ease;
 }
 
 [data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell[data-sortable="true"]
@@ -150,23 +151,20 @@
 
 [data-appcore-class~="app.js.query-search-component"] .query-search-result-header-cell[data-sortable="true"]:hover
 {
-    background-color: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+    color: color-mix(in srgb, var(--color-text) 50%, var(--color-accent));
+    /* background: color-mix(in srgb, var(--color-accent) 80%, var(--color-surface)); */
 }
 
 [data-appcore-class~="app.js.query-search-component"] .footer
 {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.25rem 0.75rem;
 
-    padding: 0.75rem 0.75rem;
+    padding: 0.75rem;
 
-    color: var(--color-primary);
-    background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+    background: color-mix(in srgb, var(--color-surface) 95%, var(--color-accent));
 
-    font-family: "Antonio", sans-serif;
+    font-family: var(--font-family-2);
     font-size: 0.95rem;
     font-weight: 400;
 
@@ -176,30 +174,24 @@
 [data-appcore-class~="app.js.query-search-component"] .query-search-footer-count
 {
     flex: 1 1 auto;
+    color: var(--color-accent);
 }
 
-[data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions
+[data-appcore-class~="app.js.query-search-component"] .actions
 {
-    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+
+    padding: 0rem 0rem 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent);
 }
 
-[data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions button
+[data-appcore-class~="app.js.query-search-component"] .actions button
 {
-    min-height: 1.8rem;
-    height: auto;
-    padding: 0.2rem 0.6rem;
-
-    color: var(--color-primary);
-    background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
-
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-    border-radius: 0.35rem;
-
-    font-family: "Antonio", sans-serif;
-    font-size: 0.95rem;
-    font-weight: 400;
-
-    cursor: pointer;
+    min-height: 2rem;
+    min-width: 8rem;
 }
 
 [data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions button:hover
@@ -216,11 +208,5 @@
     {
         flex-direction: column;
         align-items: stretch;
-    }
-
-    [data-appcore-class~="app.js.query-search-component"] .query-search-footer-actions
-    {
-        width: 100%;
-        justify-content: flex-start;
     }
 }

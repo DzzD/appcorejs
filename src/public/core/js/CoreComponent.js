@@ -18,6 +18,7 @@ export class CoreComponent
     template;
     childs;
     path;
+    visibilityDuration;
 
     constructor(componentId, parent = null)
     {
@@ -28,6 +29,7 @@ export class CoreComponent
         this.templatePath = null;
         this.childs = new Map();  
         this.path = null;
+        this.visibilityDuration = 250;
     }
 
 
@@ -48,65 +50,107 @@ export class CoreComponent
         
     }    
 
-    _show(node, args)
+    async _show(node, args = {})
     {
         if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
 
-        if (node.hiddingInterval)
+        const duration = args.duration ?? this.visibilityDuration;
+
+        if (this.visibilityTimeout)
         {
-            clearTimeout(node.hiddingInterval);
-            node.hiddingInterval = null;
+            clearTimeout(this.visibilityTimeout);
+            this.visibilityTimeout = null;
         }
 
-        node.classList.add('invisible');
-        node.classList.remove('visible');
-        node.classList.remove('hidden');
+        node.style.pointerEvents = args.pointerEvents ?? "auto";
+
+            console.log("duration",duration);
+        if (!duration)
+        {
+            node.classList.remove("hidden");
+            node.classList.remove("invisible");
+            node.classList.add("visible");
+
+            return Promise.resolve();
+        }
+
+        node.classList.remove("hidden");
+        node.classList.remove("visible");
+        node.classList.add("invisible");
+
+        node.style.transition = `opacity ${duration}ms ease`;
 
         return new Promise((resolve) =>
         {
-            node.showingInterval = setTimeout(() =>
+            requestAnimationFrame(() =>
             {
-                node.showingInterval = null;
-                node.classList.add('visible');
-                node.classList.remove('invisible');
-                resolve();
-            }, 50);
+                node.classList.remove("invisible");
+                node.classList.add("visible");
+
+                this.visibilityTimeout = setTimeout(() =>
+                {
+                    this.visibilityTimeout = null;
+                    node.style.transition = "";
+                    resolve();
+                }, duration);
+            });
         });
     }
 
-    show(args)
+    async show(args = {})
     {
         return this._show(this.node, args);
     }
 
-    _hide(node, args)
+    async _hide(node, args = {})
     {
         if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
 
-        if (node.showingInterval)
+        const duration = args.duration ?? this.visibilityDuration;
+
+        if (this.visibilityTimeout)
         {
-            clearTimeout(node.showingInterval);
-            node.showingInterval = null;
+            clearTimeout(this.visibilityTimeout);
+            this.visibilityTimeout = null;
         }
 
-        node.classList.add('invisible');
-        node.classList.remove('visible');
+        node.style.pointerEvents = "none";
+
+            console.log("duration",duration);
+        if (!duration)
+        {
+            node.classList.add("hidden");
+            node.classList.add("invisible");
+            node.classList.remove("visible");
+
+            return Promise.resolve();
+        }
+
+        node.style.transition = `opacity ${duration}ms ease`;
 
         return new Promise((resolve) =>
         {
-            node.hiddingInterval = setTimeout(() =>
+            requestAnimationFrame(() =>
             {
-                node.hiddingInterval = null;
-                node.classList.add('hidden');
-                resolve();
-            }, 500);
-        });
-    }
+                node.classList.add("invisible");
+                node.classList.remove("visible");
 
-    hide(args)
+                this.visibilityTimeout = setTimeout(() =>
+                {
+                    this.visibilityTimeout = null;
+                    node.classList.add("hidden");
+                    node.style.transition = "";
+                    resolve();
+                }, duration);
+            });
+        });
+    } 
+
+    async hide(args = {})
     {
         return this._hide(this.node, args);
     }
+
     async close(args)
     {
     }

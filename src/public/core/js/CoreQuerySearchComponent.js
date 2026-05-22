@@ -347,20 +347,25 @@ export class CoreQuerySearchComponent extends Component
 
   async renderFooter()
   {
-      const count = this.searchRecordCount;
+    const count = this.searchRecordCount;
 
-      await Component.setInnerHtml(this.find(".footer"), `
-          <div class="query-search-footer-count">
-              ${count > 1 ? `${count} results found` : `${count} result found`}
-          </div>
+    await Component.setInnerHtml(this.find(".footer"), `
+        <div class="query-search-footer-count">
+            ${count > 1 ? `${count} results found` : `${count} result found`}
+        </div>
+    `);
 
-          <div class="query-search-footer-actions">
-              ${this.actions.map((action) => this.renderAction(action)).join("")}
-          </div>
+    await this.renderActions();
+  }
+
+  async renderActions()
+  {
+      await Component.setInnerHtml(this.find(".actions"), `
+          ${this.actions.map((action) => this.renderAction(action)).join("")}
       `);
 
       this.bindActions();
-  }
+  }  
 
 
   async loadDefinition()
@@ -390,12 +395,11 @@ export class CoreQuerySearchComponent extends Component
 
   bindActions()
   {
-      for (const button of this.findAll(".footer [data-action]"))
+      for (const button of this.findAll(".actions [data-action]"))
       {
           button.addEventListener("click", () => this.executeAction(button.dataset.action));
       }
   }
-
 
   executeAction(action)
   {
