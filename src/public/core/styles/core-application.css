@@ -62,15 +62,16 @@ header h1
 
 header h1 .logo
 {
-  max-height: 3rem;
+  max-height: 4rem;
   opacity: 0.75;
 }
 
 header h1 .title
 {
   font-family: var(--font-family-2);
-  color: color-mix(in srgb, var(--color-text) 40%, var(--color-border));
-  font-size: 1.15rem;
+  color: var(--color-secondary);
+  font-size: 1.5rem;
+  line-height: 1.5;
   font-weight: 400;
   letter-spacing: -0.02em;
   justify-self: start;
@@ -92,17 +93,20 @@ main
 footer
 {
     padding: 0 1rem;
-    color: color-mix(in srgb, var(--color-text) 55%, transparent);
     box-shadow: none; 
 }
 
 footer p 
 {
+    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
     padding: 0 0;
     display: flex;
     justify-content: right;
     align-items: center;
     letter-spacing: 0.03em;
+    font-family: var(--font-family-2);
+    font-size: 0.9rem;
+    line-height: 1;
 }
 
 

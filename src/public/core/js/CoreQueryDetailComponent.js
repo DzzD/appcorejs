@@ -16,6 +16,11 @@ export class CoreQueryDetailComponent extends Component
     title = "Détail";
     #key = null;
 
+    keyFields =
+    [
+        "id"
+    ];
+
     groups = [];
     fields = [];
     actions = [];
@@ -32,14 +37,16 @@ export class CoreQueryDetailComponent extends Component
 
         if (this.key)
         {
-            await this.action("load");
+            await this.action("search");
         }
     }
+
 
     get key()
     {
         return this.#key;
     }
+
 
     set key(value)
     {
@@ -52,12 +59,13 @@ export class CoreQueryDetailComponent extends Component
 
         if (this.#key)
         {
-            this.action("load");
+            this.action("search");
             return;
         }
 
         this.clear();
     }
+
 
     clear()
     {
@@ -65,12 +73,16 @@ export class CoreQueryDetailComponent extends Component
         this.setValues({});
     }
 
+
     async loadDefinition()
     {
         const response = await fetch(this.route);
         const result = await response.json();
 
         this.title = result.title ?? this.title;
+        this.keyFields = Array.isArray(result.key)
+            ? result.key
+            : [result.key ?? this.keyFields[0]];
         this.groups = result.groups ?? [];
         this.fields = result.fields ?? [];
         this.actions = result.actions ?? [];
@@ -103,9 +115,10 @@ export class CoreQueryDetailComponent extends Component
         `;
     }
 
+
     getGroupFields(group)
     {
-        return this.fields.filter((field) => field.group === group.code);
+        return this.fields.filter((field) => field.group === group.code && field.visible !== false);
     }
 
 
@@ -156,83 +169,178 @@ export class CoreQueryDetailComponent extends Component
 
         if (!Array.isArray(this.actions) || this.actions.length === 0)
         {
-            await Component.setInnerHtml(actionsZone, "");
             return;
         }
 
-        await Component.setInnerHtml(actionsZone, `
-            <div data-appcore-id="app.js.action-bar-component::query-detail-actions-bar"
-                 data-template="app.tpl.action-bar-component">
-            </div>
-        `);
-
-        const actionBar = this.getChild("query-detail-actions-bar");
+        let actionBar = this.getChild(this.find('[data-zone="actions"] [data-appcore-class~="app.js.action-bar-component"]')?.getAttribute("data-appcore-id"));
 
         if (!actionBar)
         {
-            return;
+            await Component.setInnerHtml(actionsZone, `
+                <div data-appcore-id="app.js.action-bar-component::query-detail-actions-bar"
+                     data-template="app.tpl.action-bar-component">
+                </div>
+            `);
+
+            actionBar = this.getChild("query-detail-actions-bar");
+        }
+
+        const actionCodes = new Set();
+
+        for (const button of actionBar.findAll("button, input[type=\"button\"], input[type=\"submit\"]"))
+        {
+            const actionCode = actionBar.getActionName(button);
+
+            if (!actionCode)
+            {
+                continue;
+            }
+
+            actionCodes.add(actionCode);
         }
 
         for (const action of this.actions)
         {
+            if (actionCodes.has(action.code))
+            {
+                continue;
+            }
+
             actionBar.add(action);
         }
     }
+
 
     async action(name, args = null)
     {
         switch (name)
         {
-            case "load":
+            case "search":
             {
-                return await this.executeAction("load");
+                return this.executeAction("search", args ??
+                {
+                    criterias: this.getSearchCriterias(),
+                    options:
+                    {
+                        limit: 1
+                    }
+                });
+            }
+
+            case "save":
+            {
+                return this.executeAction("save", args ??
+                {
+                    records:
+                    [
+                        {
+                            current: this.cloneRecord(this.record),
+                            new: this.getValues()
+                        }
+                    ]
+                });
+            }
+
+            case "delete":
+            {
+                return this.executeAction("delete", args ??
+                {
+                    records:
+                    [
+                        {
+                            current: this.cloneRecord(this.record) ?? this.getKeyRecord()
+                        }
+                    ]
+                });
             }
 
             default:
             {
                 const actionCodes = this.actions.map((action) => action.code);
 
-                return actionCodes.includes(name)
-                    ? await this.executeAction(name)
-                    : await super.action(name, args);
+                if (actionCodes.includes(name))
+                {
+                    return this.executeAction(name, args ?? {});
+                }
+
+                return super.action(name, args);
             }
         }
     }
 
 
-    async executeAction(action)
+    async executeAction(action, args = null)
     {
-        const response = await fetch(this.route, {
+        const response = await fetch(this.route,
+        {
             method: "POST",
             headers:
             {
-                "Content-Type": "application/json",
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({
+            body: JSON.stringify(
+            {
                 action,
-                key: this.key,
-                values: this.getValues(),
-            }),
+                args: args ?? {}
+            })
         });
 
         const result = await response.json();
 
         await this.applyResult(result);
+
+        return result;
+    }
+
+
+    getSearchCriterias()
+    {
+        return this.getKeyRecord();
+    }
+
+
+    getKeyRecord()
+    {
+        if (!Array.isArray(this.keyFields) || this.keyFields.length === 0)
+        {
+            return {};
+        }
+
+        const keyRecord = {};
+
+        if (typeof this.key === "object" && this.key !== null)
+        {
+            for (const keyField of this.keyFields)
+            {
+                keyRecord[keyField] = this.key[keyField];
+            }
+
+            return keyRecord;
+        }
+
+        keyRecord[this.keyFields[0]] = this.key;
+
+        return keyRecord;
     }
 
 
     getValues()
     {
-        const values = {};
+        const values =
+        {
+            ...(this.record ?? {})
+        };
 
         for (const field of this.fields)
         {
             const input = this.find(`[name="${field.code}"]`);
 
-            if (input)
+            if (!input)
             {
-                values[field.code] = input.value;
+                continue;
             }
+
+            values[field.code] = input.value;
         }
 
         return values;
@@ -241,12 +349,38 @@ export class CoreQueryDetailComponent extends Component
 
     async applyResult(result)
     {
-        this.record = result.record ?? this.record;
-
-        if (this.record)
+        if (result.action === "delete")
         {
-            this.setValues(this.record);
+            if (!result.error)
+            {
+                this.record = null;
+                this.setValues({});
+            }
+
+            return;
         }
+
+        const record = result.records?.[0] ?? result.record ?? null;
+
+        if (record)
+        {
+            this.record = this.cloneRecord(record);
+            this.setValues(this.record);
+            return;
+        }
+
+        this.setValues(this.record ?? {});
+    }
+
+
+    cloneRecord(record = null)
+    {
+        if (!record || typeof record !== "object")
+        {
+            return null;
+        }
+
+        return JSON.parse(JSON.stringify(record));
     }
 
 

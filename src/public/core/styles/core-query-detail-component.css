@@ -167,7 +167,7 @@
 
 [data-appcore-class~="app.js.query-detail-component"] > [data-zone="actions"]
 {
-    padding: 0 0 1rem;
+    /* padding: 0 0 1rem; */
 }
 
 @media (max-width: 768px)

@@ -119,23 +119,36 @@ export class CoreDbObject
   /**
    * Remplit l'objet à partir d'une ligne.
    * @param {Object} row
+   * @param {boolean} full
    * @returns {boolean}
    */
-  fromRow(row)
+  fromRow(row, full = true)
   {
-    if (!row) return false;
+    if (!row)
+    {
+      return false;
+    }
 
     for (const fieldMeta of Object.values(this._fields))
     {
       const columnName   = fieldMeta.columnName;
       const attributeName = fieldMeta.attributeName; // ex: "_name"
+
+      if (!full && !Object.prototype.hasOwnProperty.call(row, columnName))
+      {
+        continue;
+      }
+
       const value        = row[columnName];
 
       // valeur courante modifiable
       this[attributeName] = value;      // this._name
 
       // snapshot BDD (original)
-      this['_' + attributeName] = value; // this.__name
+      if (full)
+      {
+        this['_' + attributeName] = value; // this.__name
+      }
     }
 
     return true;
