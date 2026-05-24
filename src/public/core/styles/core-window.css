@@ -42,7 +42,7 @@
     align-items: center;
     /* justify-content: space-between; */
     gap: 1rem;
-    padding: 0.75rem 1rem;
+    padding: var(--space-075) var(--space-100);
     color: var(--color-primary);
     /* background: linear-gradient(178deg, #0175d6, #9ab7e9); */
     border-bottom: 1px solid color-mix(in srgb, var(--color-surface) 20%, transparent);
@@ -109,7 +109,7 @@
 [data-appcore-class~="app.js.window"] > .window-header .window-title :is(h1, h2, h3)
 {
     margin: 0;
-    padding: 0 1rem;
+    padding: 0 var(--space-100);
     color: var(--color-text-on-primary);
     /* font-size: 1.25rem; */
     /* font-weight: 400; */
@@ -123,7 +123,7 @@
 [data-appcore-class~="app.js.window"] > .window-body
 {
     flex: 1 1 auto;
-    padding: 1rem;
+    padding: var(--space-100);
     overflow: auto;
     /* background: color-mix(in srgb, var(--color-background) 90%, transparent); */
     background-color: var(--color-surface);
@@ -134,7 +134,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    padding: 0 1rem 1rem 1rem;
+    padding: 0 var(--space-100) var(--space-100) var(--space-100);
     background-color: var(--color-surface);
 }
 
@@ -142,7 +142,7 @@
 {
     min-width: 6rem;
     height: 2.5rem;
-    padding: 0 1rem;
+    padding: 0 var(--space-100);
     border: 0;
     border-radius: 0.35rem;
     font-size: 1.1rem;

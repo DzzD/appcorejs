@@ -51,7 +51,7 @@ header h1
 {
   min-height: 4rem;
   margin: 0;
-  padding: 0 1.5rem;
+  padding: 0 var(--space-150);
   column-gap: 1.5rem;
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -92,7 +92,7 @@ main
 
 footer
 {
-    padding: 0 1rem;
+    padding: 0 var(--space-100);
     box-shadow: none; 
 }
 
@@ -125,10 +125,4 @@ footer p
         max-height: 64px;
     }
 
-}
-
-/* mobile */
-@media (max-width: 768px)
-{
-    
 }

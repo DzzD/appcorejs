@@ -59,7 +59,8 @@ export class CoreMenuComponent extends Component
 
         return `
             <button type="button" class="menu-mobile-toggle" data-menu-mobile-toggle aria-expanded="${expanded}" aria-label="Ouvrir le menu">
-                <span class="menu-mobile-toggle-icon" aria-hidden="true"></span>
+                <img class="menu-mobile-toggle-icon menu-mobile-toggle-icon--menu" src="assets/icons/feather/menu.svg" alt="" aria-hidden="true" />
+                <img class="menu-mobile-toggle-icon menu-mobile-toggle-icon--close" src="assets/icons/feather/x.svg" alt="" aria-hidden="true" />
             </button>
             ${itemsHtml}
         `;

@@ -16,7 +16,7 @@
     width: 100%;
     min-width: 0;
 
-    padding-top: 0.75rem;
+    padding-top: var(--space-075);
     /* border-top: 1px solid color-mix(in srgb, var(--color-text) 8%, transparent); */
 }
 

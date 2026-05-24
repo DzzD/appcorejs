@@ -17,7 +17,7 @@
     max-width: 100%;
 
     height: 100%;
-    min-height: 320px;
+    /* min-height: 320px; */
     max-height: 100%;
 
     overflow: visible;
@@ -64,7 +64,7 @@
 {
     min-width: 0;
     margin: 0;
-    padding: 1rem;
+    padding: var(--space-100);
 
     background-color: transparent;
 
@@ -74,7 +74,7 @@
 
 [data-appcore-class~="app.js.query-detail-component"] > [data-zone="groups"] .query-detail-group legend
 {
-    padding: 0 0.4rem;
+    padding: 0 var(--space-040);
 
     color: var(--color-primary);
 
@@ -127,7 +127,7 @@
 {
     min-height: 2.5rem;
     min-width: 0;
-    padding: 0.4rem 0.65rem;
+    padding: var(--space-040) var(--space-065);
 
     color: var(--color-text);
     background-color: var(--color-surface);
@@ -158,7 +158,7 @@
     align-items: center;
     min-height: 2.5rem;
 
-    padding: 0.75rem 1rem;
+    padding: var(--space-075) var(--space-100);
 
     background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
 

@@ -31,7 +31,7 @@ export class CoreStackComponent extends Component
                      CoreStackComponent.TransitionMode.SCALE +
                      CoreStackComponent.TransitionMode.FADE;
 
-    transitionDuration = 500;
+    transitionDuration = 250;
     transitionMinScale = 0.75;
 
     async onLoad()

@@ -64,7 +64,6 @@ export class CoreComponent
 
         node.style.pointerEvents = args.pointerEvents ?? "auto";
 
-            console.log("duration",duration);
         if (!duration)
         {
             node.classList.remove("hidden");
@@ -116,7 +115,6 @@ export class CoreComponent
 
         node.style.pointerEvents = "none";
 
-            console.log("duration",duration);
         if (!duration)
         {
             node.classList.add("hidden");

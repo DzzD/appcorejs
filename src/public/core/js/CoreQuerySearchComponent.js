@@ -193,12 +193,29 @@ export class CoreQuerySearchComponent extends Component
             return;
         }
 
-        if (actionName === "search" || actionName === "order")
+        switch (actionName)
         {
-            this.resultSize = this.resultSizeMin;
-            this.records = null;
-            this.originalRecords = [];
-            this.find('[data-zone="result"]').scrollTop = 0;
+            case "search":
+            case "order":
+            {
+                this.resultSize = this.resultSizeMin;
+                this.records = null;
+                this.originalRecords = [];
+                this.find('[data-zone="result"]').scrollTop = 0;
+                break;
+            }
+
+            case "refresh":
+            {
+                this.records = null;
+                this.originalRecords = [];
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
         }
 
         if (actionName === "loadMoreResult")
@@ -530,6 +547,11 @@ export class CoreQuerySearchComponent extends Component
             case "loadMoreResult":
             {
                 return this.runSearch("loadMoreResult");
+            }
+
+            case "refresh":
+            {
+                return this.runSearch("refresh");
             }
 
             case "rowClick":
