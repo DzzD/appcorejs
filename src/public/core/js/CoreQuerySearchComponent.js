@@ -12,7 +12,7 @@ export class CoreQuerySearchComponent extends Component
 {
     static appcoreClass = "app.js.query-search-component";
 
-    route = null;
+    serverUri = null;
     title = "Recherche";
 
     criterias = [];
@@ -227,7 +227,7 @@ export class CoreQuerySearchComponent extends Component
 
         try
         {
-            const response = await fetch(this.route,
+            const response = await fetch(this.serverUri,
             {
                 method: "POST",
                 headers:
@@ -429,7 +429,7 @@ export class CoreQuerySearchComponent extends Component
 
     async runServerAction(action, args = null)
     {
-        const response = await fetch(this.route,
+        const response = await fetch(this.serverUri,
         {
             method: "POST",
             headers:
@@ -516,7 +516,7 @@ export class CoreQuerySearchComponent extends Component
 
     async loadDefinition()
     {
-        const response = await fetch(this.route);
+        const response = await fetch(this.serverUri);
         const result = await response.json();
 
         this.title = result.title ?? this.title;

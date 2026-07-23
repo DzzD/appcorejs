@@ -32,7 +32,7 @@ export class CoreStackComponent extends Component
                      CoreStackComponent.TransitionMode.FADE;
 
     transitionDuration = 250;
-    transitionMinScale = 0.75;
+    transitionMinScale = 0.9;
 
     async onLoad()
     {
@@ -53,9 +53,9 @@ export class CoreStackComponent extends Component
         }
     }
 
-    onPath(path = "/")
+    onPath(uri = "/")
     {
-        const parts = path.split("/").filter(part => part);
+        const parts = uri.split("/").filter(part => part);
         const componentId = parts.shift();
 
         if (componentId)
@@ -149,13 +149,47 @@ export class CoreStackComponent extends Component
         return 0;
     }
 
-    showStackComponents()
+    showStackComponents(minIndex = 0, maxIndex = Infinity)
     {
+        let index = 0;
+
         for (const [, component] of this.childs)
         {
-            component.node.classList.remove("hidden");
-            component.node.classList.remove("visible");
-            component.node.classList.remove("invisible");
+            const visible = index >= minIndex && index <= maxIndex;
+
+            if (visible)
+            {
+                component.node.classList.remove("hidden");
+                component.node.classList.remove("visible");
+                component.node.classList.remove("invisible");
+            }
+            else
+            {
+                component.node.classList.add("hidden");
+                component.node.classList.add("invisible");
+                component.node.classList.remove("visible");
+            }
+
+            index++;
+        }
+    }
+
+    applyFinalStackVisibility(activeIndex)
+    {
+        let index = 0;
+
+        for (const [, component] of this.childs)
+        {
+            if (index == activeIndex)
+            {
+                component.show({ duration: 0 });
+            }
+            else
+            {
+                component.hide({ duration: 0 });
+            }
+
+            index++;
         }
     }
 
@@ -191,29 +225,22 @@ export class CoreStackComponent extends Component
         const previousComponentId = this.#activeComponentId;
         this.#activeComponentId = componentId;
 
+        const activeIndex = this.getComponentIndex(componentId);
+
         if (this.transitionMode == CoreStackComponent.TransitionMode.DEFAULT)
         {
             this.#stackTrack.style.transform = "none";
-
-            for (const [id, component] of this.childs)
-            {
-                if (id == componentId)
-                {
-                    component.show();
-                }
-                else
-                {
-                    component.hide();
-                }
-            }
+            this.applyStackState(activeIndex, true);
+            this.applyFinalStackVisibility(activeIndex);
 
             return;
         }
 
         const previousIndex = this.getComponentIndex(previousComponentId);
-        const activeIndex = this.getComponentIndex(componentId);
+        const minIndex = Math.min(previousIndex, activeIndex);
+        const maxIndex = Math.max(previousIndex, activeIndex);
 
-        this.showStackComponents();
+        this.showStackComponents(minIndex, maxIndex);
         this.applyStackState(previousIndex, false);
 
         requestAnimationFrame(() =>
@@ -224,17 +251,7 @@ export class CoreStackComponent extends Component
 
                 this.transitionTimeoutId = setTimeout(() =>
                 {
-                    for (const [id, component] of this.childs)
-                    {
-                        if (id == this.#activeComponentId)
-                        {
-                            component.show({ duration: 0 });
-                        }
-                        else
-                        {
-                            component.hide({ duration: 0 });
-                        }
-                    }
+                    this.applyFinalStackVisibility(activeIndex);
                 }, this.transitionDuration);
             });
         });

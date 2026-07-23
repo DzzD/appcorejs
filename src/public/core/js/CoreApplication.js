@@ -33,7 +33,7 @@ export class CoreApplication extends Component
   constructor(componentId, parent = null)
   {
       super(componentId, parent);
-      this.path = "/";
+      this.uri = "/";
   }
 
   async onLoad()
@@ -41,7 +41,7 @@ export class CoreApplication extends Component
       await super.onLoad();
       await Loader.loadStyle("app/styles/application.css");
 
-      const application = this.find(".application");
+      const application = this.find('[data-zone="application"]');
       const loader = this.find(".application-loader");
 
       application?.style.removeProperty("display");
@@ -69,9 +69,9 @@ export class CoreApplication extends Component
   
   onUrlChange()
   {
-    const path = location.hash.slice(1) || '/';
-    Log.info("path" + path);
-    this.onPath(path);
+    const uri = location.hash.slice(1) || '/';
+    Log.info("uri" + uri);
+    this.onPath(uri);
   }  
 
   /*

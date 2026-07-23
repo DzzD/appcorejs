@@ -5,8 +5,7 @@
     inset: 0;
 }
 
-[data-appcore-class~="app.js.screen"] > [data-zone="content"],
-[data-appcore-class~="app.js.screen"] > .screen-content
+[data-appcore-class~="app.js.screen"] > [data-zone="content"]
 {
     position: relative;
     display: grid;
@@ -20,8 +19,7 @@
 
 
 
-[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="body"],
-[data-appcore-class~="app.js.screen"] > .screen-content > .screen-body
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="body"]
 {
     display: grid;
     align-content: start;
@@ -30,14 +28,12 @@
     min-height: 0;
 }
 
-[data-appcore-class~="app.js.screen"] > [data-zone="content"]:has(> [data-zone="footer"]) > [data-zone="body"],
-[data-appcore-class~="app.js.screen"] > .screen-content:has(> .screen-footer) > .screen-body
+[data-appcore-class~="app.js.screen"] > [data-zone="content"]:has(> [data-zone="footer"]) > [data-zone="body"]
 {
     padding-bottom: var(--space-400);
 }
 
-[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"],
-[data-appcore-class~="app.js.screen"] > .screen-content > .screen-footer
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"]
 {
     position: absolute;
     left: 1rem;
@@ -53,8 +49,7 @@
     /* border-top: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent); */
 }
 
-[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"] > *,
-[data-appcore-class~="app.js.screen"] > .screen-content > .screen-footer > *
+[data-appcore-class~="app.js.screen"] > [data-zone="content"] > [data-zone="footer"] > *
 {
     pointer-events: auto;
 }

@@ -12,7 +12,7 @@ export class CoreQueryDetailComponent extends Component
 {
     static appcoreClass = "app.js.query-detail-component";
 
-    route = null;
+    serverUri = null;
     title = "Détail";
     #key = null;
 
@@ -76,7 +76,7 @@ export class CoreQueryDetailComponent extends Component
 
     async loadDefinition()
     {
-        const response = await fetch(this.route);
+        const response = await fetch(this.serverUri);
         const result = await response.json();
 
         this.title = result.title ?? this.title;
@@ -271,7 +271,7 @@ export class CoreQueryDetailComponent extends Component
 
     async executeAction(action, args = null)
     {
-        const response = await fetch(this.route,
+        const response = await fetch(this.serverUri,
         {
             method: "POST",
             headers:

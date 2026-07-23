@@ -84,7 +84,7 @@
 [data-appcore-class~="app.js.query-search-component"] > [data-zone="result-block"] > [data-zone="result"]
 {
     min-width: 0;
-    min-height: 0;
+    /* min-height: 4rem; */
 
     overflow: auto;
 }
@@ -196,7 +196,8 @@
     /* padding: 0 0 1rem; */
 }
 
-@media (max-width: 768px)
+@media (max-width: 768px) and (orientation: portrait),
+       (max-height: 768px) and (orientation: portrait)
 {
     [data-appcore-class~="app.js.query-search-component"] > [data-zone="criterias"]
     {

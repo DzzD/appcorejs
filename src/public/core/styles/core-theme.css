@@ -164,7 +164,28 @@
         --appcore-cut: var(--space-050);
     }
 
-    .mobile-hide
+    .hide-mobile
+    {
+        display: none !important;
+    }
+}
+
+
+/* mobile */
+@media (max-width: 768px)
+{
+    .hide-mobile-portrait
+    {
+        display: none !important;
+    }
+}
+
+
+
+/* mobile */
+@media (max-height: 600px)
+{
+    .hide-mobile-landscape
     {
         display: none !important;
     }

@@ -34,7 +34,7 @@ export class CoreQueryComponent extends ServerComponent
     };
 
     title = null;
-    route = null;
+    serverUri = null;
     query = null;
 
     key =
@@ -65,7 +65,7 @@ export class CoreQueryComponent extends ServerComponent
     }
 
 
-    startHttp(route = this.route)
+    startHttp(route = this.serverUri)
     {
         this.server.application.get(route, async (request, response) =>
         {

@@ -17,7 +17,7 @@ export class CoreComponent
     id;
     template;
     childs;
-    path;
+    uri;
     visibilityDuration;
 
     constructor(componentId, parent = null)
@@ -28,7 +28,7 @@ export class CoreComponent
         this.template = null;
         this.templatePath = null;
         this.childs = new Map();  
-        this.path = null;
+        this.uri = null;
         this.visibilityDuration = 250;
     }
 
@@ -204,7 +204,7 @@ export class CoreComponent
 
         for (const child of this.childs.values())
         {
-            if (child.path === segment || child.path === "*")
+            if (child.uri === segment || child.uri === "*")
             {
                 return child;
             }
@@ -223,11 +223,11 @@ export class CoreComponent
         Log.warn(`Path segment "${segment}" not found from component "${this.id}".`);
     }    
 
-    onPath(path = "/")
+    onPath(uri = "/")
     {
-        Log.info("path" + path);
+        Log.info("uri" + uri);
 
-        const parts = path.split("/").filter(Boolean);
+        const parts = uri.split("/").filter(Boolean);
         const segment = parts.shift();
 
         if (!segment)
@@ -242,9 +242,9 @@ export class CoreComponent
             return this.onPathNotFound(segment, parts);
         }
 
-        if (child.path === "*")
+        if (child.uri === "*")
         {
-            return child.onPath(path);
+            return child.onPath(uri);
         }
 
         return child.onPath("/" + parts.join("/"));
