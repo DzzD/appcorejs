@@ -19,13 +19,13 @@ export class CoreServer
     devModeEnabled;
     appName;
 
-    constructor()
+    constructor(options = {})
     {
         this.appName = "Your Application Name";
         this.devModeEnabled = false;
         this.#serverComponents = [];
         this.#application = express();
-        this.#application.use(express.json());
+        this.#application.use(express.json(options.json ?? {}));
         this.#httpServer = null;
     }
 
