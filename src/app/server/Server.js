@@ -11,8 +11,8 @@ import { CoreServer } from '../../core/server/CoreServer.js';
 
 export class Server extends CoreServer
 {
-    constructor()
+    constructor(options = {})
     {
-        super();
+        super(options);
     }
 }
