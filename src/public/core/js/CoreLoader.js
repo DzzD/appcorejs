@@ -13,14 +13,41 @@ export class CoreLoader
     static loadedScripts = new Set();
     static loadedStyles = new Set();
     static loadedTemplates = new Map();
+    static version = "1.0";
+
+    static setVersion(version)
+    {
+        if (version === undefined || version === null)
+        {
+            this.version = "1.0";
+            return;
+        }
+
+        const normalizedVersion = String(version).trim();
+        this.version = normalizedVersion || "1.0";
+    }
+
+    static _withVersion(uri)
+    {
+        const url = new URL(uri, document.baseURI);
+
+        if (url.searchParams.has("v"))
+        {
+            return url;
+        }
+
+        url.searchParams.set("v", this.version || "1.0");
+        return url;
+    }
 
     static async loadFile(uri, type = "text")
     {
-        const response = await fetch(uri);
+        const fileUrl = this._withVersion(uri);
+        const response = await fetch(fileUrl.href);
 
         if (!response.ok)
         {
-            throw new Error(`Unable to load file: ${uri}`);
+            throw new Error(`Unable to load file: ${fileUrl.href}`);
         }
 
         switch (type)
@@ -47,7 +74,7 @@ export class CoreLoader
 
     static async loadClass(filePath, className)
     {
-        const moduleUrl = new URL(`${filePath}/${className}.js`, document.baseURI);
+        const moduleUrl = this._withVersion(`${filePath}/${className}.js`);
         const href = moduleUrl.href;
 
         const loadModule = () =>
@@ -79,7 +106,7 @@ export class CoreLoader
 
     static async loadStyle(filePath)
     {
-        const styleUrl = new URL(filePath, document.baseURI);
+        const styleUrl = this._withVersion(filePath);
         const href = styleUrl.href;
 
         if (this.loadedStyles.has(href))
@@ -119,7 +146,7 @@ export class CoreLoader
 
     static async loadScript(filePath)
     {
-        const scriptUrl = new URL(filePath, document.baseURI);
+        const scriptUrl = this._withVersion(filePath);
         const src = scriptUrl.href;
 
         if (this.loadedScripts.has(src))
@@ -161,7 +188,7 @@ export class CoreLoader
 
     static async loadTemplate(filePath)
     {
-        const templateUrl = new URL(filePath, document.baseURI);
+        const templateUrl = this._withVersion(filePath);
         const href = templateUrl.href;
 
         if (this.loadedTemplates.has(href))

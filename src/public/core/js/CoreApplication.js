@@ -29,6 +29,7 @@ Log.mode = "debug";
 export class CoreApplication extends Component
 {
   static appcoreClass = "app.js.application";
+    static version = "1.0";
 
   constructor(componentId, parent = null)
   {
@@ -80,6 +81,7 @@ export class CoreApplication extends Component
   static async boot()
   {
     //   const app = new this("app.js.application");
+            Loader.setVersion(this.version);
       window.app = new this("app.js.application");
       await app.load();
   }
