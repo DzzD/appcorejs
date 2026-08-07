@@ -13,6 +13,11 @@ export class CoreLoader
     static loadedScripts = new Set();
     static loadedStyles = new Set();
     static loadedTemplates = new Map();
+    static loadingScripts = new Map();
+    static loadingStyles = new Map();
+    static loadingTemplates = new Map();
+    static loadedClasses = new Map();
+    static loadingClasses = new Map();
     static version = "1.0";
 
     static setVersion(version)
@@ -76,32 +81,51 @@ export class CoreLoader
     {
         const moduleUrl = this._withVersion(`${filePath}/${className}.js`);
         const href = moduleUrl.href;
+        const classCacheKey = `${href}::${className}`;
 
-        const loadModule = () =>
+        if (this.loadedClasses.has(classCacheKey))
         {
-            return new Promise((resolve, reject) =>
-            {
-                import(href)
-                    .then(resolve)
-                    .catch((error) =>
-                    {
-                        Log.error(`Class file not found or invalid: ${href}`);
-                        reject(error);
-                    });
-            });
-        };
-
-        if (this.loadedScripts.has(href))
-        {
-            const module = await loadModule();
-            return module.default || module[className] || null;
+            return this.loadedClasses.get(classCacheKey);
         }
 
-        Log.debug(`Loading class file : ${href}`);
+        if (this.loadingClasses.has(classCacheKey))
+        {
+            return await this.loadingClasses.get(classCacheKey);
+        }
 
-        const module = await loadModule();
-        this.loadedScripts.add(href);
-        return module.default || module[className] || null;
+        const loadPromise = (async () =>
+        {
+            if (!this.loadedScripts.has(href))
+            {
+                Log.debug(`Loading class file : ${href}`);
+            }
+
+            try
+            {
+                const module = await import(href);
+                this.loadedScripts.add(href);
+
+                const resolvedClass = module.default || module[className] || null;
+                this.loadedClasses.set(classCacheKey, resolvedClass);
+                return resolvedClass;
+            }
+            catch (error)
+            {
+                Log.error(`Class file not found or invalid: ${href}`);
+                throw error;
+            }
+        })();
+
+        this.loadingClasses.set(classCacheKey, loadPromise);
+
+        try
+        {
+            return await loadPromise;
+        }
+        finally
+        {
+            this.loadingClasses.delete(classCacheKey);
+        }
     }
 
     static async loadStyle(filePath)
@@ -114,6 +138,11 @@ export class CoreLoader
             return true;
         }
 
+        if (this.loadingStyles.has(href))
+        {
+            return await this.loadingStyles.get(href);
+        }
+
         const existingLink = document.querySelector(`link[rel="stylesheet"][href="${href}"]`);
 
         if (existingLink)
@@ -122,10 +151,10 @@ export class CoreLoader
             return existingLink;
         }
 
-        Log.debug(`Loading style file : ${href}`);
-
-        const link = await new Promise((resolve, reject) =>
+        const loadPromise = new Promise((resolve, reject) =>
         {
+            Log.debug(`Loading style file : ${href}`);
+
             const link = document.createElement("link");
             link.rel = "stylesheet";
             link.href = href;
@@ -139,9 +168,18 @@ export class CoreLoader
             document.head.appendChild(link);
         });
 
-        this.loadedStyles.add(href);
+        this.loadingStyles.set(href, loadPromise);
 
-        return link;
+        try
+        {
+            const link = await loadPromise;
+            this.loadedStyles.add(href);
+            return link;
+        }
+        finally
+        {
+            this.loadingStyles.delete(href);
+        }
     }
 
     static async loadScript(filePath)
@@ -154,6 +192,11 @@ export class CoreLoader
             return true;
         }
 
+        if (this.loadingScripts.has(src))
+        {
+            return await this.loadingScripts.get(src);
+        }
+
         const existingScript = document.querySelector(`script[src="${src}"]`);
 
         if (existingScript)
@@ -162,10 +205,10 @@ export class CoreLoader
             return  existingScript;
         }
 
-        Log.debug(`Loading script file : ${src}`);
-
-        const script = await new Promise((resolve, reject) =>
+        const loadPromise = new Promise((resolve, reject) =>
         {
+            Log.debug(`Loading script file : ${src}`);
+
             const script = document.createElement("script");
             script.src = src;
             script.async = false;
@@ -181,9 +224,18 @@ export class CoreLoader
             document.head.appendChild(script);
         });
 
-        this.loadedScripts.add(src);
+        this.loadingScripts.set(src, loadPromise);
 
-        return script;
+        try
+        {
+            const script = await loadPromise;
+            this.loadedScripts.add(src);
+            return script;
+        }
+        finally
+        {
+            this.loadingScripts.delete(src);
+        }
     }    
 
     static async loadTemplate(filePath)
@@ -196,14 +248,34 @@ export class CoreLoader
             return this.loadedTemplates.get(href);
         }
 
-        const response = await fetch(href);
-        if (!response.ok)
+        if (this.loadingTemplates.has(href))
         {
-            throw new Error(`Unable to load template: ${href}`);
+            return await this.loadingTemplates.get(href);
         }
 
-        const content = await response.text();
-        this.loadedTemplates.set(href, content);
-        return content;
+        const loadPromise = (async () =>
+        {
+            const response = await fetch(href);
+
+            if (!response.ok)
+            {
+                throw new Error(`Unable to load template: ${href}`);
+            }
+
+            const content = await response.text();
+            this.loadedTemplates.set(href, content);
+            return content;
+        })();
+
+        this.loadingTemplates.set(href, loadPromise);
+
+        try
+        {
+            return await loadPromise;
+        }
+        finally
+        {
+            this.loadingTemplates.delete(href);
+        }
     }
 }

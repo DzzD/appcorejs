@@ -30,6 +30,7 @@ export class CoreComponent
         this.childs = new Map();  
         this.uri = null;
         this.visibilityDuration = 250;
+        this.createResizeObserveEnabed = true;
     }
 
 
@@ -340,12 +341,15 @@ export class CoreComponent
 
         await this.loadChildComponents(this.node);
 
-        this.#resizeObserver = new ResizeObserver(() =>
+        if (this.createResizeObserveEnabed !== false)
         {
-            this.onResize();
-        }); 
+            this.#resizeObserver = new ResizeObserver(() =>
+            {
+                this.onResize();
+            }); 
 
-        this.#resizeObserver.observe(this.node);
+            this.#resizeObserver.observe(this.node);
+        }
 
         await this.onLoad();
 
