@@ -17,6 +17,7 @@ export class CoreComponent
     id;
     template;
     childs;
+    _node;
     uri;
     visibilityDuration;
 
@@ -28,9 +29,11 @@ export class CoreComponent
         this.template = null;
         this.templatePath = null;
         this.childs = new Map();  
+        this._node = null;
         this.uri = null;
         this.visibilityDuration = 250;
-        this.createResizeObserveEnabed = true;
+        this.createResizeObserverEnabled = true;
+        this.loadParallelChildEnabled = true;
     }
 
 
@@ -166,6 +169,11 @@ export class CoreComponent
 
     get node()
     {
+        if (this._node?.isConnected)
+        {
+            return this._node;
+        }
+
         const buildSelector = (component) =>
         {
             const selector = `[data-appcore-id="${component.id}"]`;
@@ -173,7 +181,9 @@ export class CoreComponent
                 ? `${buildSelector(component.parent)} ${selector}`
                 : selector;
         };
-        return document.querySelector(buildSelector(this));
+
+        this._node = document.querySelector(buildSelector(this));
+        return this._node;
     }
 
     getChild(id, deep = true)
@@ -270,11 +280,27 @@ export class CoreComponent
         await parentNode.appcore.loadChildComponents(node);
     }    
 
-    async loadChildComponents(rootNode = this.node)
+    async loadChildComponents(rootNode = this.node, loadParallelChildEnabled = this.loadParallelChildEnabled === true)
     {
         const childElements = this.#getClosestChildComponentElements(rootNode);
 
-        for (const childElement of childElements)
+        if (loadParallelChildEnabled !== true)
+        {
+            for (const childElement of childElements)
+            {
+                const componentId = childElement.getAttribute("data-appcore-id");
+
+                const component = await this.loadComponent(componentId);
+                component.parent = this;
+                this.childs.set(component.id, component);
+
+                await component.load();
+            }
+
+            return;
+        }
+
+        await Promise.all(childElements.map(async (childElement) =>
         {
             const componentId = childElement.getAttribute("data-appcore-id");
 
@@ -283,7 +309,7 @@ export class CoreComponent
             this.childs.set(component.id, component);
 
             await component.load();
-        }
+        }));
     }    
 
     async load()
@@ -341,7 +367,7 @@ export class CoreComponent
 
         await this.loadChildComponents(this.node);
 
-        if (this.createResizeObserveEnabed !== false)
+        if (this.createResizeObserverEnabled !== false)
         {
             this.#resizeObserver = new ResizeObserver(() =>
             {
