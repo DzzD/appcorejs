@@ -130,7 +130,7 @@ function buildCoreClassContent(className, table, configuration, referencingForei
     const uniqueImports = Array.from(new Set([...relatedImports, ...incomingImports]));
     const importLines = [
         "import { DbObject } from '../../../app/db/DbObject.js';",
-        ...uniqueImports.map((relatedClassName) => `import { ${relatedClassName} } from '../../../${configuration.projectName}/db/models/${relatedClassName}.js';`)
+        ...uniqueImports.map((relatedClassName) => `import { ${relatedClassName} } from '../../../app/db/models/${relatedClassName}.js';`)
     ].join('\n');
 
     const propertyLines = [];
@@ -422,7 +422,7 @@ function buildTableKey(schema, table)
 
 function resolveProjectModelsRoot(configuration)
 {
-    return path.resolve(configuration.projectRoot || process.cwd(), configuration.projectName, 'db', 'models');
+    return path.resolve(configuration.projectRoot || process.cwd(), 'app', 'db', 'models');
 }
 
 function resolveCoreModelsRoot(configuration)

@@ -31,19 +31,19 @@ export async function synchroniseBackend(frameworkRoot = null, projectRoot = nul
     const targetApp = path.resolve(resolvedProjectRoot, 'app');
     const targetCore = path.resolve(resolvedProjectRoot, 'core');
     const targetProject = path.resolve(resolvedProjectRoot, projectName);
-    const targetProjectDbModels = path.join(targetProject, 'db', 'models');
-    const targetProjectDbQueries = path.join(targetProject, 'db', 'queries');
+    const targetAppDbModels = path.join(targetApp, 'db', 'models');
+    const targetAppDbQueries = path.join(targetApp, 'db', 'queries');
     const targetIndex = path.resolve(resolvedProjectRoot, 'index.js');
 
     await copyDirectory(sourceApp, targetApp, { override: false, coreOverride: false });
+    await fs.mkdir(targetAppDbModels, { recursive: true });
+    await fs.mkdir(targetAppDbQueries, { recursive: true });
 
     await fs.rm(targetCore, { recursive: true, force: true });
     await copyDirectory(sourceCore, targetCore, { override: true });
 
     await fs.mkdir(targetProject, { recursive: true });
     await copyDirectoryIfExists(sourceProject, targetProject, { override: false, coreOverride: false });
-    await fs.mkdir(targetProjectDbModels, { recursive: true });
-    await fs.mkdir(targetProjectDbQueries, { recursive: true });
 
     await copyFileIfMissing(await resolveFirstExistingFile([sourceIndex, sourceIndexBackup]), targetIndex, 'backend entry');
 
