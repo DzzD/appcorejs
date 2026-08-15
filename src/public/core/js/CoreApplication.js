@@ -30,11 +30,13 @@ export class CoreApplication extends Component
 {
   static appcoreClass = "app.js.application";
     static version = "1.0";
+    static dataClass = null;
 
   constructor(componentId, parent = null)
   {
       super(componentId, parent);
       globalThis.App = this;
+      this.data = new this.constructor.dataClass();
       this.uri = "/";
   }
 
@@ -83,6 +85,7 @@ export class CoreApplication extends Component
   {
     //   const app = new this("app.js.application");
             Loader.setVersion(this.version);
+      this.dataClass = await Loader.loadClass("io", "Data");
       window.app = new this("app.js.application");
       await app.load();
   }

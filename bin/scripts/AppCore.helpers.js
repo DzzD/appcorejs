@@ -83,6 +83,20 @@ async function copyDirectory(sourceDir, destinationDir, overrideOrOptions = fals
     await traverse(sourceDir, destinationDir, false);
 }
 
+async function copyFileIfMissing(sourcePath, destinationPath)
+{
+    try
+    {
+        await fs.access(destinationPath);
+        return;
+    }
+    catch
+    {
+    }
+
+    await fs.copyFile(sourcePath, destinationPath);
+}
+
 function splitIntoSegments(text)
 {
     return String(text)
@@ -139,4 +153,4 @@ function resolveProjectRoot()
     return process.cwd();
 }
 
-export { copyDirectory, toPascalCase, toCamelCase, pluralizeName, resolveProjectRoot };
+export { copyDirectory, copyFileIfMissing, toPascalCase, toCamelCase, pluralizeName, resolveProjectRoot };

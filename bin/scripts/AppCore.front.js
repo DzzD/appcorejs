@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 import { Log } from '../../src/app/Log.js';
-import { copyDirectory, resolveProjectRoot } from './AppCore.helpers.js';
+import { copyDirectory, copyFileIfMissing, resolveProjectRoot } from './AppCore.helpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,9 +28,11 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
     const sourcePublic = path.join(resolvedFrameworkRoot, 'src', 'public');
     const sourcePublicCore = path.join(sourcePublic, 'core');
     const sourcePublicApp = path.join(sourcePublic, 'app');
+    const sourceData = path.join(sourcePublicApp, 'io', 'Data.js');
     const targetPublic = path.resolve(resolvedProjectRoot, projectName, 'public');
     const targetPublicCore = path.join(targetPublic, 'core');
     const targetPublicApp = path.join(targetPublic, 'app');
+    const targetData = path.join(targetPublic, 'io', 'Data.js');
     const exclusions = ['core', 'app'];
 
     if (!includeExt)
@@ -48,6 +50,9 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
     await copyDirectory(sourcePublicCore, targetPublicCore, { override: true });
     await copyDirectory(sourcePublicApp, targetPublicApp, { override: false, coreOverride: false });
     await copyDirectory(sourcePublic, targetPublic, { override: false, coreOverride: false, exclusions });
+    await fs.mkdir(path.dirname(targetData), { recursive: true });
+    await copyFileIfMissing(sourceData, targetData);
 
     Log.info('[app-core] Frontend synchronisation completed');
 }
+
