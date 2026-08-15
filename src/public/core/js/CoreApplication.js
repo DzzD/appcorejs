@@ -34,6 +34,7 @@ export class CoreApplication extends Component
   constructor(componentId, parent = null)
   {
       super(componentId, parent);
+      globalThis.App = this;
       this.uri = "/";
   }
 
