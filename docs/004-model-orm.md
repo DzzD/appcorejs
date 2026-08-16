@@ -23,11 +23,11 @@ User -> CoreUser -> DbObject -> CoreDbObject
 So:
 
 - changing `app/db/DbObject.js` impacts all models
-- changing `./<project>/db/models/User.js` impacts only `User`
+- changing `./app/db/models/User.js` impacts only `User`
 
 Important:
 
-- `./<project>/db/models/User.js` importing `core/db/models/CoreUser.js` is the expected generated ORM bridge.
+- `./app/db/models/User.js` importing `core/db/models/CoreUser.js` is the expected generated ORM bridge.
 - This does not change the rule that business/services code should use `app` as public interface.
 
 ---
@@ -219,7 +219,7 @@ This affects every model (`User`, `UserGroup`, ...).
 
 ### 4.2 Local rule for one model
 
-In `./<project>/db/models/User.js`:
+In `./app/db/models/User.js`:
 
 ```js
 import { CoreUser } from '../../../core/db/models/CoreUser.js';
@@ -239,6 +239,8 @@ export class User extends CoreUser
 ```
 
 This affects only `User`.
+
+Optional per-project override remains available in `./<project>/db/models/User.js` when explicitly needed.
 
 ---
 

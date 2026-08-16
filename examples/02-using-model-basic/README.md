@@ -34,12 +34,15 @@ Script executed:
 
 ```bash
 app-core --model --project project --dbname appcore --dbschema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data
+
+# equivalent with explicit target root
+app-core --model --project project --target . --dbname appcore --dbschema minimal_app --dbuser appcore --dbpassword appcore --model-prefix data
 ```
 
 Generated model location:
 
 ```text
-./project/db/models/
+./app/db/models/
 ```
 
 `item` is generated as `DataItem` (because of `--model-prefix data`).

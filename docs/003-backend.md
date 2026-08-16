@@ -17,12 +17,12 @@ See [001 - app-core CLI](./001-app-core-cli.md).
 
 - `core/db/*` contains internal engine logic.
 - `app/db/*` is the mandatory ORM interface.
-- `./<project>/db/*` contains business models and business queries.
+- `./<project>/db/*` is the optional project override layer.
 
 Project code uses `app` API.
 Project business services and backend workflow code should not use `core` directly.
 
-Exception: generated ORM project model classes in `./<project>/db/models/` are expected to extend generated `core/db/models/Core*` classes.
+Exception: generated ORM application model classes in `./app/db/models/` are expected to extend generated `core/db/models/Core*` classes.
 This generated bridge is part of the framework ORM chain.
 
 ## Backend class chain
@@ -36,11 +36,11 @@ User -> CoreUser -> DbObject -> CoreDbObject
 - `CoreDbObject`: internal ORM engine.
 - `DbObject` (`app/db/DbObject.js`): global ORM interface layer.
 - `CoreUser` (`core/db/models/CoreUser.js`): generated technical model class.
-- `User` (`<project>/db/models/User.js`): business model class.
+- `User` (`app/db/models/User.js`): application model class.
 
 ## Minimal generated model shape
 
-`./<project>/db/models/User.js`
+`./app/db/models/User.js`
 
 ```js
 import { CoreUser } from '../../../core/db/models/CoreUser.js';
@@ -67,7 +67,9 @@ If you override `User`, you affect only `User`.
 This gives two levels of control:
 
 - global ORM behavior in `app/db/DbObject.js`
-- business-specific behavior in `./<project>/db/models/*.js`
+- business-specific behavior in `./app/db/models/*.js`
+
+Optional per-project override remains available in `./<project>/db/models/*.js` when explicitly needed.
 
 ## Typical project backend structure
 

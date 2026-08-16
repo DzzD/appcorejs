@@ -58,6 +58,9 @@ Generate a complete application:
 
 ```bash
 npx app-core --back --server --front --model --project myProject --dbuser appcore --dbpassword appcore --dbname appcore
+
+# Optional explicit destination root
+npx app-core --back --server --front --model --project myProject --target prj --dbuser appcore --dbpassword appcore --dbname appcore
 ```
 
 Generated structure:
@@ -170,7 +173,8 @@ The property check is functional: the rule applies only when the model contains 
 ### Backend
 
 * ORM classes are exposed through `app/db/*`.
-* Project models are located in `./<project>/db/models/`.
+* Application model layer is located in `./app/db/models/`.
+* Project overrides can be located in `./<project>/db/models/`.
 
 ### Server
 
@@ -190,9 +194,9 @@ The property check is functional: the rule applies only when the model contains 
 ### Models
 
 * Generated with `--model`.
-* Project model classes are generated in `./<project>/db/models/`.
+* Project model classes are generated in `./app/db/models/`.
 * Core base model classes are generated in `./core/db/models/`.
-* Model classes are never generated in `./app/db/models/`.
+* Model classes are never generated in `./<project>/db/models/`.
 
 ---
 

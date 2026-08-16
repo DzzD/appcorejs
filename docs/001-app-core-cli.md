@@ -1,19 +1,37 @@
 # 001 - app-core CLI
 
-`app-core` synchronizes framework layers and project layers in the current directory.
+`app-core` synchronizes framework layers and project layers in the target root directory.
 
 ## Command shape
 
 ```bash
-app-core --project myProject --back --server --front [--ext] [--intro] --model
+app-core --project myProject [--target prj] --back --server --front [--ext] [--intro] --model
 ```
 
 `--project <name>` is mandatory.
+
+`--target <dir>` is optional.
 
 ## Options
 
 ### `--project <name>`
 Target business project/module name.
+
+### `--target <dir>`
+Destination root directory used for generation.
+
+Default: current directory.
+
+Example with `--target prj`:
+
+```text
+prj/app/
+prj/core/
+prj/<project>/
+prj/<project>/public/
+prj/server.js
+prj/index.js
+```
 
 ### `--back`
 Synchronizes backend layers and backend entrypoint.
@@ -68,15 +86,14 @@ Optional model options:
 
 ### Backend (`--back`)
 
-- `./core/` replaced completely.
-- `./app/` synchronized without overwrite.
-- `./<project>/db/models/` created if missing.
-- `./<project>/db/queries/` created if missing.
-- `./index.js` created if missing.
+- `<target>/core/` replaced completely.
+- `<target>/app/` synchronized without overwrite.
+- `<target>/<project>/db/` synchronized for project overrides.
+- `<target>/index.js` created if missing.
 
 ### Frontend (`--front`)
 
-Target root: `./<project>/public/`
+Target root: `<target>/<project>/public/`
 
 - `public/core/` replaced completely.
 - `public/app/` synchronized without overwrite.
@@ -88,24 +105,24 @@ Target root: `./<project>/public/`
 
 Created if missing:
 
-- `./server.js`
-- `./<project>/server/`
-- `./<project>/server/components/`
-- `./<project>/server/<ProjectClassName>Server.js`
+- `<target>/server.js`
+- `<target>/<project>/server/`
+- `<target>/<project>/server/components/`
+- `<target>/<project>/server/<ProjectClassName>Server.js`
 
 ### Models (`--model`)
 
 Generated in:
 
 ```text
-./<project>/db/models/
-./core/db/models/
+<target>/app/db/models/
+<target>/core/db/models/
 ```
 
-Never in:
+Optional override layer remains:
 
 ```text
-./app/db/models/
+<target>/<project>/db/models/
 ```
 
 ## Concrete examples
@@ -126,6 +143,12 @@ Backend + server + frontend:
 
 ```bash
 npx app-core --back --server --front --project myProject
+
+With explicit target root:
+
+```bash
+npx app-core --back --server --front --project myProject --target prj
+```
 ```
 
 Frontend + ext only:

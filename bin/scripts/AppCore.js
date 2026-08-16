@@ -24,6 +24,7 @@ function parseArguments(rawArgs)
     const args =
     {
         project: null,
+        target: null,
         model: false,
         front: false,
         intro: false,
@@ -52,6 +53,12 @@ function parseArguments(rawArgs)
         if (current === '--project')
         {
             args.project = rawArgs[++index] || null;
+            continue;
+        }
+
+        if (current === '--target')
+        {
+            args.target = rawArgs[++index] || null;
             continue;
         }
 
@@ -173,6 +180,7 @@ function printUsage()
 --model-prefix optional model prefix (default: database name from --dbname when not provided and without --model-noprefix)
 --model-noprefix generate model files without prefix (overrides default database-name prefix)
 --project   mandatory project/module name
+--target    optional destination root directory (default: current directory)
 
 Dependencies:
 --model implies --back
@@ -239,7 +247,8 @@ async function main(rawArgs)
     }
 
     const frameworkRoot = path.resolve(__dirname, '..', '..');
-    const projectRoot = resolveProjectRoot();
+    const baseProjectRoot = resolveProjectRoot();
+    const projectRoot = args.target ? path.resolve(baseProjectRoot, args.target) : baseProjectRoot;
 
     if (args.back)
     {

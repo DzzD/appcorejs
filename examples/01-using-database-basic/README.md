@@ -36,6 +36,9 @@ Script executed:
 
 ```bash
 app-core --back --project project
+
+# equivalent with explicit target root
+app-core --back --project project --target .
 ```
 
 This creates/synchronizes:
