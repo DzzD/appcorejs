@@ -2,6 +2,9 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CorePanelDraw extends Component
 {
+    static appcoreClass = "ext.graph.panel-draw";
+    static appcoreCss = "ext.graph.panel-draw";
+
     #canvas = null;
     #context = null;
     #bufferCanvas = null;

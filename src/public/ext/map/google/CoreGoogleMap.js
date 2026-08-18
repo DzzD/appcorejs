@@ -2,6 +2,9 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CoreGoogleMap extends Component
 {
+    static appcoreClass = "ext.map.google.google-map";
+    static appcoreCss = "ext.map.google.google-map";
+
     #apiKey = null;
     #map = null;
     #marker = null;

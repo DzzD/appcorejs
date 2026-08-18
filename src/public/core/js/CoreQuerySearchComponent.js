@@ -10,6 +10,9 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreQuerySearchComponent extends Component
 {
+    static appcoreClass = "app.js.query-search-component";
+    static appcoreCss = "app.styles.query-search-component";
+
     serverUri = null;
     title = "Recherche";
 

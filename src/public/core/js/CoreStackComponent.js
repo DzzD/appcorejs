@@ -10,6 +10,9 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreStackComponent extends Component
 {
+    static appcoreClass = "app.js.stack-component";
+    static appcoreCss = "app.styles.stack-component";
+
     #activeComponentId = null;
     #stackTrack = null;
 

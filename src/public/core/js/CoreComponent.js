@@ -10,6 +10,7 @@ import { Log } from "../../app/js/Log.js";
 export class CoreComponent
 {
     static appcoreClass = "app.js.component";
+    static appcoreCss = "app.styles.component";
 
     #resizeObserver = null;
     isLoaded;
@@ -39,8 +40,6 @@ export class CoreComponent
 
     async onLoad()
     {
-        await Loader.loadStyle("app/styles/component.css"); 
-        
         
     }    
 
@@ -331,16 +330,17 @@ export class CoreComponent
 
         this.node.appcore = this;
 
-        const nodeAppcoreClass = this.node.dataset.appcoreClass;
-        const inheritedAppcoreClasses = this.appcoreClasses;
+        const appcoreClasses =
+        [
+            ...this.appcoreClasses,
+            ...(this.node.dataset.appcoreClass ?? '').split(/\s+/).filter(Boolean)
+        ];
 
-        if (nodeAppcoreClass)
+        this.node.dataset.appcoreClass = [...new Set(appcoreClasses)].join(' ');
+
+        for (const styleId of new Set(this.appcoreCsss))
         {
-            this.node.dataset.appcoreClass = `${inheritedAppcoreClasses} ${nodeAppcoreClass}`;
-        }
-        else
-        {
-            this.node.dataset.appcoreClass = inheritedAppcoreClasses;
+            await Loader.loadStyle(`${styleId.split('.').join('/')}.css`);
         }
 
         for (const [key, value] of Object.entries(this.node.dataset))
@@ -348,14 +348,11 @@ export class CoreComponent
             this[key] = value;
         }
 
-        const css = this.node.dataset.css;
-
-        if (css)
+        if (this.appcoreCss)
         {
-            for (const styleId of css.split(','))
+            for (const styleId of this.appcoreCss.split(',').map((value) => value.trim()).filter(Boolean))
             {
-                const cssPath = `${styleId.trim().split('.').join('/')}.css`;
-                await Loader.loadStyle(cssPath);
+                await Loader.loadStyle(`${styleId.split('.').join('/')}.css`);
             }
         }
 
@@ -562,7 +559,7 @@ export class CoreComponent
 
     get appcoreClasses()
     {
-        const classes = [];
+        const values = [];
 
         for (
             let currentClass = this.constructor;
@@ -570,17 +567,32 @@ export class CoreComponent
             currentClass = Object.getPrototypeOf(currentClass)
         )
         {
-            const appcoreClass = Object.hasOwn(currentClass, "appcoreClass")
-                ? currentClass.appcoreClass
-                : null;
-
-            if (appcoreClass)
+            if (Object.hasOwn(currentClass, 'appcoreClass') && currentClass.appcoreClass)
             {
-                classes.push(appcoreClass);
+                values.push(currentClass.appcoreClass);
             }
         }
 
-        return classes.reverse().join(" ");
+        return values.reverse();
+    }
+
+    get appcoreCsss()
+    {
+        const values = [];
+
+        for (
+            let currentClass = this.constructor;
+            currentClass && currentClass !== Function.prototype;
+            currentClass = Object.getPrototypeOf(currentClass)
+        )
+        {
+            if (Object.hasOwn(currentClass, 'appcoreCss') && currentClass.appcoreCss)
+            {
+                values.push(currentClass.appcoreCss);
+            }
+        }
+
+        return values.reverse();
     }
 
 }

@@ -28,6 +28,9 @@ Log.mode = "debug";
 
 export class CoreApplication extends Component
 {
+    static appcoreClass = "app.js.application";
+    static appcoreCss = "app.styles.application";
+
     static version = "1.0";
     static dataClass = null;
 

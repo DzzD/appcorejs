@@ -124,21 +124,14 @@
           <!--</secton>-->
         </section>
 
-        <div data-appcore-id="app.js.window::window-info" class="hidden" data-type="warning">
-            <div class="window-modal-overlay"></div>
-            <div class="window-header">
-                <div class="window-title">
-                    <span class="window-icon"></span>
-                    <h3>Titre window</h3>
-                </div>
-                <button type="button" class="window-close" aria-label="Close"><span>×</span></button>
-            </div>
-            <div class="window-body">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor
-            </div>
-            <div class="window-footer">
-                <button type="button" class="window-confirm">OK</button>
-            </div>
+        <div data-appcore-id="app.js.window::window-info"
+           data-template="app.tpl.window"
+           class="hidden"
+           data-type="warning">
+          <h3 data-zone="title">Titre window</h3>
+          <div data-zone="body">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor
+          </div>
         </div>
       
 

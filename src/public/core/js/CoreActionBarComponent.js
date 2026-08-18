@@ -10,6 +10,9 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreActionBarComponent extends Component
 {
+    static appcoreClass = "app.js.action-bar-component";
+    static appcoreCss = "app.styles.action-bar-component";
+
     async onLoad()
     {
         await super.onLoad();

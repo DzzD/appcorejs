@@ -12,7 +12,8 @@ import { Component } from "../../app/js/Component.js";
 export class CoreWindow extends Component
 {
     static appcoreClass = "app.js.window";
-    
+    static appcoreCss = "app.styles.window";
+
     // #dragPointerId = null;
     #dragOffsetX = 0;
     #dragOffsetY = 0;
@@ -25,7 +26,6 @@ export class CoreWindow extends Component
 
     async onLoad()
     {
-        await Loader.loadStyle("app/styles/window.css");
         this.node.querySelector(".window-icon").innerHTML = await Loader.loadFile(`./assets/icons/${this.node.dataset.type}.svg`);
 
         const header = this.find(".window-header");
