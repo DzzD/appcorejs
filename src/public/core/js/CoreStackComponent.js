@@ -10,8 +10,6 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreStackComponent extends Component
 {
-    static appcoreClass = "app.js.stack-component";
-
     #activeComponentId = null;
     #stackTrack = null;
 
@@ -37,7 +35,6 @@ export class CoreStackComponent extends Component
     async onLoad()
     {
         await super.onLoad();
-        await Loader.loadStyle("app/styles/stack-component.css");
 
         this.#stackTrack = this.find(':scope > [data-zone="track"]')
             ?? this.find(":scope > .stack-track")

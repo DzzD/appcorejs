@@ -2,7 +2,6 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CorePanelDraw extends Component
 {
-    static appcoreClass = "ext.graph.panel-draw";
     #canvas = null;
     #context = null;
     #bufferCanvas = null;
@@ -18,8 +17,6 @@ export class CorePanelDraw extends Component
 
     async onLoad()
     {
-        await Loader.loadStyle("ext/graph/panel-draw.css");
-
         this.#canvas = this.find("[data-panel-draw-canvas]");
 
         if (!this.#canvas)

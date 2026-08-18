@@ -28,7 +28,6 @@ Log.mode = "debug";
 
 export class CoreApplication extends Component
 {
-  static appcoreClass = "app.js.application";
     static version = "1.0";
     static dataClass = null;
 
@@ -43,7 +42,6 @@ export class CoreApplication extends Component
   async onLoad()
   {
       await super.onLoad();
-      await Loader.loadStyle("app/styles/application.css");
 
       const application = this.find('[data-zone="application"]');
       const loader = this.find(".application-loader");

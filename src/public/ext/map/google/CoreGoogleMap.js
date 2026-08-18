@@ -2,7 +2,6 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CoreGoogleMap extends Component
 {
-    static appcoreClass = "ext.map.google.google-map";
     #apiKey = null;
     #map = null;
     #marker = null;
@@ -17,8 +16,6 @@ export class CoreGoogleMap extends Component
     {
         this.#apiKey = this.node.dataset.apikey ?? this.#apiKey;
         this.#mapId = this.node.dataset.mapid ?? this.#mapId;
-
-        await Loader.loadStyle("ext/map/google/google-map.css");
 
         const callbackName = `__appcoreGoogleMapInit_${crypto.randomUUID().replaceAll("-", "")}`;
         

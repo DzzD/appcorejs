@@ -10,14 +10,11 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreMenuComponent extends Component
 {
-    static appcoreClass = "app.js.menu-component";
-
     #items = [];
 
     async onLoad()
     {
         await super.onLoad();
-        await Loader.loadStyle("app/styles/menu-component.css");
 
         this.render();
     }

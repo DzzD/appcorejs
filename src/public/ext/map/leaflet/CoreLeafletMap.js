@@ -2,7 +2,6 @@ import { Component } from "../../../app/js/Component.js";
 
 export class CoreLeafletMap extends Component
 {
-    static appcoreClass = "ext.map.leaflet.leaflet-map";
     #map = null;
     #marker = null;
 
@@ -13,7 +12,6 @@ export class CoreLeafletMap extends Component
 
     async onLoad()
     {
-        await Loader.loadStyle("ext/map/leaflet/leaflet-map.css");
         await Loader.loadStyle("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
         await Loader.loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
 

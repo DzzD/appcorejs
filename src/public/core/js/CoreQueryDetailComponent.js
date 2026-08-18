@@ -10,8 +10,6 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreQueryDetailComponent extends Component
 {
-    static appcoreClass = "app.js.query-detail-component";
-
     serverUri = null;
     title = "Détail";
     #key = null;
@@ -30,7 +28,6 @@ export class CoreQueryDetailComponent extends Component
     async onLoad()
     {
         await super.onLoad();
-        await Loader.loadStyle("app/styles/query-detail-component.css");
 
         await this.loadDefinition();
         await this.render();

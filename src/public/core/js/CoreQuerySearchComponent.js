@@ -10,8 +10,6 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreQuerySearchComponent extends Component
 {
-    static appcoreClass = "app.js.query-search-component";
-
     serverUri = null;
     title = "Recherche";
 
@@ -40,7 +38,6 @@ export class CoreQuerySearchComponent extends Component
     async onLoad()
     {
         await super.onLoad();
-        await Loader.loadStyle("app/styles/query-search-component.css");
 
         await this.loadDefinition();
         await this.render();

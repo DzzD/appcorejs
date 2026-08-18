@@ -10,8 +10,6 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreSelectComponent extends Component
 {
-  static appcoreClass = "app.js.select-component";
-
   placeholder = "Select...";
   multiple = false;
 
@@ -24,7 +22,6 @@ export class CoreSelectComponent extends Component
   async onLoad()
   {
     await super.onLoad();
-    await Loader.loadStyle("app/styles/select-component.css");
 
     this.multiple = this.multiple === "true";
 

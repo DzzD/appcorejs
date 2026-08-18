@@ -330,11 +330,33 @@ export class CoreComponent
         }
 
         this.node.appcore = this;
-        this.node.dataset.appcoreClass = this.appcoreClasses;
+
+        const nodeAppcoreClass = this.node.dataset.appcoreClass;
+        const inheritedAppcoreClasses = this.appcoreClasses;
+
+        if (nodeAppcoreClass)
+        {
+            this.node.dataset.appcoreClass = `${inheritedAppcoreClasses} ${nodeAppcoreClass}`;
+        }
+        else
+        {
+            this.node.dataset.appcoreClass = inheritedAppcoreClasses;
+        }
 
         for (const [key, value] of Object.entries(this.node.dataset))
         {
             this[key] = value;
+        }
+
+        const css = this.node.dataset.css;
+
+        if (css)
+        {
+            for (const styleId of css.split(','))
+            {
+                const cssPath = `${styleId.trim().split('.').join('/')}.css`;
+                await Loader.loadStyle(cssPath);
+            }
         }
 
         for (

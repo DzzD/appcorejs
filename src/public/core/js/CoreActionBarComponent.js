@@ -10,12 +10,9 @@ import { Component } from "../../app/js/Component.js";
 
 export class CoreActionBarComponent extends Component
 {
-    static appcoreClass = "app.js.action-bar-component";
-
     async onLoad()
     {
         await super.onLoad();
-        await Loader.loadStyle("app/styles/action-bar-component.css");
 
         this.collectInlineButtons();
         this.bindButtons();
