@@ -82,6 +82,22 @@ Optional model options:
 - `--intro` requires `--front`
 - `--ext` requires `--front`
 
+## Agent files
+
+By default, `app-core` synchronizes framework agent documentation files from:
+
+```text
+src/agent/
+```
+
+to:
+
+```text
+<target>/<project>/agent/
+```
+
+Use `--no-agent-files` to disable this synchronization.
+
 ## Synchronization summary
 
 ### Backend (`--back`)

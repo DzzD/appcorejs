@@ -15,6 +15,7 @@ import { resolveProjectRoot } from './AppCore.helpers.js';
 import { synchroniseFrontend } from './AppCore.front.js';
 import { synchroniseBackend } from './AppCore.back.js';
 import { synchroniseServer } from './AppCore.server.js';
+import { synchroniseAgentFiles } from './AppCore.agent.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +32,7 @@ function parseArguments(rawArgs)
         ext: false,
         back: false,
         server: false,
+        agentFiles: true,
         dbuser: null,
         dbpassword: null,
         dbport: 5432,
@@ -141,6 +143,12 @@ function parseArguments(rawArgs)
             args.server = true;
             continue;
         }
+
+        if (current === '--no-agent-files')
+        {
+            args.agentFiles = false;
+            continue;
+        }
     }
 
     if (args.model)
@@ -174,6 +182,7 @@ function printUsage()
             depend on --dbuser     : mandatory db user
                      --dbpassword  : mandatory db password
                      --dbname      : mandatory db name
+--no-agent-files disable copy of framework agent documentation files
 --dbhost    optional db host (default: localhost)
 --dbport    optional db port (default: 5432)
 --dbschema  optional schema (default: ALL)
@@ -282,6 +291,11 @@ async function main(rawArgs)
             dbschema: computedSchema,
             modelPrefix: computedPrefix
         });
+    }
+
+    if (args.agentFiles)
+    {
+        await synchroniseAgentFiles(frameworkRoot, projectRoot, args.project);
     }
 }
 
