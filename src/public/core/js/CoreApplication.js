@@ -51,7 +51,7 @@ export class CoreApplication extends Component
 
       application?.style.removeProperty("display");
 
-      this._show(application);
+      await this._show(application);
       await this._hide(loader);
 
       if (loader?.appcore)
