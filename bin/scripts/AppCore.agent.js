@@ -22,7 +22,7 @@ export async function synchroniseAgentFiles(frameworkRoot = null, projectRoot = 
     const resolvedFrameworkRoot = frameworkRoot ?? path.resolve(__dirname, '..', '..');
     const resolvedProjectRoot = projectRoot ?? resolveProjectRoot();
     const sourceAgent = path.join(resolvedFrameworkRoot, 'src', 'agent');
-    const targetAgent = path.join(resolvedProjectRoot, projectName, 'agent');
+    const targetAgent = path.join(resolvedProjectRoot, 'agent');
 
     await copyDirectory(sourceAgent, targetAgent, { override: true, coreOverride: true });
 

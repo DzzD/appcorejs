@@ -20,7 +20,7 @@ Minimal reference for `app-core`.
 - `--front`: synchronize `<project>/public` layers.
 - `--server`: create/synchronize server entry and project server class.
 - `--model`: generate ORM model files from database metadata.
-- Agent files are synchronized by default from `src/agent` to `<project>/agent`.
+- Agent files are synchronized by default from `src/agent` to `<target>/agent`.
 - `--no-agent-files`: disable agent file synchronization.
 - `--target <dir>`: optional destination root; default is current directory.
 

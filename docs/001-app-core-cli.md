@@ -93,7 +93,7 @@ src/agent/
 to:
 
 ```text
-<target>/<project>/agent/
+<target>/agent/
 ```
 
 Use `--no-agent-files` to disable this synchronization.
