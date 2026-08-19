@@ -86,7 +86,7 @@ export class CoreApplication extends Component
   {
     //   const app = new this("app.js.application");
             Loader.setVersion(this.version);
-      this.dataClass = await Loader.loadClass("io", "Data");
+    this.dataClass = await Loader.loadClass("js/io", "Data");
       window.app = new this("app.js.application");
       await app.load();
   }
