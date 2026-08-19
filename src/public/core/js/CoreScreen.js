@@ -12,7 +12,7 @@ import { Component } from "../../app/js/Component.js";
 export class CoreScreen extends Component
 {
     static appcoreClass = "app.js.screen";
-    static appcoreCss = "app.styles.screen";
+    static appcoreCss = "app.css.screen";
 
     constructor(componentId, parent = null)
     {

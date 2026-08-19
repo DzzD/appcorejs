@@ -32,7 +32,7 @@ Simplified version:
     <head>
         <title>{{APPCORE_APP_NAME}}</title>
 
-        <link rel="stylesheet" href="./app/styles/styles.css" />
+        <link rel="stylesheet" href="./app/css/styles.css" />
         <script type="module" src="./app/js/Application.js"></script>
     </head>
 
@@ -339,14 +339,14 @@ If components call await super.onLoad(), this rule applies everywhere.
 Styles are loaded through layer-first paths.
 
 ```js
-await Loader.loadStyle("app/styles/query-search-component.css");
+await Loader.loadStyle("app/css/query-search-component.css");
 ```
 
 Do not use legacy flat paths like:
 
 ```text
 public/js
-public/styles
+public/css
 ```
 
 ## Frontend action convention

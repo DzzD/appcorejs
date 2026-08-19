@@ -12,7 +12,7 @@ import { Component } from "../../app/js/Component.js";
 export class CoreWindow extends Component
 {
     static appcoreClass = "app.js.window";
-    static appcoreCss = "app.styles.window";
+    static appcoreCss = "app.css.window";
 
     // #dragPointerId = null;
     #dragOffsetX = 0;

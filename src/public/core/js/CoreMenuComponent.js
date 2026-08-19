@@ -11,7 +11,7 @@ import { Component } from "../../app/js/Component.js";
 export class CoreMenuComponent extends Component
 {
     static appcoreClass = "app.js.menu-component";
-    static appcoreCss = "app.styles.menu-component";
+    static appcoreCss = "app.css.menu-component";
 
     #items = [];
 

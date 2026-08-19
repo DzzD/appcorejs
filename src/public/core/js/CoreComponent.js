@@ -10,7 +10,7 @@ import { Log } from "../../app/js/Log.js";
 export class CoreComponent
 {
     static appcoreClass = "app.js.component";
-    static appcoreCss = "app.styles.component";
+    static appcoreCss = "app.css.component";
 
     #resizeObserver = null;
     isLoaded;

@@ -65,7 +65,7 @@ The same resolution principle applies to frontend resource directories such as:
 
 ```text
 <project>/public/js/
-<project>/public/styles/
+<project>/public/css/
 <project>/public/assets/
 ```
 
@@ -141,14 +141,14 @@ CSS also uses explicit framework inheritance/import relationships independently 
 Examples:
 
 ```text
-public/app/styles/application.css
-    -> public/core/styles/application.css
+public/app/css/application.css
+    -> public/core/css/application.css
 
-public/app/styles/menu-component.css
-    -> public/app/styles/core-menu-component.css
+public/app/css/menu-component.css
+    -> public/app/css/core-menu-component.css
 
-public/app/styles/theme.css
-    -> public/app/styles/core-theme.css
+public/app/css/theme.css
+    -> public/app/css/core-theme.css
 ```
 
 Do not confuse CSS inheritance/import relationships with resource resolution.

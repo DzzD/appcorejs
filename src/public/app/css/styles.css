@@ -6,9 +6,4 @@
  * Licensed under the MIT License
  */
 
-import { CoreScreen } from "../../core/js/CoreScreen.js";
-
-export class Screen extends CoreScreen
-{
-
-}
+ @import url("../../core/css/core-styles.css");

@@ -33,7 +33,7 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
     const targetPublicCore = path.join(targetPublic, 'core');
     const targetPublicApp = path.join(targetPublic, 'app');
     const targetProjectJs = path.join(targetPublic, 'js');
-    const targetProjectStyles = path.join(targetPublic, 'styles');
+    const targetProjectCss = path.join(targetPublic, 'css');
     const targetProjectTpl = path.join(targetPublic, 'tpl');
     const targetData = path.join(targetProjectJs, 'io', 'Data.js');
     const exclusions = ['core', 'app'];
@@ -50,7 +50,7 @@ export async function synchroniseFrontend(frameworkRoot = null, projectRoot = nu
 
     await fs.mkdir(targetPublic, { recursive: true });
     await fs.mkdir(targetProjectJs, { recursive: true });
-    await fs.mkdir(targetProjectStyles, { recursive: true });
+    await fs.mkdir(targetProjectCss, { recursive: true });
     await fs.mkdir(targetProjectTpl, { recursive: true });
     await fs.rm(targetPublicCore, { recursive: true, force: true });
     await copyDirectory(sourcePublicCore, targetPublicCore, { override: true });

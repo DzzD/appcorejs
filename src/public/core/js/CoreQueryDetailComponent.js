@@ -11,7 +11,7 @@ import { Component } from "../../app/js/Component.js";
 export class CoreQueryDetailComponent extends Component
 {
     static appcoreClass = "app.js.query-detail-component";
-    static appcoreCss = "app.styles.query-detail-component";
+    static appcoreCss = "app.css.query-detail-component";
 
     serverUri = null;
     title = "Détail";

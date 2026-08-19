@@ -1,0 +1,264 @@
+/**
+ * AppCoreJS Framework
+ * CORE LAYER
+ * NOT INTENDED TO BE MODIFIED IN APPLICATION PROJECTS
+ * Copyright (c) 2026 Bruno Augier
+ * Licensed under the MIT License
+ */
+
+@import url("../../app/css/theme.css");
+
+*
+{
+    box-sizing: border-box;
+}
+
+html
+{
+    color: var(--color-text);
+    /* background-color: var(--color-background); */
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.hidden
+{
+    display: none !important;
+}
+
+.invisible
+{
+    opacity: 0 !important;
+}
+
+.visible
+{
+    opacity: 1 !important;
+}
+
+.appcore-cut-surface
+{
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    --cut: var(--appcore-cut);
+}
+
+.appcore-cut-surface-bottom-left
+{
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    --cut: var(--appcore-cut);
+}
+
+.appcore-cut-surface-top-right
+{
+    position: relative;
+    isolation: isolate;
+    background-color: transparent;
+    --cut: var(--appcore-cut);
+}
+
+.appcore-cut-surface::before
+{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: var(--color-surface);
+
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--cut)) 0,
+        100% var(--cut),
+        100% 100%,
+        var(--cut) 100%,
+        0 calc(100% - var(--cut))
+    );
+}
+
+.appcore-cut-surface-bottom-left::before
+{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: var(--color-surface);
+
+    clip-path: polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        var(--cut) 100%,
+        0 calc(100% - var(--cut))
+    );
+}
+
+.appcore-cut-surface-top-right::before
+{
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background-color: var(--color-surface);
+
+    clip-path: polygon(
+        0 0,
+        calc(100% - var(--cut)) 0,
+        100% var(--cut),
+        100% 100%,
+        0 100%
+    );
+}
+
+[data-appcore-id]
+{
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+}
+
+
+
+button
+{
+    font-family: var(--font-family-2);
+    height: 2.25rem;
+    min-width: 8rem;
+    padding: var(--space-035) var(--space-100);
+
+    color: var(--color-text-on-accent);
+    background: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 90%, var(--color-primary));
+
+    border-radius: 0.35rem;
+    appearance: none;
+    font-size: 1.1rem;
+    transition: background-color .2s ease;
+    cursor: pointer;
+    line-height: 1.1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+button:hover
+{
+    background: color-mix(in srgb, var(--color-accent) 65%, var(--color-primary));
+}
+
+
+h1,h2,h3
+{
+    font-family: var(--font-family-2);
+    font-weight: 400;
+    margin: 0;
+    padding: 0.25em;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+}
+
+h1
+{
+    font-size: 2.25rem;
+    color: var(--color-text);
+}
+
+h2
+{
+    font-size: 2rem;
+    color: var(--color-accent);
+}
+
+h3
+{
+    font-size: 1.5rem;
+    color: color-mix(in srgb, var(--color-text) 80%, var(--color-accent));
+}
+
+p
+{
+    padding: var(--space-025) var(--space-100);
+    white-space: pre-line;
+    margin: var(--space-100);
+    line-height: 1.5;
+}
+
+small,
+strong,
+em,
+b,
+i,
+u,
+mark,
+sub,
+sup
+{
+    font: inherit;
+    color: inherit;
+}
+
+small
+{
+    font-size: 0.82em;
+    opacity: 0.75;
+}
+
+strong
+{
+    font-weight: 700;
+}
+
+b
+{
+    font-weight: 600;
+}
+
+em
+{
+    font-style: italic;
+}
+
+i
+{
+    font-style: oblique;
+}
+
+u
+{
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.12em;
+}
+
+
+sub,
+sup
+{
+    font-size: 0.7em;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+sub
+{
+    bottom: -0.25em;
+}
+
+sup
+{
+    top: -0.5em;
+}
+

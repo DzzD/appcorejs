@@ -11,7 +11,7 @@ import { Component } from "../../app/js/Component.js";
 export class CoreSelectComponent extends Component
 {
   static appcoreClass = "app.js.select-component";
-  static appcoreCss = "app.styles.select-component";
+  static appcoreCss = "app.css.select-component";
 
   placeholder = "Select...";
   multiple = false;
