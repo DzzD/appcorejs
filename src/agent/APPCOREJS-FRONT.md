@@ -18,7 +18,7 @@ They are complementary but must not be confused.
 * `public/app` contains the application adaptation layer.
 * Project-specific frontend resources normally live directly under `public`.
 * `public/components` is the project component area.
-* `public/io/Data.js` is created only when missing.
+* `public/js/io/Data.js` is created only when missing.
 
 ## Resource Resolution
 
