@@ -1,182 +1,196 @@
 # APPCOREJS FRONT
 
-Minimal frontend rules and facts.
+The project frontend root is `<project>/public`.
 
-## Frontend Architecture
-
-Frontend architecture uses two distinct mechanisms:
-
-* resource resolution;
-* inheritance.
-
-They are complementary but must not be confused.
-
-## Frontend Structure Facts
-
-* Project frontend root is `<project>/public`.
-* `public/core` contains framework core frontend resources.
-* `public/app` contains the application adaptation layer.
-* Project-specific frontend resources normally live directly under `public`.
-* `public/components` is the project component area.
-* `public/js/io/Data.js` is created only when missing.
+```text
+public/
+├── core/                 synchronized framework resources; do not edit
+├── app/                  preserved application-wide frontend overrides
+├── components/           project components
+├── js/io/Data.js         project data and IO facade
+├── css/                  project styles
+├── tpl/                  project templates
+└── assets/               project assets
+```
 
 ## Resource Resolution
 
-Frontend resource resolution follows this exact order:
+For an unprefixed request such as `assets/logo.svg`, `components/hello/HelloComponent.js`, or `application.tpl.html`, the server tries:
 
 ```text
-<project>/public/
--> <project>/public/app/
--> <project>/public/core/
+public/<path>
+public/app/<path>
+public/core/<path>
 ```
 
-A resource found directly under `public` overrides the corresponding resource from `public/app`, which overrides the corresponding resource from `public/core`.
-
-For normal files:
+Prefixes intentionally restrict resolution:
 
 ```text
-<project>/public/<path>
-<project>/public/app/<path>
-<project>/public/core/<path>
+app/<path>  -> public/app/<path>, then public/core/<path>
+core/<path> -> public/core/<path> only
 ```
 
-Example:
+This rule applies to JavaScript, CSS, templates, assets, and other static files. Project files normally use unprefixed paths. Built-in AppCoreJS identifiers commonly start with `app`, so they resolve through `public/app` and then `public/core`.
+
+For a request without `.tpl.`, the server first tries the corresponding template filename across all allowed layers, then the ordinary filename. `/index.html` therefore resolves as:
 
 ```text
-<project>/public/js/MyFile.js
-<project>/public/app/js/MyFile.js
-<project>/public/core/js/MyFile.js
+public/index.tpl.html
+public/app/index.tpl.html
+public/core/index.tpl.html
+public/index.html
+public/app/index.html
+public/core/index.html
 ```
 
-For HTML files, `.tpl.html` variants are resolved before `.html` variants at each level.
+The `.tpl.` preference is extension-agnostic. Server-side `processTemplate()` currently returns content unchanged; do not rely on placeholder substitution.
 
-Example for `index.html`:
+## Frontend Entry Templates
 
-```text
-<project>/public/index.tpl.html
-<project>/public/index.html
-<project>/public/app/index.tpl.html
-<project>/public/app/index.html
-<project>/public/core/index.tpl.html
-<project>/public/core/index.html
-```
-
-The same resolution principle applies to frontend resource directories such as:
-
-```text
-<project>/public/js/
-<project>/public/css/
-<project>/public/assets/
-```
-
-Template-specific resolution applies only to HTML resources.
-
-A project does not need to duplicate framework resources when no customization is required. Missing project resources are resolved from `public/app`, then from `public/core`.
-
-## Default Application Resolution
-
-A newly created application can run using framework-provided resources.
-
-For example, the resolved default index may come from:
-
-```text
-<project>/public/core/index.tpl.html
-```
-
-It can use the resolved application class:
-
-```text
-<project>/public/app/js/Application.js
-```
-
-and a framework-provided application template such as:
-
-```text
-<project>/public/core/application.tpl.html
-```
-
-The project only needs to create its own resource when it wants to override the resolved default.
-
-Typical first project-level overrides are:
+After generation, the first frontend task is normally to create these project-owned files:
 
 ```text
 <project>/public/index.tpl.html
 <project>/public/application.tpl.html
-<project>/public/manifest.json
 ```
 
-## Inheritance
+Default versions exist under `public/core`, but they are fallbacks and must not be modified.
 
-Inheritance is separate from resource resolution.
+`index.tpl.html` is the HTML document entry point. It defines the page metadata, loads `app/css/styles.css` and `app/js/Application.js`, and declares the root Application component:
 
-Resource resolution determines **which file is selected**.
+```html
+<body
+    data-appcore-id="app.js.application"
+    data-template="application">
+</body>
+```
 
-Inheritance determines **which implementation extends another implementation**.
+`application.tpl.html` is mandatory application structure. It is loaded into that root component and defines the persistent application shell and its screens or project components. It must provide the application zone used by `Application` when startup completes:
 
-Typical framework inheritance:
+```html
+<div data-template="application">
+    <div data-zone="application" style="display: none;">
+        <!-- application UI -->
+    </div>
+</div>
+```
+
+The core fallback for `application.tpl.html` only reports that the project template is missing. A real application should therefore replace both core fallbacks at project level, especially the mandatory `application.tpl.html`.
+
+## Frontend Inheritance
+
+Project components extend the app class, never the core class directly:
+
+```js
+import { Component } from '../../app/js/Component.js';
+
+export class HelloComponent extends Component
+{
+    static appcoreClass = 'components.hello.hello-component';
+    static appcoreCss = 'components.hello.hello-component';
+}
+```
+
+For a built-in screen, the effective chain is:
 
 ```text
-public/app/js/Application.js
-    extends public/core/js/CoreApplication.js
-
-public/app/js/Loader.js
-    extends public/core/js/CoreLoader.js
+project screen -> app Screen -> core CoreScreen -> app Component -> core CoreComponent
 ```
 
-Project frontend classes must inherit from the corresponding `public/app` class when one exists.
+Override a file under `public/app` only to change application-wide behavior. Add a project class above the app class for feature-specific behavior.
 
-They must not inherit directly from `public/core` when a corresponding `public/app` class exists.
+## Component Identification and Loading
 
-Example:
+An element declares its component class with `data-appcore-id`:
+
+```html
+<section
+    data-appcore-id="components.hello.hello-component::main"
+    data-template="components.hello.hello-component">
+</section>
+```
+
+This loads `components/hello/HelloComponent.js`, export `HelloComponent`. The suffix after `::` identifies the instance.
+
+`data-template` is converted to `<identifier>.tpl.html`. Here it loads `components/hello/hello-component.tpl.html` before `onLoad()`.
+
+The template's first root element supplies missing attributes. Its children are inserted into the existing component node. Existing direct `data-zone` contents are preserved and merged by zone name.
+
+## Classes and CSS
+
+`data-appcore-class` is a space-separated styling marker; it does not choose the JavaScript class. During loading, AppCoreJS adds every static `appcoreClass` declared along the inheritance chain, parent first, and preserves explicit values already on the element.
+
+For example, a project component can receive both:
 
 ```text
-public/js/MyComponent.js
-    extends public/app/js/Component.js
+app.js.component components.hello.hello-component
 ```
 
-## CSS Inheritance
+AppCoreJS also loads every static `appcoreCss` declared by the inheritance chain, parent first. A component derived from `Component` therefore loads the parent component CSS before its own static CSS. Loader caching prevents duplicate stylesheet loads.
 
-CSS also uses explicit framework inheritance/import relationships independently from resource resolution.
+An element may add instance-specific styles:
 
-Examples:
-
-```text
-public/app/css/application.css
-    -> public/core/css/application.css
-
-public/app/css/menu-component.css
-    -> public/app/css/core-menu-component.css
-
-public/app/css/theme.css
-    -> public/app/css/core-theme.css
+```html
+<section
+    data-appcore-id="components.hello.hello-component::main"
+    data-appcore-css="css.compact, css.high-contrast">
+</section>
 ```
 
-Do not confuse CSS inheritance/import relationships with resource resolution.
+`data-appcore-css` becomes the instance property `appcoreCss`; comma-separated identifiers load `css/compact.css` and `css/high-contrast.css` after inherited static CSS.
 
-## Resolution vs Inheritance
+App-layer styles normally import their core implementation, then add overrides:
 
-Resolution and inheritance are two distinct mechanisms and may be used together.
+```css
+@import url("../../core/css/core-component.css");
 
-* Resolution selects a resource according to:
-
-```text
-<project>/public/
--> <project>/public/app/
--> <project>/public/core/
+/* application-wide overrides */
 ```
 
-* Inheritance extends an implementation from another layer.
-* A project may override a resolved resource.
-* A project may inherit from an `app` implementation.
-* A project may use both mechanisms together.
+## Useful Component Lifecycle
 
-Project-specific frontend resources should normally stay directly under `<project>/public`.
+`load()` performs, in order:
 
-Override files under `<project>/public/app` only when the application adaptation layer itself must be customized.
+1. load and merge the template;
+2. attach the component to its DOM node;
+3. apply the full `data-appcore-class` chain;
+4. load inherited static CSS;
+5. copy all `data-*` dataset values onto the component instance;
+6. load optional `data-appcore-css` styles;
+7. load direct child components;
+8. create the resize observer;
+9. await `onLoad()`.
 
-## Synchronization Facts
+Override `async onLoad()` for setup and call `await super.onLoad()` when parent setup must run. Child components are already loaded when the parent hook runs. Use `onUnload()` for cleanup and `onResize()` for size-dependent behavior.
 
-* Front sync replaces `<project>/public/core`.
-* Front sync preserves existing files in `<project>/public/app`.
-* `public/ext` is synchronized only with `--ext` or `--intro`.
-* `public/intro` is synchronized only with `--intro`.
+## `Data`
+
+`public/js/io/Data.js` is created once and is project-owned. AppCoreJS imports it during boot, creates one instance, and exposes it as `App.data`.
+
+Use `Data` as the application access point for HTTP calls, IO, and shared data operations. Keep rendering and DOM manipulation in UI components.
+
+```js
+export class Data
+{
+    async getHello()
+    {
+        const response = await fetch('/api/hello');
+
+        if (!response.ok)
+        {
+            throw new Error(`Hello request failed: ${response.status}`);
+        }
+
+        return await response.json();
+    }
+}
+```
+
+A component then uses `await App.data.getHello()` and renders the result.
+
+## Synchronization
+
+- `public/core` is replaced: never modify it.
+- `public/app` and project resources are preserved.
+- `public/js/io/Data.js` is created only when missing.
+- `public/ext` and `public/intro` are included only when their CLI options are selected.

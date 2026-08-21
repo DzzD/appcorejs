@@ -1,24 +1,45 @@
 # APPCOREJS BASE
 
-Shared base rules and facts.
+## File Ownership
 
-## Mandatory Layer Rule
+| Location | Lifecycle | Application rule |
+| --- | --- | --- |
+| `core/` | Replaced by synchronization | Read when necessary; never edit |
+| `app/` | Created once or copied without overwrite | Modify for behavior shared by the application |
+| `<project>/` | Created once or project-owned | Put business-specific behavior here |
+| `<project>/public/core/` | Replaced by frontend synchronization | Never edit |
+| `<project>/public/app/` | Copied without overwrite | Modify application-wide frontend behavior |
+| `<project>/public/` outside `core/` and `app/` | Project-owned | Put project frontend resources here |
+| `agent/appcorejs/` | Re-synchronized documentation | Read only; edit the framework source documentation instead |
 
-project -> app -> core
+Files marked `ONE-SHOT GENERATED FILE` are created only when missing. They are intended to be freely modified after their first generation.
 
-Project classes must import app classes when an app counterpart exists.
-Project classes must not import core classes directly when an app counterpart exists.
+As a practical safeguard, hide `core/` directories in the IDE explorer. They remain available for inspection when framework behavior must be understood.
 
-## Base Class Pattern (Fact)
+## Inheritance and Overrides
 
-- App classes extend core classes.
-- Typical pairs: `DbObject`/`CoreDbObject`, `DbQueryObject`/`CoreDbQueryObject`, `Server`/`CoreServer`, `ServerComponent`/`CoreServerComponent`.
+The normal direction is:
 
-## File Lifecycle (Fact)
+```text
+project class -> app class -> core class
+```
 
-- Core files are synchronization-managed and may be replaced.
-- App files are generated as extension points and are preserved when already present.
+Examples:
 
-## Recommendation
+```text
+project ServerComponent -> app/server/ServerComponent -> core/server/CoreServerComponent
+project frontend component -> public/app/js/Component -> public/core/js/CoreComponent
+app/db/DbConnector -> core/db/CoreDbConnector
+```
 
-Put cross-project behavior in app and business-specific behavior in project.
+Generated database models use an additional generated level:
+
+```text
+optional project model
+-> app/db/models/Model                 one-shot, editable
+-> core/db/models/CoreModel            regenerated, read-only
+-> app/db/DbObject                     global editable override
+-> core/db/CoreDbObject                framework implementation
+```
+
+Use the nearest application-facing parent. Put transversal behavior in `app`; put behavior specific to one project or feature in `<project>`.

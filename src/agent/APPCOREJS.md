@@ -1,27 +1,24 @@
 # APPCOREJS
 
-AppCoreJS is a JavaScript framework and generator based on layered overrides.
+AppCoreJS generates a layered application. Develop through the application-facing layers, not through framework internals.
 
-## Mandatory Architecture Rule
+## Mandatory Direction
 
+```text
 project -> app -> core
+```
 
-- core is the internal framework implementation layer.
-- app is the required adaptation and override layer.
-- project is the business-specific layer.
+- `core/`: synchronized framework implementation. It may be replaced; do not edit it.
+- `app/`: preserved application-wide overrides and extension points.
+- `<project>/`: preserved business-specific server, database, and frontend code.
 
-Project code must use the corresponding app layer and must not bypass it to access core directly when an app counterpart exists.
+Project code imports the corresponding `app` class whenever one exists. It must not bypass that class to import `core` directly.
 
-## Rule Classification
+## Where to Start
 
-- Mandatory rule: respect layer direction and boundaries.
-- Descriptive fact: app and project layers are intended extension points.
-- Recommendation: keep business behavior in project and global behavior in app.
-
-## Index
-
-- CLI behavior and synchronization rules: APPCOREJS-CLI.md
-- Shared base classes and lifecycle: APPCOREJS-BASE.md
-- ORM models and query objects: APPCOREJS-ORM.md
-- Server architecture and components: APPCOREJS-SERVER.md
-- Frontend layers, App, Data, templates: APPCOREJS-FRONT.md
+- File ownership and inheritance: `APPCOREJS-BASE.md`
+- CLI generation and synchronization: `APPCOREJS-CLI.md`
+- Frontend resolution, components, and `Data`: `APPCOREJS-FRONT.md`
+- Server components and APIs: `APPCOREJS-SERVER.md`
+- PostgreSQL models and queries: `APPCOREJS-ORM.md`
+- Complete PostgreSQL Hello World: `APPCOREJS-HELLO-WORLD.md`

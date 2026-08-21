@@ -93,7 +93,7 @@ src/agent/
 to:
 
 ```text
-<target>/agent/
+<target>/agent/appcorejs/
 ```
 
 Use `--no-agent-files` to disable this synchronization.
