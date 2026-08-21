@@ -18,7 +18,8 @@ Project code imports the corresponding `app` class whenever one exists. It must 
 
 - File ownership and inheritance: `APPCOREJS-BASE.md`
 - CLI generation and synchronization: `APPCOREJS-CLI.md`
-- Frontend resolution, components, and `Data`: `APPCOREJS-FRONT.md`
+- Frontend resolution, lifecycle, and `Data`: `APPCOREJS-FRONT.md`
+- Default frontend components: `APPCOREJS-FRONT-COMPONENTS.md`
 - Server components and APIs: `APPCOREJS-SERVER.md`
 - PostgreSQL models and queries: `APPCOREJS-ORM.md`
 - Complete PostgreSQL Hello World: `APPCOREJS-HELLO-WORLD.md`

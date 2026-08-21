@@ -79,6 +79,9 @@ The core fallback for `application.tpl.html` only reports that the project templ
 
 ## Frontend Inheritance
 
+The default frontend components are described separately in `APPCOREJS-FRONT-COMPONENTS.md`.
+Read it for the application-facing usage of `Screen`, `StackComponent`, `MenuComponent`, `Window`, `SelectComponent`, `ActionBarComponent` and the query components.
+
 Project components extend the app class, never the core class directly:
 
 ```js
@@ -115,6 +118,25 @@ This loads `components/hello/HelloComponent.js`, export `HelloComponent`. The su
 `data-template` is converted to `<identifier>.tpl.html`. Here it loads `components/hello/hello-component.tpl.html` before `onLoad()`.
 
 The template's first root element supplies missing attributes. Its children are inserted into the existing component node. Existing direct `data-zone` contents are preserved and merged by zone name.
+
+When a component accesses one of its child components, resolve the child through a getter instead of copying the component reference into a second parent property:
+
+```js
+get messageListComponent()
+{
+    return this.getChild('js.message-list-component::messages');
+}
+```
+
+Use `this.messageListComponent` when the child is needed. This keeps the access aligned with the component tree managed by `childs`, including when children are loaded or unloaded dynamically. Prefer this pattern to:
+
+```js
+this.messageListComponent = this.getChild('js.message-list-component::messages');
+```
+
+unless the value is intentionally a separate, stable application object rather than a component lookup.
+
+When a component becomes too large, split it into child components with coherent responsibilities. A child component does not need to render a visible area: it may group a focused behavior, data flow, event handling or coordination task for the parent. Keep the parent responsible for overall orchestration and communication between those parts. Do not introduce a child component only to move a few unrelated lines into another file.
 
 ## Classes and CSS
 
