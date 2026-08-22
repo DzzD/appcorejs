@@ -62,8 +62,8 @@ export class CoreServer
                         await serverComponent.start();
                     }
 
-                    Log.info(`Server listening on "${host}" port "${port}"`);
-                    Log.info(`Open http://${host}:${port} to view your application.`);
+                    Log.info(`[CoreServer] Server listening on "${host}" port "${port}"`);
+                    Log.info(`[CoreServer] Open http://${host}:${port} to view your application.`);
                     resolve();
                 }
                 catch (error)

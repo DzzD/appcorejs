@@ -55,7 +55,7 @@ export class CoreComponent
 
     async _show(node, args = {})
     {
-        if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
+        if (!node) { Log.debug("[CoreComponent] Missing node"); return Promise.resolve(); }
 
         const duration = args.duration ?? this.visibilityDuration;
 
@@ -106,7 +106,7 @@ export class CoreComponent
 
     async _hide(node, args = {})
     {
-        if (!node) { Log.debug("Missing node"); return Promise.resolve(); }
+        if (!node) { Log.debug("[CoreComponent] Missing node"); return Promise.resolve(); }
 
         const duration = args.duration ?? this.visibilityDuration;
 
@@ -210,7 +210,7 @@ export class CoreComponent
 
     findPathChild(segment)
     {
-        Log.info("segment " + segment);
+        Log.info("[CoreComponent] segment " + segment);
 
         for (const child of this.childs.values())
         {
@@ -225,17 +225,17 @@ export class CoreComponent
 
     onPathHere()
     {
-        Log.debug(`Path resolved on component "${this.id}".`);
+        Log.debug(`[CoreComponent] Path resolved on component "${this.id}".`);
     }
 
     onPathNotFound(segment, parts = [])
     {
-        Log.warn(`Path segment "${segment}" not found from component "${this.id}".`);
+        Log.warn(`[CoreComponent] Path segment "${segment}" not found from component "${this.id}".`);
     }    
 
     onPath(uri = "/")
     {
-        Log.info("uri" + uri);
+        Log.info("[CoreComponent] uri" + uri);
 
         const parts = uri.split("/").filter(Boolean);
         const segment = parts.shift();
@@ -429,7 +429,7 @@ export class CoreComponent
 
         if(!cls)
         {
-            Log.warn(`Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
+            Log.warn(`[CoreComponent] Failed to create component "${componentId}". Replaced with generic class "CoreComponent".`);
             return  new CoreComponent(componentId, this);
         }
 

@@ -62,7 +62,7 @@ export class CoreApplication extends Component
 
       loader?.remove();
 
-      Log.info("AppCoreJS - Application ready!");
+    Log.info("[CoreApplication] AppCoreJS - Application ready!");
 
       window.addEventListener('hashchange', () =>
       {
@@ -75,7 +75,7 @@ export class CoreApplication extends Component
   onUrlChange()
   {
     const uri = location.hash.slice(1) || '/';
-    Log.info("uri" + uri);
+    Log.info("[CoreApplication] uri" + uri);
     this.onPath(uri);
   }  
 

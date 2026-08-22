@@ -97,7 +97,7 @@ export class CoreLoader
         {
             if (!this.loadedScripts.has(href))
             {
-                Log.debug(`Loading class file : ${href}`);
+                Log.debug(`[CoreLoader] Loading class file : ${href}`);
             }
 
             try
@@ -111,7 +111,7 @@ export class CoreLoader
             }
             catch (error)
             {
-                Log.error(`Class file not found or invalid: ${href}`);
+                Log.error(`[CoreLoader] Class file not found or invalid: ${href}`);
                 throw error;
             }
         })();
@@ -153,7 +153,7 @@ export class CoreLoader
 
         const loadPromise = new Promise((resolve, reject) =>
         {
-            Log.debug(`Loading style file : ${href}`);
+            Log.debug(`[CoreLoader] Loading style file : ${href}`);
 
             const link = document.createElement("link");
             link.rel = "stylesheet";
@@ -161,7 +161,7 @@ export class CoreLoader
             link.onload = () => resolve(link);
             link.onerror = (event) =>
             {
-                Log.error(`Style file not found or invalid: ${href}`);
+                Log.error(`[CoreLoader] Style file not found or invalid: ${href}`);
                 reject(event);
             };
 
@@ -207,7 +207,7 @@ export class CoreLoader
 
         const loadPromise = new Promise((resolve, reject) =>
         {
-            Log.debug(`Loading script file : ${src}`);
+            Log.debug(`[CoreLoader] Loading script file : ${src}`);
 
             const script = document.createElement("script");
             script.src = src;
@@ -217,7 +217,7 @@ export class CoreLoader
 
             script.onerror = (event) =>
             {
-                Log.error(`Script file not found or invalid: ${src}`);
+                Log.error(`[CoreLoader] Script file not found or invalid: ${src}`);
                 reject(event);
             };
 

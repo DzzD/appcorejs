@@ -26,7 +26,37 @@ export class CoreLog
     };
 
     static color = true;
+    static exclusions = [];
     static #mode = CoreLog.modes.debug;
+
+    static exclude(...patterns)
+    {
+        this.exclusions = patterns.map((pattern) => pattern instanceof RegExp ? pattern : new RegExp(pattern));
+    }
+
+    static clearExclusions()
+    {
+        this.exclusions = [];
+    }
+
+    static #isExcluded(args)
+    {
+        const message = typeof args[0] === 'string' ? args[0] : '';
+
+        return this.exclusions.some((pattern) =>
+        {
+            pattern.lastIndex = 0;
+
+            if (pattern.test(message))
+            {
+                return true;
+            }
+
+            pattern.lastIndex = 0;
+
+            return pattern.test(message.replace(/^\[/, ''));
+        });
+    }
 
     static set mode(mode)
     {
@@ -80,7 +110,7 @@ export class CoreLog
 
     static debug(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.debug)
+        if (CoreLog.#mode > CoreLog.modes.debug || this.#isExcluded(args))
         {
             return;
         }
@@ -90,7 +120,7 @@ export class CoreLog
 
     static info(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.info)
+        if (CoreLog.#mode > CoreLog.modes.info || this.#isExcluded(args))
         {
             return;
         }
@@ -100,7 +130,7 @@ export class CoreLog
 
     static warn(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.warn)
+        if (CoreLog.#mode > CoreLog.modes.warn || this.#isExcluded(args))
         {
             return;
         }
@@ -110,7 +140,7 @@ export class CoreLog
 
     static error(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.error)
+        if (CoreLog.#mode > CoreLog.modes.error || this.#isExcluded(args))
         {
             return;
         }

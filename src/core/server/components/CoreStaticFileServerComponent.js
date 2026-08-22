@@ -66,7 +66,7 @@ export class CoreStaticFileServerComponent extends ServerComponent
 
     async getStaticFile(fileName, request)
     {
-        Log.debug(`${request.path} => ${fileName}`);
+        Log.debug(`[CoreStaticFileServerComponent] ${request.path} => ${fileName}`);
 
         if (fileName.includes('.tpl.'))
         {
@@ -146,7 +146,7 @@ export class CoreStaticFileServerComponent extends ServerComponent
             {
                 await fs.access(fallbackFileName);
 
-                Log.debug(`${request.path} => ${fileName} => ${fallbackFileName}`);
+                Log.debug(`[CoreStaticFileServerComponent] ${request.path} => ${fileName} => ${fallbackFileName}`);
 
                 return fallbackFileName;
             }
