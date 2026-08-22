@@ -39,7 +39,7 @@ export class CoreLog
         this.exclusions = [];
     }
 
-    static #isExcluded(args)
+    static _isExcluded(args)
     {
         const message = typeof args[0] === 'string' ? args[0] : '';
 
@@ -110,7 +110,7 @@ export class CoreLog
 
     static debug(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.debug || this.#isExcluded(args))
+        if (CoreLog.#mode > CoreLog.modes.debug || this._isExcluded(args))
         {
             return;
         }
@@ -120,7 +120,7 @@ export class CoreLog
 
     static info(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.info || this.#isExcluded(args))
+        if (CoreLog.#mode > CoreLog.modes.info || this._isExcluded(args))
         {
             return;
         }
@@ -130,7 +130,7 @@ export class CoreLog
 
     static warn(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.warn || this.#isExcluded(args))
+        if (CoreLog.#mode > CoreLog.modes.warn || this._isExcluded(args))
         {
             return;
         }
@@ -140,7 +140,7 @@ export class CoreLog
 
     static error(...args)
     {
-        if (CoreLog.#mode > CoreLog.modes.error || this.#isExcluded(args))
+        if (CoreLog.#mode > CoreLog.modes.error || this._isExcluded(args))
         {
             return;
         }
