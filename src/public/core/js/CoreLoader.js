@@ -36,12 +36,12 @@ export class CoreLoader
     {
         const url = new URL(uri, document.baseURI);
 
-        if (url.searchParams.has("v"))
+        if (url.searchParams.has("appcore-version"))
         {
             return url;
         }
 
-        url.searchParams.set("v", this.version || "1.0");
+        url.searchParams.set("appcore-version", this.version || "1.0");
         return url;
     }
 

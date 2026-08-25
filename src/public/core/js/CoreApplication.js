@@ -40,6 +40,7 @@ export class CoreApplication extends Component
       globalThis.App = this;
       this.data = new this.constructor.dataClass();
       this.uri = "/";
+      this.serviceWorkerRegistration = null;
   }
 
   async onLoad()
@@ -82,6 +83,21 @@ export class CoreApplication extends Component
   /*
   * User application booting
   */
+  async registerServiceWorker()
+  {
+    if (!("serviceWorker" in navigator))
+    {
+      return null;
+    }
+
+    return await navigator.serviceWorker.register(
+      new URL("service-worker.js", document.baseURI),
+      {
+        type: "module"
+      }
+    );
+  }
+
   static async boot()
   {
     //   const app = new this("app.js.application");
@@ -89,6 +105,15 @@ export class CoreApplication extends Component
     this.dataClass = await Loader.loadClass("js/io", "Data");
       window.app = new this("app.js.application");
       await app.load();
+
+      try
+      {
+        app.serviceWorkerRegistration = await app.registerServiceWorker();
+      }
+      catch (error)
+      {
+        Log.error("[CoreApplication] Service Worker registration failed", error);
+      }
   }
 }
 
