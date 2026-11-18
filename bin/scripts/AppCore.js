@@ -38,6 +38,7 @@ function parseArguments(rawArgs)
         dbport: 5432,
         dbhost: 'localhost',
         dbname: null,
+        dboptions: null,
         dbschema: null,
         modelPrefix: null
     };
@@ -92,6 +93,12 @@ function parseArguments(rawArgs)
         if (current === '--dbname')
         {
             args.dbname = rawArgs[++index] || null;
+            continue;
+        }
+
+        if (current === '--dboptions')
+        {
+            args.dboptions = rawArgs[++index] || null;
             continue;
         }
 
@@ -185,6 +192,7 @@ function printUsage()
 --no-agent-files disable copy of framework agent documentation files
 --dbhost    optional db host (default: localhost)
 --dbport    optional db port (default: 5432)
+--dboptions optional PostgreSQL connection options
 --dbschema  optional schema (default: ALL)
 --model-prefix optional model prefix (default: database name from --dbname when not provided and without --model-noprefix)
 --model-noprefix generate model files without prefix (overrides default database-name prefix)

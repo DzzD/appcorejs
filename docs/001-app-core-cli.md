@@ -70,6 +70,7 @@ Optional model options:
 
 - `--dbhost`
 - `--dbport`
+- `--dboptions` (for example `databaseid=<database-id>`)
 - `--dbschema`
 - `--model-prefix`
 - `--model-noprefix`
@@ -197,6 +198,12 @@ Full generation with models:
 
 ```bash
 npx app-core --back --server --front --model --project myProject --dbuser appcore --dbpassword appcore --dbname appcore
+```
+
+With PostgreSQL connection options:
+
+```bash
+npx app-core --model --project myProject --dbuser appcore --dbpassword appcore --dbname appcore --dboptions "databaseid=my-database-id"
 ```
 
 ## Next

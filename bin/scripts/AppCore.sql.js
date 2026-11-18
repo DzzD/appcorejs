@@ -20,7 +20,8 @@ export async function withDatabase(configuration, callback)
         port: configuration.dbport,
         user: configuration.dbuser,
         password: configuration.dbpassword,
-        database: configuration.dbname
+        database: configuration.dbname,
+        ...(configuration.dboptions ? { options: configuration.dboptions } : {})
     });
 
     await client.connect();
