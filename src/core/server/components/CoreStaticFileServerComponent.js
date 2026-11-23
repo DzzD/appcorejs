@@ -12,6 +12,7 @@ import fs from 'node:fs/promises';
 
 import { ServerComponent } from '../../../app/server/ServerComponent.js';
 import { Log } from '../../../app/Log.js';
+import { Error } from '../../../app/Error.js';
 
 export class CoreStaticFileServerComponent extends ServerComponent
 {
@@ -36,14 +37,53 @@ export class CoreStaticFileServerComponent extends ServerComponent
         ];
     }
 
+    resolvePath(requestPath, rootPath = this.staticDirectory)
+    {
+        let decodedPath;
+
+        try
+        {
+            decodedPath = decodeURIComponent(requestPath);
+        }
+        catch (originalError)
+        {
+            throw new Error('Invalid static path', originalError);
+        }
+
+        const normalizedPath = decodedPath.replaceAll('\\', '/');
+        const segments = normalizedPath.replace(/^\/+/, '').split('/').filter(Boolean);
+
+        if (/%[\da-f]{2}/i.test(decodedPath)
+            || /^[a-z]:/i.test(segments.join('/'))
+            || segments.some((segment) => segment.startsWith('.')))
+        {
+            throw new Error('Invalid static path');
+        }
+
+        const relativePath = normalizedPath.endsWith('/') || segments.length === 0
+            ? [...segments, 'index.html'].join('/')
+            : segments.join('/');
+        const staticRoot = path.resolve(rootPath);
+        const fileName = path.resolve(staticRoot, relativePath);
+        const confinementPath = path.relative(staticRoot, fileName);
+
+        if (confinementPath === '..'
+            || confinementPath.startsWith(`..${path.sep}`)
+            || path.isAbsolute(confinementPath))
+        {
+            throw new Error('Invalid static path');
+        }
+
+        return fileName;
+    }
+
     async start()
     {
         this.server.application.use(async (request, response, next) =>
         {
             try
             {
-                const relativeFileName = request.path.replace(/^\/+/, '').replace(/\/$/, '/index.html') || 'index.html';
-                const fileName = path.join(this.staticDirectory, relativeFileName);
+                const fileName = this.resolvePath(request.path);
 
                 const result = await this.getStaticFile(fileName, request);
 
@@ -55,9 +95,9 @@ export class CoreStaticFileServerComponent extends ServerComponent
 
                 response.type(path.extname(fileName)).send(result.content);
             }
-            catch (error)
+            catch
             {
-                next(error);
+                response.status(404).send('Not Found');
             }
         });
 
@@ -200,7 +240,11 @@ export class CoreStaticFileServerComponent extends ServerComponent
         try
         {
             await fs.access(fileName);
-            return fileName;
+
+            const realRoot = await fs.realpath(this.staticDirectory);
+            const realFileName = await fs.realpath(fileName);
+
+            return this.resolvePath(path.relative(realRoot, realFileName), realRoot);
         }
         catch
         {
@@ -236,9 +280,13 @@ export class CoreStaticFileServerComponent extends ServerComponent
             {
                 await fs.access(fallbackFileName);
 
-                Log.debug(`[CoreStaticFileServerComponent] ${request.path} => ${fileName} => ${fallbackFileName}`);
+                const realRoot = await fs.realpath(this.staticDirectory);
+                const realFallbackFileName = await fs.realpath(fallbackFileName);
+                const resolvedFallbackFileName = this.resolvePath(path.relative(realRoot, realFallbackFileName), realRoot);
 
-                return fallbackFileName;
+                Log.debug(`[CoreStaticFileServerComponent] ${request.path} => ${fileName} => ${resolvedFallbackFileName}`);
+
+                return resolvedFallbackFileName;
             }
             catch
             {

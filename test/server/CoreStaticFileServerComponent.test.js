@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
+import express from "express";
 import fs from "node:fs/promises";
+import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -22,6 +24,40 @@ async function createComponent(context)
     });
 
     return { component, publicDirectory };
+}
+
+async function createServer(context)
+{
+    const { component, publicDirectory } = await createComponent(context);
+    const application = express();
+    component.server.application = application;
+    await component.start();
+    application.use((request, response) => response.status(404).send("Not Found"));
+
+    const server = http.createServer(application);
+    await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+    context.after(() => new Promise((resolve) => server.close(resolve)));
+
+    const address = server.address();
+    const request = (requestPath) => new Promise((resolve, reject) =>
+    {
+        const clientRequest = http.request(
+            { host: "127.0.0.1", port: address.port, path: requestPath },
+            (response) =>
+            {
+                const chunks = [];
+                response.on("data", (chunk) => chunks.push(chunk));
+                response.on("end", () => resolve({
+                    statusCode: response.statusCode,
+                    body: Buffer.concat(chunks).toString(),
+                }));
+            },
+        );
+        clientRequest.on("error", reject);
+        clientRequest.end();
+    });
+
+    return { component, publicDirectory, request };
 }
 
 test("resolves the default core service-worker.js", async (context) =>
@@ -162,4 +198,86 @@ test("does not alter a versioned binary resource", async (context) =>
 
     assert.equal(Buffer.isBuffer(result.content), true);
     assert.deepEqual(result.content, source);
+});
+
+test("serves an allowed static file", async (context) =>
+{
+    const { publicDirectory, request } = await createServer(context);
+    await fs.writeFile(path.join(publicDirectory, "allowed.txt"), "allowed content");
+
+    const response = await request("/allowed.txt");
+
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.body, "allowed content");
+});
+
+test("rejects traversal, absolute, hidden, and malformed request paths", async (context) =>
+{
+    const { component, publicDirectory, request } = await createServer(context);
+    const outsideDirectory = path.dirname(publicDirectory);
+    await fs.writeFile(path.join(outsideDirectory, "outside.txt"), "outside marker");
+    await fs.mkdir(path.join(outsideDirectory, "public-other"), { recursive: true });
+    await fs.writeFile(path.join(outsideDirectory, "public-other", "prefix.txt"), "prefix marker");
+    await fs.mkdir(path.join(publicDirectory, "dir"), { recursive: true });
+    await fs.writeFile(path.join(publicDirectory, "dir", ".secret"), "secret marker");
+
+    const invalidPaths = [
+        "/../../.env",
+        "/%2e%2e/%2e%2e/.env",
+        "/%252e%252e/%252e%252e/.env",
+        "/..\\..\\.env",
+        "/%2e%2e%5c%2e%2e%5c.env",
+        "/C:%5cWindows%5cwin.ini",
+        "/../public-other/prefix.txt",
+        "/.env",
+        "/dir/.secret",
+        "/%E0%A4%A",
+    ];
+
+    for (const invalidPath of invalidPaths)
+    {
+        const response = await request(invalidPath);
+        assert.equal(response.statusCode, 404, invalidPath);
+        assert.equal(response.body, "Not Found", invalidPath);
+        assert.doesNotMatch(response.body, /outside marker|prefix marker|secret marker|appcore-static-test-|ENOENT|Error:/);
+    }
+
+    assert.throws(() => component.resolvePath(path.join("..", "public-other", "prefix.txt")));
+});
+
+test("rejects a symbolic link that leaves the static directory", async (context) =>
+{
+    const { publicDirectory, request } = await createServer(context);
+    const outsideFile = path.join(path.dirname(publicDirectory), "outside.txt");
+    const linkFile = path.join(publicDirectory, "linked.txt");
+    await fs.writeFile(outsideFile, "outside marker");
+
+    try
+    {
+        await fs.symlink(outsideFile, linkFile, "file");
+    }
+    catch (error)
+    {
+        if (process.platform === "win32" && ["EPERM", "EACCES"].includes(error.code))
+        {
+            context.skip("Symbolic links require Windows Developer Mode or elevated privileges");
+            return;
+        }
+
+        throw error;
+    }
+
+    const response = await request("/linked.txt");
+
+    assert.equal(response.statusCode, 404);
+    assert.equal(response.body, "Not Found");
+    assert.doesNotMatch(response.body, /outside marker|appcore-static-test-|Error:/);
+});
+
+test("normalizes legitimate encoded paths", () =>
+{
+    const component = new CoreStaticFileServerComponent();
+    const rootPath = path.resolve("public");
+    assert.equal(component.resolvePath("/dir/file%20name.txt", rootPath), path.join(rootPath, "dir", "file name.txt"));
+    assert.equal(component.resolvePath("/", rootPath), path.join(rootPath, "index.html"));
 });
